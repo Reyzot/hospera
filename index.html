@@ -3,7 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hospera.ai — IA para hoteles independientes</title>
+<title>Hospera.ai — Agencia de IA para hoteles independientes</title>
+<meta name="description" content="Hospera.ai automatiza la gestión de reseñas, análisis de competencia y comunicación con huéspedes para hoteles independientes. Sin dashboards, todo por WhatsApp. Barcelona y Miami.">
+<meta name="keywords" content="IA para hoteles, automatización hostelería, gestión reseñas hotel, revenue management hoteles pequeños, agencia IA hostelería, software hotel independiente, responder reseñas automático">
+<meta name="author" content="Andreu Rey — Hospera.ai">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://reyzot.github.io/hospera/">
+
+<!-- Open Graph (WhatsApp, LinkedIn, Facebook) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://reyzot.github.io/hospera/">
+<meta property="og:title" content="Hospera.ai — Agencia de IA para hoteles independientes">
+<meta property="og:description" content="Automatizamos reseñas, competencia y comunicación con huéspedes. Sin dashboards, todo llega a tu WhatsApp. Prueba gratuita.">
+<meta property="og:image" content="https://reyzot.github.io/hospera/andreu.jpg">
+<meta property="og:locale" content="es_ES">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hospera.ai — IA para hoteles independientes">
+<meta name="twitter:description" content="Automatizamos reseñas, competencia y comunicación con huéspedes. Sin dashboards, todo por WhatsApp.">
+<meta name="twitter:image" content="https://reyzot.github.io/hospera/andreu.jpg">
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Hospera.ai",
+  "description": "Agencia de automatización con IA especializada en hostelería independiente. Gestión de reseñas, análisis de competencia y comunicación con huéspedes.",
+  "url": "https://reyzot.github.io/hospera/",
+  "email": "andreurey7@gmail.com",
+  "telephone": "+34675680256",
+  "address": { "@type": "PostalAddress", "addressLocality": "Barcelona", "addressCountry": "ES" },
+  "areaServed": ["España", "Miami"],
+  "serviceType": ["Gestión de reseñas con IA", "Revenue Intelligence", "Automatización hostelería"],
+  "founder": { "@type": "Person", "name": "Andreu Rey", "alumniOf": "Universitat Autònoma de Barcelona" }
+}
+</script>
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23020917'/><text font-size='62' font-family='Inter,Arial,sans-serif' font-weight='900' fill='%2306b6d4' text-anchor='middle' x='50' y='72'>H</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -823,6 +860,39 @@
     pointer-events: none;
   }
 
+  /* ── FAQ ── */
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .faq-item:first-child { border-top: 1px solid var(--border); }
+  .faq-q {
+    width: 100%; background: none; border: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0; cursor: pointer; text-align: left; gap: 16px;
+  }
+  .faq-q-text { font-size: 16px; font-weight: 700; color: var(--text); }
+  .faq-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(6,182,212,0.08); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform 0.3s, background 0.2s;
+    color: var(--cyan); font-size: 18px; line-height: 1;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(6,182,212,0.15); }
+  .faq-a {
+    font-size: 15px; color: var(--muted); line-height: 1.75;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+
+  /* ── RESPONSIVE: cómo funciona ── */
+  @media (max-width: 768px) {
+    #como-funciona .container > div:last-child { grid-template-columns: 1fr !important; }
+  }
+
   /* ── ANIMATIONS ── */
   .fade-in {
     opacity:0; transform:translateY(28px);
@@ -848,10 +918,10 @@
       <div class="logo-sub">IA &amp; Automatización Hotelera</div>
     </div>
     <ul class="nav-links">
-      <li><a href="#problemas">El problema</a></li>
       <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#nosotros">Quiénes somos</a></li>
-      <li><a href="#contacto">Contacto</a></li>
     </ul>
     <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="nav-cta">Agendar llamada ›</a>
   </nav>
@@ -1157,7 +1227,7 @@
   <div class="container">
     <div class="about-grid fade-in">
       <div class="about-photo-wrap">
-        <img src="andreu.jpg" alt="Andreu Rey" class="about-photo"
+        <img src="andreu.jpg" alt="Andreu Rey, fundador de Hospera.ai — graduado en Dirección Hotelera por la UAB" class="about-photo"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
         <div class="about-photo-placeholder" style="display:none;">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -1183,6 +1253,60 @@
           <a href="#contacto" class="btn-secondary" style="font-size:14px;">Escribir un mensaje</a>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section id="como-funciona" style="background:var(--bg3);">
+  <div class="container">
+    <div class="fade-in" style="text-align:center;max-width:600px;margin:0 auto 64px;">
+      <span class="section-tag">El proceso</span>
+      <h2 class="section-title">En 48h está funcionando.<br><span style="color:var(--cyan-light)">Sin instalar nada.</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Sin reuniones largas, sin integraciones complejas. Tres pasos y tu hotel ya trabaja con IA.</p>
+    </div>
+    <div class="fade-in" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 01</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Nos cuentas tu hotel</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Una llamada de 20 minutos. Nos dices cómo habláis a los clientes, qué plataformas usáis y qué quieres mejorar.</p>
+      </div>
+
+      <div style="background:var(--card);border:1px solid rgba(6,182,212,0.25);border-radius:16px;padding:32px;position:relative;box-shadow:0 0 30px rgba(6,182,212,0.06);">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 02</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Lo configuramos todo</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Conectamos tus perfiles, entrenamos la IA con la voz de tu hotel y lo dejamos listo en menos de 48 horas.</p>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 03</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,217,160,0.08);border:1px solid rgba(16,217,160,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Tú solo apruebas</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Recibes notificaciones en WhatsApp. Apruebas con un toque. La IA hace el resto — 24/7, sin que tengas que hacer nada más.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="fade-in" style="max-width:720px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:56px;">
+        <span class="section-tag">Preguntas frecuentes</span>
+        <h2 class="section-title">Todo lo que quieres<br><span style="color:var(--cyan-light)">saber antes de empezar.</span></h2>
+      </div>
+      <div class="faq-list fade-in"></div>
     </div>
   </div>
 </section>
@@ -1280,6 +1404,33 @@
     btn.style.background = 'linear-gradient(135deg,#059669,#10d9a0)';
     btn.disabled = true;
   }
+
+  /* ── FAQ ACCORDION ── */
+  const faqs = [
+    { q: "¿Necesito saber de tecnología para usarlo?", a: "Para nada. Todo llega a tu WhatsApp. Apruebas con un toque, rechazas con otro. No hay dashboards, no hay logins, no hay nada que aprender." },
+    { q: "¿Cuánto tarda en estar funcionando?", a: "En menos de 48 horas desde la llamada inicial. Nosotros configuramos todo — tú solo confirmas que el tono de las respuestas se parece al de tu hotel." },
+    { q: "¿Qué pasa si no me gusta cómo responde la IA?", a: "Siempre tienes control total. Puedes editar cada respuesta antes de publicarla, rechazarla o pedirle que la rehaga. Además, la IA aprende con el tiempo y mejora." },
+    { q: "¿Funciona con Google, Booking y TripAdvisor a la vez?", a: "Sí. Monitorizamos las tres plataformas en tiempo real. En cuanto llega una reseña nueva, en minutos la tienes en tu móvil lista para aprobar." },
+    { q: "¿Hay permanencia o puedo cancelar cuando quiera?", a: "Sin permanencia. Mes a mes. Si en algún momento no te aporta valor, cancelas con un mensaje y listo. Aunque no ha pasado todavía." },
+    { q: "¿Funciona para hoteles pequeños, de 10-15 habitaciones?", a: "Es exactamente para quien está diseñado. Los hoteles grandes ya tienen equipos y software caro. Nosotros trabajamos con hoteles independientes que no tienen revenue manager ni equipo de marketing." }
+  ];
+  const faqList = document.querySelector('.faq-list');
+  faqs.forEach(f => {
+    const item = document.createElement('div');
+    item.className = 'faq-item';
+    item.innerHTML = `
+      <button class="faq-q" aria-expanded="false">
+        <span class="faq-q-text">${f.q}</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">${f.a}</div>`;
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+    faqList.appendChild(item);
+  });
 
   /* ── NETWORK CANVAS ── */
   (function() {
