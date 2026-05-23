@@ -59,6 +59,10 @@
     z-index: 0;
     opacity: 0.7;
   }
+  @media (max-width: 768px) {
+    #network-canvas { opacity: 0.18; }
+    .orb { opacity: 0.15 !important; filter: blur(140px); }
+  }
 
   /* ── GLOW ORBS ── */
   .orb {
@@ -1282,8 +1286,9 @@
     const canvas = document.getElementById('network-canvas');
     const ctx = canvas.getContext('2d');
     let W, H, nodes = [];
-    const COUNT = 110;
-    const MAX_DIST = 200;
+    const isMobile = window.innerWidth < 768;
+    const COUNT = isMobile ? 30 : 110;
+    const MAX_DIST = isMobile ? 120 : 200;
     const COLOR_NODE = 'rgba(6,182,212,';
     const COLOR_LINE = 'rgba(6,182,212,';
 
