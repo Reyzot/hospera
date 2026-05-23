@@ -4,9 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hospera.ai — IA para hoteles independientes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23020917'/><text font-size='62' font-family='Inter,Arial,sans-serif' font-weight='900' fill='%2306b6d4' text-anchor='middle' x='50' y='72'>H</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <style>
   :root {
     --blue:      #2563eb;
@@ -36,27 +39,40 @@
     overflow-x: hidden;
   }
 
+  /* ── SCROLL PROGRESS BAR ── */
+  #scroll-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    z-index: 9999;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(6,182,212,0.6);
+  }
+
   /* ── CANVAS NETWORK ── */
   #network-canvas {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.45;
+    opacity: 0.7;
   }
 
   /* ── GLOW ORBS ── */
   .orb {
     position: fixed;
     border-radius: 50%;
-    filter: blur(120px);
+    filter: blur(100px);
     pointer-events: none;
     z-index: 0;
-    opacity: 0.25;
+    opacity: 0.35;
   }
-  .orb-1 { width:600px; height:600px; background:#1e40af; top:-200px; left:-150px; }
-  .orb-2 { width:500px; height:500px; background:#0e7490; top:40%; right:-150px; }
-  .orb-3 { width:400px; height:400px; background:#1d4ed8; bottom:-100px; left:30%; }
+  .orb-1 { width:700px; height:700px; background:#1e3a8a; top:-250px; left:-200px; }
+  .orb-2 { width:600px; height:600px; background:#0e7490; top:35%; right:-200px; }
+  .orb-3 { width:500px; height:500px; background:#1d4ed8; bottom:-150px; left:25%; }
+  .orb-4 { width:400px; height:400px; background:#0f766e; top:65%; left:-100px; opacity:0.25; }
 
   /* ── NAV ── */
   .nav-wrap {
@@ -813,10 +829,12 @@
 </head>
 <body>
 
+<div id="scroll-bar"></div>
 <canvas id="network-canvas"></canvas>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
 
 <!-- NAV -->
 <div class="nav-wrap">
@@ -831,7 +849,7 @@
       <li><a href="#nosotros">Quiénes somos</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
-    <a href="#contacto" class="nav-cta">Agendar llamada &rsaquo;</a>
+    <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="nav-cta">Agendar llamada ›</a>
   </nav>
 </div>
 
@@ -844,7 +862,7 @@
   <h1>Agencia de IA<br><span class="highlight">para hostelería.</span></h1>
   <p>Automatizamos reseñas, análisis de competencia y comunicación con huéspedes. Sin dashboards, sin formación — todo llega a tu WhatsApp.</p>
   <div class="hero-buttons">
-    <a href="#contacto" class="btn-primary">Quiero una demo gratuita →</a>
+    <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary">Agendar una llamada →</a>
     <a href="#problemas" class="btn-secondary">Ver cómo funciona</a>
   </div>
   <div class="hero-stats">
@@ -1083,7 +1101,7 @@
           <li>WhatsApp automático post-checkout pidiendo reseña</li>
           <li>Más reseñas + todas respondidas = mejor posición en Google Maps</li>
         </ul>
-        <a href="#contacto" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Solicitar demo →</a>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Agendar llamada →</a>
       </div>
 
       <!-- 2. Revenue Alerts -->
@@ -1102,7 +1120,7 @@
           <li>Una recomendación clara — sin dashboards ni datos crudos</li>
           <li>Todo en WhatsApp, sin logins ni aplicaciones nuevas</li>
         </ul>
-        <a href="#contacto" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Solicitar demo →</a>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Agendar llamada →</a>
       </div>
 
       <!-- 3. Guest Journey -->
@@ -1123,7 +1141,7 @@
           <li>Cada mensaje personalizado con nombre y estancia</li>
           <li>Un upsell por semana ya cubre el coste del servicio</li>
         </ul>
-        <a href="#contacto" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Solicitar demo →</a>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary" style="display:inline-block;margin-top:28px;font-size:13px;">Agendar llamada →</a>
       </div>
 
     </div>
@@ -1191,7 +1209,7 @@
         </div>
       </div>
       <div class="contact-form">
-        <div class="form-title">Solicita una demo gratuita</div>
+        <div class="form-title">Agenda una llamada</div>
         <form onsubmit="handleSubmit(event)">
           <div class="form-group">
             <label class="form-label">Nombre</label>
@@ -1234,6 +1252,13 @@
 </div>
 
 <script>
+  /* ── SCROLL PROGRESS BAR ── */
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('scroll-bar');
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    el.style.width = Math.min(pct, 100) + '%';
+  });
+
   /* ── SCROLL ANIMATIONS ── */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -1253,8 +1278,8 @@
     const canvas = document.getElementById('network-canvas');
     const ctx = canvas.getContext('2d');
     let W, H, nodes = [];
-    const COUNT = 80;
-    const MAX_DIST = 180;
+    const COUNT = 110;
+    const MAX_DIST = 200;
     const COLOR_NODE = 'rgba(6,182,212,';
     const COLOR_LINE = 'rgba(6,182,212,';
 
@@ -1271,7 +1296,7 @@
         y: Math.random() * H,
         vx: (Math.random() - 0.5) * 0.4,
         vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 2 + 1
+        r: Math.random() * 2.5 + 1.2
       });
     }
 
@@ -1293,7 +1318,7 @@
           const dy = nodes[i].y - nodes[j].y;
           const d = Math.sqrt(dx*dx + dy*dy);
           if (d < MAX_DIST) {
-            const alpha = (1 - d / MAX_DIST) * 0.4;
+            const alpha = (1 - d / MAX_DIST) * 0.55;
             ctx.beginPath();
             ctx.strokeStyle = COLOR_LINE + alpha + ')';
             ctx.lineWidth = 0.8;
@@ -1308,7 +1333,7 @@
       nodes.forEach(n => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = COLOR_NODE + '0.7)';
+        ctx.fillStyle = COLOR_NODE + '0.9)';
         ctx.fill();
       });
 
