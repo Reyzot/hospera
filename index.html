@@ -893,6 +893,47 @@
     #como-funciona .container > div:last-child { grid-template-columns: 1fr !important; }
   }
 
+  /* ── DIFFERENTIATOR STRIP ── */
+  .diff-strip {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,182,212,0.03);
+    padding: 0;
+    overflow: hidden;
+  }
+  .diff-strip-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .diff-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 28px 32px;
+    border-right: 1px solid var(--border);
+  }
+  .diff-item:last-child { border-right: none; }
+  .diff-icon {
+    width: 42px; height: 42px; flex-shrink: 0;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .diff-icon.wa { background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.25); }
+  .diff-icon.blue { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2); }
+  .diff-icon.green { background: rgba(16,217,160,0.08); border: 1px solid rgba(16,217,160,0.2); }
+  .diff-icon.purple { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); }
+  .diff-text-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .diff-text-sub { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  @media (max-width: 768px) {
+    .diff-strip-inner { grid-template-columns: 1fr 1fr; }
+    .diff-item { padding: 20px; border-bottom: 1px solid var(--border); }
+    .diff-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .diff-item:nth-child(even) { border-right: none; }
+  }
+
   /* ── ANIMATIONS ── */
   .fade-in {
     opacity:0; transform:translateY(28px);
@@ -958,6 +999,62 @@
     </div>
   </div>
 </section>
+
+<!-- DIFFERENTIATOR STRIP -->
+<div class="diff-strip">
+  <div class="diff-strip-inner">
+
+    <div class="diff-item">
+      <div class="diff-icon wa">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#25d366">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.122 1.524 5.863L.057 23.737a.75.75 0 0 0 .921.921l5.874-1.467A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.71 9.71 0 0 1-4.95-1.355l-.355-.211-3.684.92.936-3.596-.232-.37A9.71 9.71 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="diff-text-label">Todo por WhatsApp</div>
+        <div class="diff-text-sub">Sin dashboards, sin logins, sin apps nuevas</div>
+      </div>
+    </div>
+
+    <div class="diff-item">
+      <div class="diff-icon blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+      </div>
+      <div>
+        <div class="diff-text-label">IA especializada en hoteles</div>
+        <div class="diff-text-sub">Entrenada con el lenguaje del sector</div>
+      </div>
+    </div>
+
+    <div class="diff-item">
+      <div class="diff-icon green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="diff-text-label">En 48h funcionando</div>
+        <div class="diff-text-sub">Sin instalaciones ni integraciones</div>
+      </div>
+    </div>
+
+    <div class="diff-item">
+      <div class="diff-icon purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="diff-text-label">Sin permanencia</div>
+        <div class="diff-text-sub">Cancela cuando quieras, sin preguntas</div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- PROBLEMS -->
 <section class="problems" id="problemas">
