@@ -47,6 +47,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    includedLanguages: 'en,fr,de,it,pt,zh-CN,ja,ar',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <style>
   :root {
     --blue:      #2563eb;
@@ -315,47 +326,87 @@
   }
   .btn-secondary:hover { background: rgba(255,255,255,0.09); border-color: var(--border2); }
 
+  /* ── HERO STATS WIDGETS ── */
   .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 60px;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hw {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 18px 18px 16px;
     display: flex;
-    gap: 0;
-    margin-top: 72px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .hero-stat {
-    text-align: center;
-    padding: 24px 40px;
+    flex-direction: column;
+    gap: 10px;
     position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    transition: transform .2s, border-color .2s;
   }
-  .hero-stat:not(:last-child)::after {
+  .hw:hover { transform: translateY(-3px); border-color: rgba(6,182,212,.3); }
+  .hw::before {
     content: '';
     position: absolute;
-    right: 0; top: 20%; height: 60%;
-    width: 1px;
-    background: var(--border);
+    inset: 0;
+    border-radius: 20px;
+    background: var(--hw-glow, transparent);
+    opacity: .07;
+    pointer-events: none;
   }
-  .hero-stat .num {
-    font-size: 36px;
-    font-weight: 800;
+  .hw-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hw-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--hw-ic-bg, rgba(6,182,212,.15));
+    flex-shrink: 0;
+  }
+  .hw-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--hw-badge-color, var(--cyan));
+    background: var(--hw-badge-bg, rgba(6,182,212,.12));
+    border-radius: 20px;
+    padding: 3px 8px;
+  }
+  .hw-num {
+    font-size: 34px;
+    font-weight: 900;
     letter-spacing: -1.5px;
-    background: linear-gradient(135deg, var(--blue-light), var(--cyan-light));
+    line-height: 1;
+    background: var(--hw-grad, linear-gradient(135deg, var(--blue-light), var(--cyan-light)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    display: block;
   }
-  .hero-stat .label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 5px;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-weight: 600;
-    display: block;
+  .hw-label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: rgba(255,255,255,.55);
+    line-height: 1.4;
+    margin-top: -2px;
+  }
+  .hw-bar {
+    height: 3px;
+    border-radius: 3px;
+    background: var(--hw-bar, linear-gradient(90deg, var(--blue-light), var(--cyan-light)));
+    margin-top: 2px;
+    opacity: .5;
+  }
+  @media(max-width:700px) {
+    .hero-stats { grid-template-columns: repeat(2,1fr); gap: 10px; }
   }
 
   /* ── MAC WINDOW ── */
@@ -656,6 +707,32 @@
     box-shadow: 0 8px 24px rgba(6,182,212,0.25);
   }
   .about-content .section-title { margin-bottom:20px; }
+  /* ── GOOGLE TRANSLATE ── */
+  #google_translate_element { display:flex; align-items:center; }
+  #google_translate_element .goog-te-gadget { font-family:inherit !important; color:transparent !important; font-size:0 !important; }
+  #google_translate_element .goog-te-gadget > span > a { display:none !important; }
+  #google_translate_element select.goog-te-combo {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2306b6d4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 26px;
+  }
+  #google_translate_element select.goog-te-combo:hover { border-color: var(--cyan); }
+  .goog-te-banner-frame { display:none !important; }
+  body { top: 0 !important; }
+
   .about-text {
     font-size:16px; color:var(--muted); line-height:1.85; margin-bottom:32px;
   }
@@ -934,6 +1011,111 @@
     .diff-item:nth-child(even) { border-right: none; }
   }
 
+  /* ── PROB PILLS ── */
+  .prob-pill {
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 14px;border-radius:100px;
+    font-size:12px;font-weight:600;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--muted);
+    letter-spacing:0.2px;
+  }
+
+  /* ── PERSONALIZACIÓN ── */
+  .persona-grid { }
+  @media (max-width:768px) { .persona-grid { grid-template-columns:1fr !important; } }
+
+  .qs-section {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(56,189,248,0.07);
+  }
+  .qs-section-title {
+    font-size: 12px; font-weight: 800; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 1.2px;
+    margin-bottom: 12px;
+  }
+  .pq-row2 { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+  .pq-input-mock {
+    background: rgba(6,182,212,0.04); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 13px; font-size: 12px; color: var(--cyan);
+  }
+  .pq-proto-row {
+    display:flex; align-items:center; gap:10px;
+  }
+  .pq-stars { font-size:13px; width:80px; flex-shrink:0; }
+  .pq-proto-pill {
+    padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600;
+    background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--muted);
+    flex:1;
+  }
+  .pq-proto-pill.pq-sel {
+    background:rgba(6,182,212,0.08); border-color:rgba(6,182,212,0.25); color:var(--text);
+  }
+  .pq-scenario {
+    background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);
+    border-radius:8px; padding:9px 12px;
+  }
+  .pq-scenario-label { font-size:11px; font-weight:700; color:var(--text); margin-bottom:3px; }
+  .pq-scenario-val { font-size:11px; color:var(--muted); line-height:1.4; }
+  .pq-plat {
+    display:flex; align-items:center; gap:10px; padding:10px 12px;
+    background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:10px;
+  }
+  .pq-plat-on { border-color:rgba(6,182,212,0.2); background:rgba(6,182,212,0.04); }
+  .pq-plat > div { flex:1; }
+  .pq-toggle {
+    width:32px; height:18px; border-radius:100px; flex-shrink:0;
+    background:rgba(255,255,255,0.08); border:1px solid var(--border);
+    position:relative;
+  }
+  .pq-toggle::after {
+    content:''; position:absolute; top:2px; left:2px;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--muted); transition:all 0.2s;
+  }
+  .pq-tog-on { background:rgba(16,217,160,0.2); border-color:rgba(16,217,160,0.4); }
+  .pq-tog-on::after { left:16px; background:var(--green); }
+
+  .pq-block { display:flex;flex-direction:column;gap:8px; }
+  .pq-label { font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px; }
+  .pq-options { display:flex;gap:8px;flex-wrap:wrap; }
+  .pq-opt {
+    padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;
+    background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);
+  }
+  .pq-sel {
+    background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.4);color:var(--cyan);
+  }
+  .pq-tag {
+    padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;
+    background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);
+  }
+  .pq-tag-on {
+    background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.3);color:var(--red);
+  }
+  .lang-tag {
+    display:flex;align-items:center;gap:5px;
+    padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;
+    background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--muted);
+    transition:all 0.15s;
+  }
+  .lang-on {
+    background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.35);color:var(--cyan);
+  }
+  .lc {
+    display:inline-block; width:8px; height:8px; border-radius:50%; flex-shrink:0;
+  }
+  .pf-row {
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:13px;color:var(--muted);line-height:1.5;
+  }
+  .pf-dot {
+    width:6px;height:6px;border-radius:50%;background:var(--cyan);
+    flex-shrink:0;margin-top:5px;
+  }
+  .pf-row strong { color:var(--text); }
+
   /* ── ANIMATIONS ── */
   .fade-in {
     opacity:0; transform:translateY(28px);
@@ -961,6 +1143,7 @@
     <ul class="nav-links">
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#personalizacion">Tu voz</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#nosotros">Quiénes somos</a></li>
     </ul>
@@ -979,24 +1162,6 @@
   <div class="hero-buttons">
     <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary">Agendar una llamada →</a>
     <a href="#problemas" class="btn-secondary">Ver cómo funciona</a>
-  </div>
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <div class="num">+4H</div>
-      <div class="label">Ahorradas / Semana</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">100%</div>
-      <div class="label">Reseñas Respondidas</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">Diario</div>
-      <div class="label">Análisis Competencia</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">+23%</div>
-      <div class="label">Ingresos Extra (media)</div>
-    </div>
   </div>
 </section>
 
@@ -1061,15 +1226,26 @@
   <div class="container">
     <div class="fade-in">
       <span class="section-tag">El problema</span>
-      <h2 class="section-title">Así gestiona la mayoría<br>de hoteles hoy</h2>
-      <p class="section-sub">Sin las herramientas correctas, los managers pierden horas cada semana en tareas que la IA puede resolver en segundos.</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;">
+        <div class="prob-pill">🏨 Hotel independiente</div>
+        <div class="prob-pill">⭐ Reputación online</div>
+        <div class="prob-pill">📊 Revenue perdido</div>
+        <div class="prob-pill">💬 Reseñas sin respuesta</div>
+      </div>
+
+      <h2 class="section-title" style="font-weight:300;letter-spacing:-1.5px;">
+        Tres problemas que frenan<br>
+        <span style="font-weight:800;background:linear-gradient(135deg,var(--text),var(--cyan-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">a tu hotel cada semana.</span>
+      </h2>
+      <p class="section-sub">No por falta de dedicación — por falta de las herramientas adecuadas. Tiempo y dinero que se pierden en tareas que la IA resuelve en segundos.</p>
     </div>
 
     <div class="problems-grid fade-in">
 
       <!-- Problem 1 -->
       <div>
-        <div class="label-before">✕ Sin revenue management</div>
+        <div class="label-before">📊 Sin gestión de precios dinámica</div>
         <div class="mac-window">
           <div class="mac-bar">
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -1096,7 +1272,7 @@
 
       <!-- Problem 2 -->
       <div>
-        <div class="label-before">✕ Reseñas sin responder</div>
+        <div class="label-before">⭐ Reseñas sin responder</div>
         <div class="mac-window">
           <div class="mac-bar">
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -1127,7 +1303,7 @@
 
       <!-- Problem 3 -->
       <div>
-        <div class="label-before">✕ Competencia revisada a mano</div>
+        <div class="label-before">🔍 Competencia revisada a mano</div>
         <div class="mac-window">
           <div class="mac-bar">
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -1171,7 +1347,7 @@
 
       <!-- Solution 1: Review Manager -->
       <div>
-        <div class="label-after">✓ Review Manager activado</div>
+        <div class="label-after">✨ Review Manager activado</div>
         <div class="mac-window">
           <div class="mac-bar">
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -1204,7 +1380,8 @@
 
       <!-- Solution 2: Competitive Intel -->
       <div>
-        <div class="label-after">✓ Competitive Intel activado</div>
+        <div class="label-after">🚀 Competitive Intel activado</div>
+
         <div class="mac-window">
           <div class="mac-bar">
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -1241,9 +1418,391 @@
         </div>
       </div>
 
+      <!-- Solution 3: WhatsApp post-checkout -->
+      <div style="grid-column: 1 / -1;">
+        <div class="label-after">💬 Review Booster activado — WhatsApp post-checkout</div>
+        <div class="mac-window">
+          <div class="mac-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <div class="mac-title">Hospera.ai — Review Booster · secuencia automática</div>
+          </div>
+          <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+            <!-- Step 1 -->
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:14px;">
+              <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">① Checkout detectado</div>
+              <div style="background:rgba(37,211,102,0.06);border:1px solid rgba(37,211,102,0.2);border-radius:8px;padding:12px;">
+                <div style="font-size:11px;font-weight:700;color:#25d366;margin-bottom:6px;">WhatsApp · enviado automáticamente</div>
+                <div style="font-size:12px;color:var(--text);line-height:1.6;">Hola Ana, gracias por alojarte en Hotel Sant Pau 🙏<br><br>Esperamos que tu estancia haya sido perfecta. Si tienes un momento, nos ayudaría mucho que dejaras tu opinión en Google — son solo 2 minutos y nos ayuda a seguir mejorando.<br><br><strong style="color:var(--cyan);">→ Dejar reseña en Google</strong></div>
+              </div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                Enviado 2h después del checkout
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:14px;">
+              <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">② Reseña publicada en Google</div>
+              <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;border-left:3px solid var(--green);">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#000;">A</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:700;">Ana García</div>
+                    <div style="font-size:11px;color:#f59e0b;">★★★★★</div>
+                  </div>
+                  <div style="margin-left:auto;font-size:10px;color:var(--muted);">hace 3h</div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.5;">"Todo perfecto, el personal encantador y la ubicación inmejorable. Volveré sin duda."</div>
+              </div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                Reseña nueva · Google Maps actualizado
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:14px;">
+              <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">③ IA responde · engagement activo</div>
+              <div style="background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:12px;">
+                <div style="font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:6px;">RESPUESTA AUTOMÁTICA GENERADA</div>
+                <div style="font-size:12px;color:var(--text);line-height:1.6;">¡Hola Ana, muchas gracias! Comentarios como el tuyo son el mejor reconocimiento para nuestro equipo. ¡Hasta la próxima!<br><span style="color:var(--cyan);font-size:11px;">— El equipo de Hotel Sant Pau</span></div>
+              </div>
+              <div style="margin-top:10px;background:rgba(16,217,160,0.06);border:1px solid rgba(16,217,160,0.15);border-radius:8px;padding:10px;">
+                <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px;">Impacto en Google Maps</div>
+                <div style="font-size:11px;color:var(--muted);">Reseñas respondidas = mayor engagement = mejor posición en búsquedas locales</div>
+              </div>
+            </div>
+
+          </div>
+          <!-- Bottom strip -->
+          <div style="border-top:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;gap:20px;">
+              <div style="text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:var(--green);">×3</div>
+                <div style="font-size:10px;color:var(--muted);font-weight:600;">más reseñas/mes</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:var(--cyan);">100%</div>
+                <div style="font-size:10px;color:var(--muted);font-weight:600;">respondidas automáticamente</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:var(--gold);">↑ pos.</div>
+                <div style="font-size:10px;color:var(--muted);font-weight:600;">Google Maps local</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--muted);font-style:italic;">Google penaliza los hoteles que no responden sus reseñas — Hospera.ai asegura el 100%.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- VOZ DEL HOTEL -->
+<section id="personalizacion" style="background:var(--bg2);border-top:1px solid var(--border);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(6,182,212,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;"></div>
+  <div style="position:absolute;top:50%;right:-150px;transform:translateY(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(37,99,235,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="fade-in" style="text-align:center;max-width:700px;margin:0 auto 72px;">
+      <span class="section-tag">Personalización total</span>
+      <h2 class="section-title" style="font-weight:300;">La IA suena exactamente<br><span style="font-weight:800;background:linear-gradient(135deg,var(--text),var(--cyan-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">como tu hotel quiere sonar.</span></h2>
+      <p class="section-sub" style="margin:0 auto;">No es un chatbot genérico. Antes de empezar configuras cada detalle — tono, firma, protocolos, límites, idiomas. La IA aprende tu marca y la aplica en cada respuesta.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:36px;align-items:start;" class="fade-in persona-grid">
+
+      <!-- LEFT: Full Questionnaire -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Perfil de tu hotel</div>
+          <div style="font-size:11px;color:var(--cyan);font-weight:600;">7 secciones · se rellena una sola vez</div>
+        </div>
+        <div class="mac-window">
+          <div class="mac-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <div class="mac-title">Hospera.ai — Configura tu hotel · Hotel Sant Pau BCN</div>
+          </div>
+          <div style="padding:20px 22px;display:flex;flex-direction:column;gap:0;">
+
+            <!-- SECTION 1: Voz de marca -->
+            <div class="qs-section">
+              <div class="qs-section-title">① Voz de marca</div>
+              <div class="pq-block">
+                <div class="pq-label">Tono general</div>
+                <div class="pq-options">
+                  <div class="pq-opt">Formal y elegante</div>
+                  <div class="pq-opt pq-sel">Semi-formal</div>
+                  <div class="pq-opt">Cercano y amigable</div>
+                </div>
+              </div>
+              <div class="pq-block" style="margin-top:12px;">
+                <div class="pq-label">Tratamiento</div>
+                <div class="pq-options">
+                  <div class="pq-opt">Estimado/a huésped</div>
+                  <div class="pq-opt pq-sel">Hola, {nombre}</div>
+                  <div class="pq-opt">Dear {nombre}</div>
+                </div>
+              </div>
+              <div class="pq-row2">
+                <div class="pq-block" style="flex:1;">
+                  <div class="pq-label">Forma verbal</div>
+                  <div class="pq-options"><div class="pq-opt pq-sel">Usted</div><div class="pq-opt">Tú</div></div>
+                </div>
+                <div class="pq-block" style="flex:1;">
+                  <div class="pq-label">Emojis</div>
+                  <div class="pq-options"><div class="pq-opt">Sí</div><div class="pq-opt pq-sel">No</div></div>
+                </div>
+                <div class="pq-block" style="flex:1;">
+                  <div class="pq-label">Extensión</div>
+                  <div class="pq-options"><div class="pq-opt">Corta</div><div class="pq-opt pq-sel">Media</div><div class="pq-opt">Detallada</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: Firma -->
+            <div class="qs-section">
+              <div class="qs-section-title">② Firma y presentación</div>
+              <div class="pq-block">
+                <div class="pq-label">Firma que aparece al final</div>
+                <div class="pq-input-mock">— El equipo de Hotel Sant Pau Barcelona</div>
+              </div>
+              <div class="pq-row2" style="margin-top:12px;">
+                <div class="pq-block" style="flex:1;">
+                  <div class="pq-label">Nombre del hotel en respuestas</div>
+                  <div class="pq-input-mock">Hotel Sant Pau</div>
+                </div>
+                <div class="pq-block" style="flex:1;">
+                  <div class="pq-label">Cargo del firmante</div>
+                  <div class="pq-input-mock">Dirección del hotel</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3: Protocolo por estrellas -->
+            <div class="qs-section">
+              <div class="qs-section-title">③ Protocolo por tipo de reseña</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="pq-proto-row">
+                  <div class="pq-stars" style="color:#f87171;">★☆☆☆☆</div>
+                  <div class="pq-proto-pill pq-sel">Disculpa + acción correctiva concreta</div>
+                </div>
+                <div class="pq-proto-row">
+                  <div class="pq-stars" style="color:#fb923c;">★★☆☆☆</div>
+                  <div class="pq-proto-pill pq-sel">Disculpa + invitar a contacto directo</div>
+                </div>
+                <div class="pq-proto-row">
+                  <div class="pq-stars" style="color:#facc15;">★★★☆☆</div>
+                  <div class="pq-proto-pill pq-sel">Agradecer + destacar puntos positivos</div>
+                </div>
+                <div class="pq-proto-row">
+                  <div class="pq-stars" style="color:#a3e635;">★★★★☆</div>
+                  <div class="pq-proto-pill pq-sel">Agradecer + invitar a volver</div>
+                </div>
+                <div class="pq-proto-row">
+                  <div class="pq-stars" style="color:#10d9a0;">★★★★★</div>
+                  <div class="pq-proto-pill pq-sel">Celebrar + mencionar ventaja exclusiva</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: Escenarios especiales -->
+            <div class="qs-section">
+              <div class="qs-section-title">④ Respuesta a quejas frecuentes</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="pq-scenario">
+                  <div class="pq-scenario-label">🌐 WiFi lento o problemas de conexión</div>
+                  <div class="pq-scenario-val">Reconocer + explicar mejora reciente + dar contacto</div>
+                </div>
+                <div class="pq-scenario">
+                  <div class="pq-scenario-label">🍳 Crítica al desayuno</div>
+                  <div class="pq-scenario-val">Agradecer feedback + mencionar variedad de temporada</div>
+                </div>
+                <div class="pq-scenario">
+                  <div class="pq-scenario-label">🔊 Ruido o problemas de descanso</div>
+                  <div class="pq-scenario-val">Disculpa sincera + ofrecer habitación alternativa próxima visita</div>
+                </div>
+                <div class="pq-scenario">
+                  <div class="pq-scenario-label">💶 Precio demasiado caro</div>
+                  <div class="pq-scenario-val">Destacar valor incluido + no justificar precio directamente</div>
+                </div>
+                <div class="pq-scenario">
+                  <div class="pq-scenario-label">⚠️ Reseña falsa o malintencionada</div>
+                  <div class="pq-scenario-val">Tono neutro + notificar al manager antes de publicar</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 5: Temas y límites -->
+            <div class="qs-section">
+              <div class="qs-section-title">⑤ Temas y límites de contenido</div>
+              <div class="pq-block">
+                <div class="pq-label">Nunca mencionar</div>
+                <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                  <div class="pq-tag pq-tag-on">Competencia</div>
+                  <div class="pq-tag pq-tag-on">Precios exactos</div>
+                  <div class="pq-tag pq-tag-on">Obras o reformas</div>
+                  <div class="pq-tag pq-tag-on">Nombre del staff</div>
+                  <div class="pq-tag">Política de cancelación</div>
+                </div>
+              </div>
+              <div class="pq-block" style="margin-top:12px;">
+                <div class="pq-label">Mencionar siempre que sea relevante</div>
+                <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                  <div class="pq-tag" style="background:rgba(16,217,160,0.08);border-color:rgba(16,217,160,0.25);color:var(--green);">Ubicación céntrica</div>
+                  <div class="pq-tag" style="background:rgba(16,217,160,0.08);border-color:rgba(16,217,160,0.25);color:var(--green);">Terraza rooftop</div>
+                  <div class="pq-tag" style="background:rgba(16,217,160,0.08);border-color:rgba(16,217,160,0.25);color:var(--green);">Desayuno incluido</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 6: Plataformas -->
+            <div class="qs-section">
+              <div class="qs-section-title">⑥ Plataformas activas</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div class="pq-plat pq-plat-on">
+                  <span style="font-size:16px;">🔵</span>
+                  <div><div style="font-size:12px;font-weight:700;">Google Business</div><div style="font-size:11px;color:var(--muted);">Auto-publicar tras aprobación</div></div>
+                  <div class="pq-toggle pq-tog-on"></div>
+                </div>
+                <div class="pq-plat pq-plat-on">
+                  <span style="font-size:16px;">🟡</span>
+                  <div><div style="font-size:12px;font-weight:700;">Booking.com</div><div style="font-size:11px;color:var(--muted);">Respuesta vía API</div></div>
+                  <div class="pq-toggle pq-tog-on"></div>
+                </div>
+                <div class="pq-plat pq-plat-on">
+                  <span style="font-size:16px;">🟢</span>
+                  <div><div style="font-size:12px;font-weight:700;">TripAdvisor</div><div style="font-size:11px;color:var(--muted);">Notificación manual</div></div>
+                  <div class="pq-toggle pq-tog-on"></div>
+                </div>
+                <div class="pq-plat">
+                  <span style="font-size:16px;">🔷</span>
+                  <div><div style="font-size:12px;font-weight:700;">Expedia</div><div style="font-size:11px;color:var(--muted);">Próximamente</div></div>
+                  <div class="pq-toggle"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 7: Idiomas -->
+            <div class="qs-section" style="border-bottom:none;padding-bottom:0;">
+              <div class="qs-section-title">⑦ Idiomas y detección automática</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div class="lang-tag lang-on"><span class="lc" style="background:#c60b1e;"></span>ES</div>
+                <div class="lang-tag lang-on"><span class="lc" style="background:#012169;"></span>EN</div>
+                <div class="lang-tag lang-on"><span class="lc" style="background:#002395;"></span>FR</div>
+                <div class="lang-tag lang-on"><span class="lc" style="background:#009246;"></span>IT</div>
+                <div class="lang-tag"><span class="lc" style="background:#000;"></span>DE</div>
+                <div class="lang-tag lang-on"><span class="lc" style="background:#006600;"></span>PT</div>
+                <div class="lang-tag"><span class="lc" style="background:#ae1c28;"></span>NL</div>
+                <div class="lang-tag"><span class="lc" style="background:#d52b1e;"></span>RU</div>
+                <div class="lang-tag"><span class="lc" style="background:#bc002d;"></span>JA</div>
+                <div class="lang-tag"><span class="lc" style="background:#de2910;"></span>ZH</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:10px 14px;">
+                <div class="pq-toggle pq-tog-on" style="flex-shrink:0;"></div>
+                <div style="font-size:12px;color:var(--cyan);font-weight:600;">Detección automática del idioma del huésped — responde siempre en su lengua</div>
+              </div>
+            </div>
+
+            <div style="background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:10px;padding:12px 18px;text-align:center;font-size:13px;font-weight:700;color:#fff;margin-top:20px;cursor:pointer;box-shadow:0 0 24px rgba(6,182,212,0.2);">
+              Guardar perfil del hotel →
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: 3 example responses + stat -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;">Resultado — respuestas generadas con tu perfil</div>
+
+          <!-- Response 1: bad review -->
+          <div class="mac-window" style="margin-bottom:14px;">
+            <div class="mac-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <div class="mac-title">Google ★★☆☆☆ · Klaus M.</div>
+            </div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+              <div style="font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--red);padding-left:10px;">"El desayuno era escaso y la habitación algo pequeña para el precio."</div>
+              <div style="background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:12px;">
+                <div style="font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:6px;">✨ RESPUESTA · protocolo 2★</div>
+                <div style="font-size:12px;color:var(--text);line-height:1.6;">Hola Klaus, lamentamos que su estancia no cumpliera las expectativas. Su opinión sobre el desayuno y el espacio de la habitación es muy valiosa — lo trasladamos al equipo de inmediato. Esperamos tener la oportunidad de mejorar su experiencia en una próxima visita.<br><span style="color:var(--cyan);font-size:11px;">— El equipo de Hotel Sant Pau Barcelona</span></div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <div style="flex:1;background:linear-gradient(135deg,#059669,#10d9a0);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:700;color:#000;cursor:pointer;">✅ Publicar</div>
+                <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;">✏️ Editar</div>
+                <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:7px;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;">✕</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Response 2: 5 stars -->
+          <div class="mac-window" style="margin-bottom:14px;">
+            <div class="mac-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <div class="mac-title">Booking.com ★★★★★ · Sofia T.</div>
+            </div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+              <div style="font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--green);padding-left:10px;">"Perfecto en todos los sentidos. La terraza es increíble."</div>
+              <div style="background:rgba(16,217,160,0.04);border:1px solid rgba(16,217,160,0.15);border-radius:8px;padding:12px;">
+                <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:6px;">✨ RESPUESTA · protocolo 5★</div>
+                <div style="font-size:12px;color:var(--text);line-height:1.6;">Hola Sofia, ¡qué alegría leer su reseña! La terraza es, efectivamente, uno de nuestros rincones favoritos del hotel — nos encanta que lo haya disfrutado. Será un placer volver a recibirle pronto.<br><span style="color:var(--green);font-size:11px;">— El equipo de Hotel Sant Pau Barcelona</span></div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <div style="flex:1;background:linear-gradient(135deg,#059669,#10d9a0);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:700;color:#000;cursor:pointer;">✅ Publicar</div>
+                <div style="flex:2;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;">✏️ Editar</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Response 3: EN review -->
+          <div class="mac-window">
+            <div class="mac-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <div class="mac-title">TripAdvisor ★★★☆☆ · James W. · EN</div>
+            </div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+              <div style="font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--gold);padding-left:10px;">"Good location but breakfast could be better."</div>
+              <div style="background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:12px;">
+                <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">✨ RESPUESTA EN INGLÉS · auto-detectado</div>
+                <div style="font-size:12px;color:var(--text);line-height:1.6;">Hello James, thank you for your feedback. We're glad our location worked well for you, and we've taken note of your comments about breakfast — your input helps us improve. We hope to welcome you back soon.<br><span style="color:var(--gold);font-size:11px;">— The team at Hotel Sant Pau Barcelona</span></div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <div style="flex:1;background:linear-gradient(135deg,#059669,#10d9a0);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:700;color:#000;cursor:pointer;">✅ Publicar</div>
+                <div style="flex:2;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;padding:7px;text-align:center;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;">✏️ Editar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats strip -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="text-align:center;padding:12px;background:rgba(6,182,212,0.04);border-radius:10px;border:1px solid rgba(6,182,212,0.1);">
+            <div style="font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--blue-light),var(--cyan-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">+30</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;font-weight:600;">parámetros configurables</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:rgba(16,217,160,0.04);border-radius:10px;border:1px solid rgba(16,217,160,0.1);">
+            <div style="font-size:28px;font-weight:800;color:var(--green);">10</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;font-weight:600;">idiomas disponibles</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.04);border-radius:10px;border:1px solid rgba(245,158,11,0.1);">
+            <div style="font-size:28px;font-weight:800;color:var(--gold);">5</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;font-weight:600;">protocolos por tipo de ★</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:rgba(139,92,246,0.04);border-radius:10px;border:1px solid rgba(139,92,246,0.1);">
+            <div style="font-size:28px;font-weight:800;color:#a78bfa;">1×</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;font-weight:600;">se configura, funciona para siempre</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- SERVICES -->
 <section class="services" id="servicios">
@@ -1319,6 +1878,49 @@
   </div>
 </section>
 
+<!-- CÓMO FUNCIONA -->
+<section id="como-funciona" style="background:var(--bg3);">
+  <div class="container">
+    <div class="fade-in" style="text-align:center;max-width:600px;margin:0 auto 64px;">
+      <span class="section-tag">El proceso</span>
+      <h2 class="section-title">En 48h está funcionando.<br><span style="color:var(--cyan-light)">Sin instalar nada.</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Sin reuniones largas, sin integraciones complejas. Tres pasos y tu hotel ya trabaja con IA.</p>
+    </div>
+    <div class="fade-in" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 01</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Nos cuentas tu hotel</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Una llamada de 20 minutos. Nos dices cómo habláis a los clientes y qué quieres mejorar. Configuramos la IA con la voz de tu hotel.</p>
+      </div>
+
+      <div style="background:var(--card);border:1px solid rgba(6,182,212,0.25);border-radius:16px;padding:32px;position:relative;box-shadow:0 0 30px rgba(6,182,212,0.06);">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 02</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Nos añades en Google</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Desde el móvil, en 2 minutos, nos añades como gestor de tu Google Business. Sin contraseñas, sin instalar nada. Nosotros hacemos el resto.</p>
+        <div style="margin-top:16px;padding:10px 14px;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);border-radius:8px;font-size:12px;color:var(--cyan);font-weight:600;">Solo esto. Nada más.</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 03</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,217,160,0.08);border:1px solid rgba(16,217,160,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Tú solo apruebas</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Recibes notificaciones en WhatsApp. Apruebas con un toque. La IA hace el resto — 24/7, sin que tengas que hacer nada más.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 <!-- ABOUT -->
 <section id="nosotros">
   <div class="container">
@@ -1350,47 +1952,6 @@
           <a href="#contacto" class="btn-secondary" style="font-size:14px;">Escribir un mensaje</a>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- CÓMO FUNCIONA -->
-<section id="como-funciona" style="background:var(--bg3);">
-  <div class="container">
-    <div class="fade-in" style="text-align:center;max-width:600px;margin:0 auto 64px;">
-      <span class="section-tag">El proceso</span>
-      <h2 class="section-title">En 48h está funcionando.<br><span style="color:var(--cyan-light)">Sin instalar nada.</span></h2>
-      <p class="section-sub" style="margin:0 auto;">Sin reuniones largas, sin integraciones complejas. Tres pasos y tu hotel ya trabaja con IA.</p>
-    </div>
-    <div class="fade-in" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
-        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 01</div>
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Nos cuentas tu hotel</div>
-        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Una llamada de 20 minutos. Nos dices cómo habláis a los clientes, qué plataformas usáis y qué quieres mejorar.</p>
-      </div>
-
-      <div style="background:var(--card);border:1px solid rgba(6,182,212,0.25);border-radius:16px;padding:32px;position:relative;box-shadow:0 0 30px rgba(6,182,212,0.06);">
-        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 02</div>
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Lo configuramos todo</div>
-        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Conectamos tus perfiles, entrenamos la IA con la voz de tu hotel y lo dejamos listo en menos de 48 horas.</p>
-      </div>
-
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;">
-        <div style="font-size:11px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Paso 03</div>
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,217,160,0.08);border:1px solid rgba(16,217,160,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Tú solo apruebas</div>
-        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Recibes notificaciones en WhatsApp. Apruebas con un toque. La IA hace el resto — 24/7, sin que tengas que hacer nada más.</p>
-      </div>
-
     </div>
   </div>
 </section>
@@ -1509,7 +2070,8 @@
     { q: "¿Qué pasa si no me gusta cómo responde la IA?", a: "Siempre tienes control total. Puedes editar cada respuesta antes de publicarla, rechazarla o pedirle que la rehaga. Además, la IA aprende con el tiempo y mejora." },
     { q: "¿Funciona con Google, Booking y TripAdvisor a la vez?", a: "Sí. Monitorizamos las tres plataformas en tiempo real. En cuanto llega una reseña nueva, en minutos la tienes en tu móvil lista para aprobar." },
     { q: "¿Hay permanencia o puedo cancelar cuando quiera?", a: "Sin permanencia. Mes a mes. Si en algún momento no te aporta valor, cancelas con un mensaje y listo. Aunque no ha pasado todavía." },
-    { q: "¿Funciona para hoteles pequeños, de 10-15 habitaciones?", a: "Es exactamente para quien está diseñado. Los hoteles grandes ya tienen equipos y software caro. Nosotros trabajamos con hoteles independientes que no tienen revenue manager ni equipo de marketing." }
+    { q: "¿Funciona para hoteles pequeños, de 10-15 habitaciones?", a: "Es exactamente para quien está diseñado. Los hoteles grandes ya tienen equipos y software caro. Nosotros trabajamos con hoteles independientes que no tienen revenue manager ni equipo de marketing." },
+    { q: "¿Puedo controlar cómo habla la IA? ¿Suena como mi hotel?", a: "Sí, es lo primero que configuramos. Rellenas un cuestionario rápido: tono (formal, cercano...), cómo tratar al huésped, tu firma, temas que nunca debe mencionar, y cómo responder según el tipo de reseña. La IA habla con tu voz — no como un robot genérico. Y puedes actualizar la configuración cuando quieras." }
   ];
   const faqList = document.querySelector('.faq-list');
   faqs.forEach(f => {
