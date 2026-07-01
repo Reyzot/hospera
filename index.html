@@ -871,31 +871,32 @@
       </div>
       <div class="contact-form">
         <div class="form-title">Agenda una llamada</div>
-        <form onsubmit="handleSubmit(event)">
+        <form id="contact-form" onsubmit="handleSubmit(event)">
           <div class="form-group">
             <label class="form-label">Nombre</label>
-            <input type="text" class="form-input" placeholder="Tu nombre" required>
+            <input type="text" name="nombre" class="form-input" placeholder="Tu nombre" required>
           </div>
           <div class="form-group">
             <label class="form-label">Hotel</label>
-            <input type="text" class="form-input" placeholder="Nombre del hotel" required>
+            <input type="text" name="hotel" class="form-input" placeholder="Nombre del hotel" required>
           </div>
           <div class="form-group">
             <label class="form-label">Email o WhatsApp</label>
-            <input type="text" class="form-input" placeholder="Cómo contactarte" required>
+            <input type="text" name="contacto" class="form-input" placeholder="Cómo contactarte" required>
           </div>
           <div class="form-group">
             <label class="form-label">¿Qué te interesa?</label>
-            <select class="form-select">
+            <select name="interes" class="form-select">
               <option>Pack Reseñas</option>
               <option>Pack Reseñas + Booster</option>
               <option>Pack Competitive Intel</option>
+              <option>Pack Completo</option>
               <option>Solo quiero información</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Mensaje (opcional)</label>
-            <textarea class="form-textarea" placeholder="Cuéntanos algo sobre tu hotel..."></textarea>
+            <textarea name="mensaje" class="form-textarea" placeholder="Cuéntanos algo sobre tu hotel..."></textarea>
           </div>
           <button type="submit" class="form-submit">Enviar solicitud →</button>
         </form>
@@ -924,12 +925,29 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    btn.textContent = 'Enviado — te contactamos pronto';
-    btn.style.background = 'var(--green)';
+    const form = e.target;
+    const btn = form.querySelector('.form-submit');
+    btn.textContent = 'Enviando...';
     btn.disabled = true;
+    const data = new FormData(form);
+    try {
+      const res = await fetch('https://formspree.io/f/xbdekayj', { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        btn.textContent = 'Enviado — te contactamos pronto';
+        btn.style.background = 'var(--green)';
+        form.reset();
+      } else {
+        btn.textContent = 'Error — escríbenos a hospera.gestio@gmail.com';
+        btn.style.background = 'var(--amber)';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Error — escríbenos a hospera.gestio@gmail.com';
+      btn.style.background = 'var(--amber)';
+      btn.disabled = false;
+    }
   }
 
   const faqs = [
