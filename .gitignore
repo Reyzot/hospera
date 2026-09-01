@@ -1,0 +1,14 @@
+# Secrets — nunca subir
+.env
+.env.save
+
+# Estado local / generado
+seen_*.json
+monthly_stats_cache.json
+launchd_out.log
+launchd_err.log
+.DS_Store
+
+# Datos internos, no para el repo público
+_archive/
+*.xlsx
