@@ -361,6 +361,20 @@
   .mini-stat-num { font-size:20px; font-weight:900; color:var(--blue); letter-spacing:-0.5px; }
   .mini-stat-label { font-size:10.5px; color:var(--gray-500); font-weight:500; margin-top:2px; }
 
+  /* review-request card mockup (tarjeta física NFC/QR) */
+  .review-card-mock { background:var(--white); border-radius:16px; padding:26px 20px 22px; text-align:center; }
+  .rc-title { font-size:14.5px; font-weight:800; color:var(--gray-900); margin-bottom:16px; }
+  .rc-logos { display:flex; justify-content:center; align-items:center; gap:14px; margin-bottom:12px; }
+  .rc-logos svg { width:30px; height:30px; }
+  .rc-stars { color:#fbbf24; font-size:19px; letter-spacing:2px; margin-bottom:16px; }
+  .rc-qr { margin:0 auto 14px; border:1px solid var(--gray-200); border-radius:10px; padding:8px; width:84px; }
+  .rc-tap { font-size:11.5px; color:var(--gray-500); font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .rc-strip { height:4px; border-radius:2px; margin-top:18px; background:linear-gradient(90deg,#4285F4,#34A853,#FBBC05,#EA4335); }
+
+  .channel-row { display:flex; justify-content:center; gap:20px; margin-top:16px; padding-top:16px; border-top:1px solid var(--gray-200); }
+  .channel-item { display:flex; flex-direction:column; align-items:center; gap:5px; font-size:10px; color:var(--gray-500); font-weight:700; }
+  .channel-item svg { width:22px; height:22px; }
+
   /* ── ABOUT ── */
   .about { background:var(--gray-50); }
   .about-grid { display:grid; grid-template-columns:280px 1fr; gap:60px; align-items:start; }
@@ -565,17 +579,24 @@
           <div class="roadmap-visual mock-window">
             <div class="mock-bar">
               <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">WhatsApp · departure day</div>
+              <div class="mock-title">Table / counter card</div>
             </div>
-            <div class="wa-bubble" style="margin-bottom:8px;">
-              <div class="wa-label">SENT TO GUEST — check-out day</div>
-              Hi Ana, thanks for staying with us. If you have a moment, we'd really appreciate you leaving a review.<br><br>
-              <strong style="color:var(--blue);">→ Google</strong> &nbsp;·&nbsp; <strong style="color:var(--blue);">→ TripAdvisor</strong>
+            <img src="assets/nfc-card-photo.png" alt="Hospera NFC/QR review card" style="display:block;width:100%;">
+          </div>
+
+          <div class="channel-explain mock-window" style="margin-top:16px;">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">If we have their number</div>
             </div>
-            <div style="padding:0 12px 12px;font-size:11px;color:var(--green);font-weight:600;display:flex;gap:12px;flex-wrap:wrap;">
-              <span>+ NFC card</span>
-              <span>in their language</span>
-              <span>100% automated</span>
+            <div style="padding:16px;">
+              <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px;">When the guest checks out, if we have their phone from the reservation, we automatically send this:</p>
+              <div class="channel-row" style="border-top:none;padding-top:0;margin-top:0;">
+              <div class="channel-item"><svg viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></div>
+              <div class="channel-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gray-500)" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>SMS</span></div>
+              <div class="channel-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gray-500)" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg><span>Email</span></div>
+              <div class="channel-item"><svg viewBox="0 0 24 24" fill="#34DA50" xmlns="http://www.w3.org/2000/svg"><path d="M5.285 0A5.273 5.273 0 0 0 0 5.285v13.43A5.273 5.273 0 0 0 5.285 24h13.43A5.273 5.273 0 0 0 24 18.715V5.285A5.273 5.273 0 0 0 18.715 0ZM12 4.154a8.809 7.337 0 0 1 8.809 7.338A8.809 7.337 0 0 1 12 18.828a8.809 7.337 0 0 1-2.492-.303A8.656 7.337 0 0 1 5.93 19.93a9.929 7.337 0 0 0 1.54-2.155 8.809 7.337 0 0 1-4.279-6.283A8.809 7.337 0 0 1 12 4.154"/></svg><span>iMessage</span></div>
+              </div>
             </div>
           </div>
         </div>
@@ -636,89 +657,96 @@
   </div>
 </section>
 
-<!-- PACKS -->
+<!-- SERVICES -->
 <section class="packs" id="packs">
   <div class="container">
     <div class="fade-in">
       <div class="eyebrow">Services</div>
-      <h2 class="section-title">Three tiers.<br>One WhatsApp.</h2>
-      <p class="section-sub">No lock-in. Start wherever your hotel needs it most, and move up whenever you want.</p>
+      <h2 class="section-title">Every service,<br>on its own.</h2>
+      <p class="section-sub">No lock-in. Get what you need, nothing more — each one works alone or combined with the rest.</p>
     </div>
     <div class="packs-grid fade-in">
 
-      <!-- Pack 1 -->
       <div class="pack-card">
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
-        <div class="pack-name">Reviews</div>
-        <p class="pack-desc">Every review answered automatically, in the guest's language. Approve from WhatsApp with one tap.</p>
+        <div class="pack-name">Answer reviews</div>
+        <p class="pack-desc">Every Google and TripAdvisor review answered by AI, in the guest's language. Approve from WhatsApp with one tap.</p>
         <ul class="pack-features">
-          <li>24/7 monitoring on Google, Booking and TripAdvisor</li>
-          <li>AI-generated replies in your hotel's voice</li>
+          <li>24/7 monitoring on Google and TripAdvisor</li>
+          <li>Replies generated in your business's voice</li>
           <li>Approve, edit or reject from WhatsApp</li>
-          <li>Weekly activity report</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
 
-      <!-- Pack 2 (featured) -->
-      <div class="pack-card featured">
-        <div class="pack-badge">Most popular</div>
-        <div class="pack-icon" style="background:var(--blue);border-color:var(--blue-700);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
-        <div class="pack-name">Reviews + Growth</div>
-        <p class="pack-desc">Everything above, plus an active system to get more reviews: an NFC card and automatic WhatsApp/SMS, in the guest's own language.</p>
+        <div class="pack-name">Get more reviews</div>
+        <p class="pack-desc">NFC/QR card at the table or counter, plus automatic WhatsApp, SMS, email or iMessage if you have the guest's contact.</p>
         <ul class="pack-features">
-          <li>Everything in the Reviews tier</li>
-          <li>NFC card included — guest chooses Google or TripAdvisor</li>
-          <li>Automatic WhatsApp/SMS on departure day, in their language</li>
-          <li>For hotels: mid-stay check-in so problems get fixed before check-out</li>
-          <li>Up to 3× more new reviews per month</li>
-          <li>Monthly report comparing your evolution</li>
+          <li>Guest chooses Google or TripAdvisor</li>
+          <li>Message in their language, automatically</li>
+          <li>For hotels: mid-stay check-in if something's wrong</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
 
-      <!-- Pack 3 (todo) -->
-      <div class="pack-card" style="border-color:#7c3aed;box-shadow:0 0 0 2px #ede9fe,0 4px 16px rgba(124,58,237,0.1);position:relative;">
-        <div class="pack-badge" style="background:#7c3aed;">All included</div>
-        <div class="pack-icon" style="background:#f5f3ff;border-color:#ddd6fe;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg>
         </div>
-        <div class="pack-name">Complete</div>
-        <p class="pack-desc">Reviews, growth and competitive intelligence. Fully automated, all on WhatsApp.</p>
+        <div class="pack-name">Progress reports</div>
+        <p class="pack-desc">A PDF every week and every month with your rating, review volume, and how it changes vs. the prior period. No dashboards.</p>
         <ul class="pack-features">
-          <li>Everything in Reviews + Growth</li>
-          <li>Daily briefing on competitor pricing</li>
-          <li>Detects local events and fairs</li>
-          <li>Priority setup in 24h</li>
+          <li>Weekly recap by WhatsApp/email</li>
+          <li>Month-over-month comparison</li>
         </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta" style="background:#7c3aed;">Book a call →</a>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
 
-    </div>
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="pack-name">Competitive Intel</div>
+        <p class="pack-desc">Every morning, a briefing with competitor pricing and local events that could move demand.</p>
+        <ul class="pack-features">
+          <li>Competitor prices refreshed every 24h</li>
+          <li>Detects nearby events and fairs</li>
+        </ul>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
+      </div>
 
-    <div class="fade-in" style="max-width:600px;margin:64px 0 0;">
-      <div class="eyebrow">Extras</div>
-      <h2 class="section-title" style="font-size:clamp(22px,3vw,32px);">Need something else?</h2>
-    </div>
-    <div class="packs-grid fade-in" style="grid-template-columns:repeat(2,1fr);margin-top:24px;max-width:720px;">
-      <div class="pack-card" style="padding:28px;">
-        <div class="pack-icon" style="width:44px;height:44px;margin-bottom:14px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
-        <div class="pack-name" style="font-size:19px;margin-bottom:6px;">Custom websites</div>
-        <p class="pack-desc" style="margin-bottom:0;">We build your professional website from scratch, ready in days — no generic templates.</p>
+        <div class="pack-name">Custom websites</div>
+        <p class="pack-desc">We build your professional website from scratch, ready in days — no generic templates.</p>
+        <ul class="pack-features">
+          <li>Unique design for your business</li>
+          <li>Ready in days, not weeks</li>
+        </ul>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
-      <div class="pack-card" style="padding:28px;">
-        <div class="pack-icon" style="width:44px;height:44px;margin-bottom:14px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
-        <div class="pack-name" style="font-size:19px;margin-bottom:6px;">Google Business Profile tune-up</div>
-        <p class="pack-desc" style="margin-bottom:0;">Photos, hours, category, FAQs — a complete profile, not just the reviews.</p>
+        <div class="pack-name">Google Profile tune-up</div>
+        <p class="pack-desc">Photos, hours, category, FAQs — a complete profile, not just the reviews.</p>
+        <ul class="pack-features">
+          <li>Full review of your profile</li>
+          <li>Optimized to rank better in search</li>
+        </ul>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
+
     </div>
   </div>
 </section>
@@ -833,9 +861,12 @@
           <div class="form-group">
             <label class="form-label">What are you interested in?</label>
             <select name="interes" class="form-select">
-              <option>Reviews</option>
-              <option>Reviews + Growth</option>
-              <option>Complete</option>
+              <option>Answer reviews</option>
+              <option>Get more reviews</option>
+              <option>Progress reports</option>
+              <option>Competitive Intel</option>
+              <option>Custom websites</option>
+              <option>Google Profile tune-up</option>
               <option>Just want more info</option>
             </select>
           </div>
