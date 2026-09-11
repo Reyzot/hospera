@@ -12,3 +12,7 @@ launchd_err.log
 # Datos internos, no para el repo público
 _archive/
 *.xlsx
+weekly_report.log
+weekly_report_err.log
+monthly_report.log
+monthly_report_err.log
