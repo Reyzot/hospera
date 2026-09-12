@@ -79,6 +79,27 @@ def get_price(page, slug):
     return None
 
 
+def get_google_rating(name, location="Barcelona, Spain"):
+    """Busca el negocio por nombre en Google Maps y devuelve su rating/nº de
+    reseñas actuales. No hace falta guardar un data_id fijo por competidor —
+    esto es solo una foto rápida de reputación, no seguimiento de reseña a
+    reseña como en review_monitor.py."""
+    key = os.getenv('SERPAPI_KEY')
+    if not key:
+        return None
+    try:
+        params = {"engine": "google_maps", "q": f"{name} {location}", "type": "search", "api_key": key}
+        r = requests.get("https://serpapi.com/search", params=params, timeout=10)
+        data = r.json()
+        results = data.get("local_results", [])
+        top = results[0] if results else data.get("place_results", {})
+        if top.get("rating"):
+            return {"rating": top["rating"], "reviews": top.get("reviews", 0)}
+    except Exception:
+        pass
+    return None
+
+
 def get_barcelona_events():
     key = os.getenv('SERPAPI_KEY')
     if not key:
@@ -156,6 +177,12 @@ def main():
 
         browser.close()
 
+    print("\nConsultando reputación en Google...")
+    target_rating = get_google_rating(TARGET['name'])
+    for c in comp_results:
+        c['google'] = get_google_rating(c['name'])
+        time.sleep(1)
+
     target_price = TARGET['price']
     valid_comps = [c for c in comp_results if c['price']]
     avg_comp = round(sum(c['price'] for c in valid_comps) / len(valid_comps)) if valid_comps else 0
@@ -191,6 +218,20 @@ def main():
     lines.append(f"📈 *Media competencia:* {avg_comp}€\n")
     lines.append(f"💡 *Recomendación IA:*")
     lines.append(f"_{rec}_")
+
+    rated_comps = [c for c in comp_results if c.get('google')]
+    if target_rating or rated_comps:
+        lines.append(f"\n⭐ *Tu reputación vs. la competencia:*")
+        if target_rating:
+            lines.append(f"🏨 *{TARGET['name']}:* {target_rating['rating']}⭐ ({target_rating['reviews']} reseñas)")
+        for c in rated_comps:
+            lines.append(f"   {c['name']}: {c['google']['rating']}⭐ ({c['google']['reviews']} reseñas)")
+        if target_rating and rated_comps:
+            comp_avg_rating = round(sum(c['google']['rating'] for c in rated_comps) / len(rated_comps), 1)
+            if target_rating['rating'] < comp_avg_rating:
+                lines.append(f"   ⚠️ Vas por debajo de la media de la zona ({comp_avg_rating}⭐)")
+            else:
+                lines.append(f"   ✅ Vas por encima de la media de la zona ({comp_avg_rating}⭐)")
 
     if events:
         lines.append(f"\n🗓️ *Eventos en Barcelona ({TOMORROW}):*")

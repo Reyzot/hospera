@@ -17,6 +17,7 @@ from collections import defaultdict
 from pathlib import Path
 from dotenv import load_dotenv
 
+import anthropic
 from review_monitor import CLIENTS, SERPAPI_KEY, load_seen, LOW_RATING_THRESHOLD
 from pdf_report import render_weekly_html, render_monthly_html, html_to_pdf
 import requests
@@ -25,6 +26,7 @@ load_dotenv(dotenv_path=os.path.expanduser('~/hospera/.env'))
 
 EMAIL_ADDRESS      = os.getenv('EMAIL_ADDRESS')
 EMAIL_APP_PASSWORD = os.getenv('EMAIL_APP_PASSWORD')
+ANTHROPIC_KEY      = os.getenv('ANTHROPIC_API_KEY')
 MINUTES_PER_REVIEW = 8  # estimación: lo que tarda un manager en leer + redactar una respuesta a mano
 
 MONTHLY_CACHE_PATH = Path.home() / 'hospera' / 'monthly_stats_cache.json'
@@ -130,24 +132,66 @@ def monthly_comparison(client, cache):
     if is_stale:
         reviews, covered, _place_info = fetch_reviews_covering_months(client['data_id'], n_months=2)
         by_month = defaultdict(list)
+        negative_texts_by_month = defaultdict(list)
         for r in reviews:
             iso = r.get('iso_date', '')
             rating = r.get('rating')
             if iso and rating:
                 by_month[iso[:7]].append(float(rating))
+                if float(rating) <= LOW_RATING_THRESHOLD:
+                    text = (r.get('snippet') or r.get('extracted_snippet', {}).get('original', '') or '').strip()
+                    if text:
+                        negative_texts_by_month[iso[:7]].append(text)
         entry = {
             month: {"count": len(ratings), "avg_rating": round(sum(ratings) / len(ratings), 2)}
             for month, ratings in by_month.items()
         }
+        current_month_key = now.strftime('%Y-%m')
+        if current_month_key in entry:
+            entry[current_month_key]['complaints_summary'] = summarize_complaints(
+                negative_texts_by_month.get(current_month_key, [])
+            )
         entry['_fetched_at'] = now.isoformat()
         entry['_covered']    = covered
         cache[key] = entry
 
     current_month = now.strftime('%Y-%m')
     prev_month    = (now.replace(day=1) - timedelta(days=1)).strftime('%Y-%m')
-    current  = entry.get(current_month, {"count": 0, "avg_rating": None})
+    current  = entry.get(current_month, {"count": 0, "avg_rating": None, "complaints_summary": []})
     previous = entry.get(prev_month, {"count": 0, "avg_rating": None})
     return current, previous, entry.get('_covered', False)
+
+
+def summarize_complaints(negative_texts, max_texts=40):
+    """Pide a Claude los temas que se repiten en las reseñas negativas del mes —
+    no cita textualmente ninguna reseña, solo agrupa patrones (ej. "aire
+    acondicionado ruidoso, 4 veces"). Con pocas o ninguna reseña negativa,
+    devuelve una lista vacía sin gastar una llamada."""
+    if len(negative_texts) < 2:
+        return []
+
+    ai = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
+    joined = "\n---\n".join(negative_texts[:max_texts])
+    prompt = f"""Estas son reseñas negativas (≤3⭐) de un negocio este mes. Identifica como mucho
+3 quejas que se REPITAN en varias reseñas distintas (no cuentes quejas que solo aparecen una vez).
+Para cada una, un resumen muy corto (máx 6 palabras) y cuántas veces aparece.
+Si ninguna queja se repite en al menos 2 reseñas distintas, responde solo: NINGUNA
+
+Formato de respuesta (una línea por queja, sin explicaciones):
+<resumen corto> — <n> veces
+
+Reseñas:
+{joined}"""
+
+    response = ai.messages.create(
+        model="claude-haiku-4-5",
+        max_tokens=200,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    raw = response.content[0].text.strip()
+    if raw.upper().startswith("NINGUNA"):
+        return []
+    return [line.strip("- ").strip() for line in raw.split("\n") if line.strip()]
 
 
 # ── Email (con el PDF adjunto) ──

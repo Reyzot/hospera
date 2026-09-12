@@ -100,9 +100,22 @@ def render_monthly_html(client, current, previous, covered, date_str):
 
     note = "" if covered else '<div class="note">Histórico aún insuficiente para una comparación completa — se irá completando en los próximos informes.</div>'
 
+    complaints = current.get('complaints_summary') or []
+    complaints_html = ""
+    if complaints:
+        items = "".join(f"<li>{c}</li>" for c in complaints)
+        complaints_html = f"""
+<div class="section-title">Quejas que se repiten este mes</div>
+<ul class="complaints-list">{items}</ul>
+<div class="note">Solo se listan quejas que aparecen en más de una reseña — no reseñas puntuales aisladas.</div>
+"""
+
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<style>{BASE_CSS}</style></head><body>
+<style>{BASE_CSS}
+  .complaints-list {{ list-style:none; }}
+  .complaints-list li {{ background:#fef2f2; border:1px solid #fecaca; color:#991b1b; font-size:13.5px; font-weight:600; padding:10px 14px; border-radius:8px; margin-bottom:8px; }}
+</style></head><body>
 {_header("Informe mensual", date_str)}
 <h1>{client['name']}</h1>
 <div class="subtitle">Comparativa del mes actual frente al mes anterior</div>
@@ -117,6 +130,7 @@ def render_monthly_html(client, current, previous, covered, date_str):
   <tr><th>Volumen de reseñas</th><th>Puntuación media</th></tr>
   <tr><td>{delta_count_html or '—'}</td><td>{delta_rating_html or '—'}</td></tr>
 </table>
+{complaints_html}
 {note}
 {_footer()}
 </body></html>"""
