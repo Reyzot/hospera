@@ -16,3 +16,9 @@ weekly_report.log
 weekly_report_err.log
 monthly_report.log
 monthly_report_err.log
+audits/
+.last_review_run
+guest_state/
+.last_guestfollowup_run
+guestfollowup_out.log
+guestfollowup_err.log

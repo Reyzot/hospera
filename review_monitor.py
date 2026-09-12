@@ -262,6 +262,9 @@ def send_whatsapp(client, author, rating, text, response_text, review_translated
 
 _Hospera responde por ti — tú solo confirmas._"""
 
+    if len(msg) > 1580:
+        msg = msg[:1577] + "..."
+
     twilio.messages.create(body=msg, from_=TWILIO_FROM, to=client['phone'])
     print(f"  ✅ WhatsApp enviado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
 
