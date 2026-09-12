@@ -6,7 +6,8 @@ según lo contento que esté — se manda a todos, ver docs/formulario_checkin.m
 
 Lee el CSV publicado de la Sheet de check-ins de cada cliente (ver
 docs/formulario_checkin.md para cómo publicarla), calcula qué huéspedes
-tocan hoy, y manda el mensaje por SMS a través de Twilio.
+tocan hoy, y manda el mensaje por SMS si tenemos su teléfono, o por email
+si solo tenemos su email de la reserva.
 
 Uso:
   python3 guest_followup.py          # corre de verdad
@@ -15,9 +16,10 @@ Uso:
 import sys
 sys.path.insert(0, '/Users/andreurey/Library/Python/3.9/lib/python/site-packages')
 
-import os, csv, io, json, argparse
+import os, csv, io, json, argparse, smtplib
 from datetime import datetime, date, timedelta
 from pathlib import Path
+from email.mime.text import MIMEText
 
 import requests
 from twilio.rest import Client
@@ -25,9 +27,11 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=os.path.expanduser('~/hospera/.env'))
 
-TWILIO_SID      = os.getenv('TWILIO_ACCOUNT_SID')
-TWILIO_TOKEN    = os.getenv('TWILIO_AUTH_TOKEN')
-TWILIO_SMS_FROM = os.getenv('TWILIO_SMS_FROM')  # número propio de SMS — pendiente de Twilio
+TWILIO_SID         = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_TOKEN       = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_SMS_FROM    = os.getenv('TWILIO_SMS_FROM')  # número propio de SMS — pendiente de Twilio
+EMAIL_ADDRESS      = os.getenv('EMAIL_ADDRESS')
+EMAIL_APP_PASSWORD = os.getenv('EMAIL_APP_PASSWORD')
 
 STATE_DIR = Path.home() / 'hospera' / 'guest_state'
 STATE_DIR.mkdir(exist_ok=True)
@@ -69,6 +73,11 @@ MESSAGES = {
     },
 }
 
+EMAIL_SUBJECTS = {
+    "departure": {"es": "¿Qué tal tu estancia en {business}?", "en": "How was your stay at {business}?"},
+    "midstay":   {"es": "¿Va todo bien en {business}?", "en": "Is everything going well at {business}?"},
+}
+
 
 def normalize_lang(raw):
     key = (raw or "").strip().lower()
@@ -99,15 +108,17 @@ def fetch_checkins(sheet_url):
 
         name = get_field("nombre")
         phone = get_field("teléfono", "telefono", "phone")
+        email = get_field("email", "correo", "e-mail")
         lang = normalize_lang(get_field("idioma", "language"))
         checkin = parse_date(get_field("entrada", "check-in", "checkin"))
         checkout = parse_date(get_field("salida", "check-out", "checkout"))
 
-        if not (name and phone and checkout):
+        if not (name and checkout and (phone or email)):
             continue
         guests.append({
             "name": name.strip(),
             "phone": phone.strip(),
+            "email": email.strip(),
             "lang": lang,
             "checkin": checkin,
             "checkout": checkout,
@@ -116,7 +127,7 @@ def fetch_checkins(sheet_url):
 
 
 def guest_key(guest):
-    return f"{guest['phone']}_{guest['checkin']}_{guest['checkout']}"
+    return f"{guest['phone']}_{guest['email']}_{guest['checkin']}_{guest['checkout']}"
 
 
 def load_state(path):
@@ -132,11 +143,40 @@ def save_state(path, state):
 def send_sms(to_phone, body, test_mode=False):
     if test_mode or not TWILIO_SMS_FROM:
         reason = "[TEST]" if test_mode else "[SIN NÚMERO SMS CONFIGURADO]"
-        print(f"    {reason} A {to_phone}: {body}")
+        print(f"    {reason} SMS a {to_phone}: {body}")
         return
     twilio = Client(TWILIO_SID, TWILIO_TOKEN)
     twilio.messages.create(body=body, from_=TWILIO_SMS_FROM, to=to_phone)
     print(f"    ✅ SMS enviado a {to_phone}")
+
+
+def send_email(to_addr, subject, body, test_mode=False):
+    if test_mode or not (EMAIL_ADDRESS and EMAIL_APP_PASSWORD):
+        reason = "[TEST]" if test_mode else "[SIN CREDENCIALES DE EMAIL CONFIGURADAS]"
+        print(f"    {reason} Email a {to_addr}: {subject} — {body}")
+        return
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = to_addr
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
+        server.send_message(msg)
+    print(f"    ✅ Email enviado a {to_addr}")
+
+
+def notify_guest(guest, kind, body, lang, business_name, test_mode=False):
+    """Manda por SMS si hay teléfono; si no, por email si lo hay. Si no hay
+    ninguno de los dos, no se manda nada (no debería pasar, fetch_checkins
+    ya exige al menos uno)."""
+    if guest['phone']:
+        send_sms(guest['phone'], body, test_mode)
+    elif guest['email']:
+        subject = EMAIL_SUBJECTS[kind][lang].format(business=business_name)
+        send_email(guest['email'], subject, body, test_mode)
+    else:
+        print(f"    ⚠️  {guest['name']}: sin teléfono ni email, no se puede avisar")
 
 
 def run_client(client, test_mode=False):
@@ -159,7 +199,7 @@ def run_client(client, test_mode=False):
 
         if guest['checkout'] == today and not record.get('departure_sent'):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
-            send_sms(guest['phone'], body, test_mode)
+            notify_guest(guest, 'departure', body, lang, client['name'], test_mode)
             record['departure_sent'] = True
             sent += 1
 
@@ -169,7 +209,7 @@ def run_client(client, test_mode=False):
             if midpoint == today and not record.get('midstay_sent'):
                 contact_link = f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link
                 body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
-                send_sms(guest['phone'], body, test_mode)
+                notify_guest(guest, 'midstay', body, lang, client['name'], test_mode)
                 record['midstay_sent'] = True
                 sent += 1
 

@@ -5,10 +5,11 @@ tome la reserva) en 10 segundos por huésped. Las respuestas caen en una Sheet
 vinculada (Respuestas → icono de Sheets).
 
 1. **Nombre del huésped** (respuesta corta)
-2. **Teléfono (con prefijo de país)** (respuesta corta) — ej. +13054578397
-3. **Idioma del huésped** (opción múltiple: Español / English / Català / Français / Deutsch / Italiano / Otro)
-4. **Fecha de entrada** (fecha)
-5. **Fecha de salida** (fecha)
+2. **Teléfono (con prefijo de país)** (respuesta corta, opcional) — ej. +13054578397
+3. **Email del huésped** (respuesta corta, opcional) — de reserva. Solo hace falta uno de los dos (teléfono o email), pero cuantos más tengamos, mejor.
+4. **Idioma del huésped** (opción múltiple: Español / English / Català / Français / Deutsch / Italiano / Otro)
+5. **Fecha de entrada** (fecha)
+6. **Fecha de salida** (fecha)
 
 ## Publicar la Sheet como CSV (una vez, no hace falta repetirlo)
 
@@ -18,8 +19,11 @@ vinculada (Respuestas → icono de Sheets).
 
 ## Qué hace el sistema con esto
 
-- El día de salida: si no ha dejado reseña todavía, le llega un WhatsApp/SMS
+- El día de salida: si no ha dejado reseña todavía, le llega un mensaje
   pidiéndosela, en su idioma, con un enlace donde elige Google o TripAdvisor.
 - Si la estancia es de más de una noche: a mitad de estancia le llega un
   mensaje corto preguntando si todo va bien, con un enlace directo para avisar
   al negocio si algo falla — para arreglarlo antes de que se vaya.
+- Canal: si tenemos su teléfono, se manda por SMS. Si no tenemos teléfono
+  pero sí su email (de la reserva), se manda por email en su lugar — así
+  el Boost Review funciona aunque el negocio solo capture el email.
