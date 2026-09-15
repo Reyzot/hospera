@@ -369,7 +369,14 @@
   .pack-icon {
     width:52px; height:52px; border-radius:13px;
     background:var(--blue-50); border:1px solid var(--blue-100);
-    display:flex; align-items:center; justify-content:center; margin-bottom:22px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .pack-tags { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .pack-tag {
+    display:inline-flex; align-items:center;
+    border:1px solid var(--gray-200); color:var(--gray-500);
+    padding:3px 10px; border-radius:100px;
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
   }
   .pack-name { font-size:24px; font-weight:800; letter-spacing:-0.5px; margin-bottom:10px; }
   .pack-desc { font-size:15px; color:var(--gray-500); line-height:1.7; margin-bottom:24px; }
@@ -738,6 +745,7 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Answer reviews</div>
         <p class="pack-desc">Every Google and TripAdvisor review answered by AI, in the guest's language. Approve from WhatsApp with one tap.</p>
         <ul class="pack-features">
@@ -753,6 +761,7 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Get more reviews</div>
         <p class="pack-desc">NFC/QR card at the table or counter, plus automatic SMS/WhatsApp (or email if that's all you have) on departure day — and a halfway check-in for longer stays.</p>
         <ul class="pack-features">
@@ -767,6 +776,7 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Progress reports</div>
         <p class="pack-desc">A PDF every week and every month with your rating, review volume, and how it changes vs. the prior period. No dashboards.</p>
         <ul class="pack-features">
@@ -781,6 +791,7 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span></div>
         <div class="pack-name">Competitive Intel</div>
         <p class="pack-desc">Every morning, a briefing with competitor pricing and local events that could move demand.</p>
         <ul class="pack-features">
@@ -795,6 +806,7 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Custom websites</div>
         <p class="pack-desc">We build your professional website from scratch, ready in days — no generic templates.</p>
         <ul class="pack-features">
@@ -808,11 +820,44 @@
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Google Profile tune-up</div>
         <p class="pack-desc">Photos, hours, category, FAQs — a complete profile, not just the reviews.</p>
         <ul class="pack-features">
           <li>Full review of your profile</li>
           <li>Optimized to rank better in search</li>
+        </ul>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
+      </div>
+
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Staff training app</div>
+        <p class="pack-desc">A simple app your kitchen team actually uses — onboarding, quizzes tied to your own recipes, hands-free with voice.</p>
+        <ul class="pack-features">
+          <li>PIN login per employee, no accounts to manage</li>
+          <li>Quizzes generated from your own recipes</li>
+          <li>Reads recipes aloud, hands-free in the kitchen</li>
+          <li>Tracks who's completed what</li>
+        </ul>
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
+      </div>
+
+      <div class="pack-card">
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Recipe book & food costing</div>
+        <p class="pack-desc">Every recipe with photos and video, plus cost per dish and margin vs. your menu price — no more binders or spreadsheets.</p>
+        <ul class="pack-features">
+          <li>Step-by-step photos and video per recipe</li>
+          <li>Cost per ingredient, totaled automatically</li>
+          <li>Margin vs. your menu price at a glance</li>
+          <li>Accessible from any tablet in the kitchen</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
@@ -937,6 +982,8 @@
               <option>Competitive Intel</option>
               <option>Custom websites</option>
               <option>Google Profile tune-up</option>
+              <option>Staff training app</option>
+              <option>Recipe book & food costing</option>
               <option>Just want more info</option>
             </select>
           </div>
