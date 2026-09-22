@@ -51,6 +51,7 @@
     --amber:    #d97706;
     --nav-bg:   rgba(255,255,255,0.92);
     --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --dot-color: rgba(37,99,235,.28);
   }
 
   html[data-theme="dark"] {
@@ -66,6 +67,7 @@
     --blue-50:  #142033;
     --blue-100: #1e3a5f;
     --nav-bg:   rgba(13,15,20,0.85);
+    --dot-color: rgba(109,155,255,.4);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -160,20 +162,32 @@
   }
   .hero::before {
     content:''; position:absolute; inset:0; z-index:0;
-    background-image: radial-gradient(var(--gray-200) 1px, transparent 1px);
+    background-image: radial-gradient(var(--dot-color) 1.6px, transparent 1.6px);
     background-size: 22px 22px;
-    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 30%, #000 35%, transparent 80%);
-            mask-image: radial-gradient(ellipse 65% 55% at 50% 30%, #000 35%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 32%, #000 45%, transparent 92%);
+            mask-image: radial-gradient(ellipse 85% 75% at 50% 32%, #000 45%, transparent 92%);
     pointer-events:none;
   }
   .hero::after {
     content:''; position:absolute; z-index:0;
-    top:-180px; left:50%; transform:translateX(-50%);
-    width:640px; height:640px; max-width:150vw;
-    background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%);
+    top:-200px; left:50%; transform:translateX(-50%);
+    width:760px; height:760px; max-width:160vw;
+    background:radial-gradient(circle, rgba(37,99,235,.28), transparent 70%);
     pointer-events:none;
   }
-  .hero > * { position:relative; z-index:1; }
+  .hero-glow { position:absolute; z-index:0; pointer-events:none; border-radius:50%; }
+  .hero-glow-1 { width:420px; height:420px; left:-140px; bottom:-120px; background:radial-gradient(circle, rgba(37,99,235,.18), transparent 70%); }
+  .hero-glow-2 { width:380px; height:380px; right:-120px; top:18%; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); }
+  .cursor-glow {
+    position:absolute; z-index:0; pointer-events:none;
+    width:320px; height:320px; border-radius:50%;
+    background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%);
+    left:50%; top:40%; transform:translate(-50%,-50%);
+    transition:left .15s ease-out, top .15s ease-out, opacity .3s ease;
+    opacity:0;
+  }
+  .hero:hover .cursor-glow { opacity:1; }
+  .hero > *:not(.hero-glow):not(.cursor-glow) { position:relative; z-index:1; }
   .hero-tag {
     display:inline-flex; align-items:center; gap:9px;
     border:1px solid var(--blue-100); color:var(--blue);
@@ -540,8 +554,8 @@
       </div>
     </div>
     <ul class="nav-links">
-      <li><a href="#como-funciona">How it works</a></li>
       <li><a href="#packs">Services</a></li>
+      <li><a href="#como-funciona">How it works</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#nosotros">About</a></li>
     </ul>
@@ -561,7 +575,10 @@
 </div>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="heroSection">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
   <div class="hero-tag"><span class="hero-dot"></span>AI for independent hotels</div>
   <h1>Your hotel's reputation.<br><span class="blue">Fully handled.</span></h1>
   <p>Hosperai answers your reviews, brings you more of them, and tracks the competition for you — all from WhatsApp.</p>
@@ -606,8 +623,8 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       </div>
       <div>
-        <div class="strip-label">AI built for hotels</div>
-        <div class="strip-sub">Speaks in your hotel's voice</div>
+        <div class="strip-label">AI-powered</div>
+        <div class="strip-sub">Handles it in your voice</div>
       </div>
     </div>
     <div class="strip-item">
@@ -630,127 +647,6 @@
     </div>
   </div>
 </div>
-
-<!-- ROADMAP / HOW IT WORKS -->
-<section class="roadmap" id="como-funciona">
-  <div class="container">
-    <div class="fade-in" style="max-width:600px;">
-      <div class="eyebrow">How it works</div>
-      <h2 class="section-title">Get more reviews.<br><span style="color:var(--blue)">Answer every one.</span></h2>
-      <p class="section-sub">Four steps, all automatic. Nothing to install, nothing to learn.</p>
-    </div>
-
-    <div class="roadmap-list">
-
-      <!-- Step 0: Audit -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">0</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Before anything else</span>
-          <h3>We analyze your reputation, free</h3>
-          <p>Review count, real rating, response rate — audited from your Google profile. Sent as a free PDF, no strings attached.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Free audit · your-hotel.com</div>
-            </div>
-            <div class="mini-stats">
-              <div class="mini-stat"><div class="mini-stat-num">142</div><div class="mini-stat-label">Reviews</div></div>
-              <div class="mini-stat"><div class="mini-stat-num">4.3⭐</div><div class="mini-stat-label">Rating</div></div>
-              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">35%</div><div class="mini-stat-label">Unanswered</div></div>
-              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">8/12</div><div class="mini-stat-label">Negative, unanswered</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 1: Get more reviews -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">1</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 1 · Growth</span>
-          <h3>We get you more reviews</h3>
-          <p>Tap the NFC card — review written in seconds. On departure day we reach out automatically in their language, by WhatsApp, SMS or email — plus a quick mid-stay check-in on longer stays, so problems get fixed before checkout, not in a public review.</p>
-          <div class="roadmap-visual" style="max-width:680px;display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;">
-          <div class="mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Table / counter card</div>
-            </div>
-            <div style="flex:1;overflow:hidden;">
-              <img src="assets/nfc-card-photo.png" alt="Hospera NFC/QR review card" style="display:block;width:100%;height:100%;object-fit:cover;">
-            </div>
-          </div>
-
-          <div class="channel-explain mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Departure day</div>
-            </div>
-            <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:center;">
-              <p style="font-size:13px;color:#4b5563;margin-bottom:14px;">We send this automatically, by whichever channel we have:</p>
-              <div class="channel-row" style="border-top:none;padding-top:0;margin-top:0;">
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#25D366"/><path d="M20 10.5c-5.2 0-9.5 4.3-9.5 9.5 0 1.7.4 3.3 1.3 4.7L10.5 30l5.5-1.4c1.3.7 2.8 1.1 4.4 1.1h0c5.2 0 9.5-4.3 9.5-9.5S25.2 10.5 20 10.5z" fill="#fff"/><path d="M20 12.3c-4.2 0-7.7 3.4-7.7 7.7 0 1.5.4 2.9 1.2 4.1l-.8 2.9 3-.8c1.2.7 2.5 1 3.9 1h0c4.2 0 7.7-3.4 7.7-7.7s-3.6-7.2-7.7-7.2z" fill="#25D366"/><path d="M17.1 16c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3 4.7 4.1 2.3.9 2.8.7 3.3.7.5 0 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3l-1.8-.9c-.3-.1-.5-.2-.7.1-.2.3-.8 1-1 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.2-1.4-.8-.8-1.4-1.6-1.5-1.9-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.2-.5.1-.2 0-.4-.1-.5l-.6-1.6z" fill="#fff"/></svg><span>WhatsApp</span></div>
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#30D158"/><rect x="9" y="10" width="22" height="15" rx="5" fill="#fff"/><path d="M13 25 L13 30 L18 25 Z" fill="#fff"/></svg><span>SMS</span></div>
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#3B82F6"/><rect x="8" y="12" width="24" height="16" rx="2" fill="#fff"/><path d="M9 13.5 L20 22 L31 13.5" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></div>
-              </div>
-              <p style="font-size:13px;color:#4b5563;margin:14px 0 0;">Longer stays also get a quick mid-stay check-in, so we catch problems before checkout.</p>
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 2: Respond -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">2</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 2 · Response</span>
-          <h3>We answer every one for you</h3>
-          <p>As soon as a review comes in, the AI drafts a reply in your hotel's voice and sends it to your WhatsApp — with the link to paste it straight into Google.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">WhatsApp · Hosperai</div>
-            </div>
-            <div class="wa-bubble">
-              <div class="wa-label">✨ Hospera · new review at Art Deco Marela (Google)</div>
-              ★★★★ <strong>María G.</strong><br>
-              <em>"Great location, very friendly staff..."</em><br><br>
-              💬 <strong>Suggested reply:</strong><br>
-              <em>Hi María, thank you for staying with us. We're so glad you felt well taken care of.</em>
-            </div>
-            <div style="padding:0 12px 14px;font-size:11.5px;color:#4b5563;">👉 Copy &amp; paste this to publish it:<br><strong style="color:var(--blue);">hosperai.es/r/maria-g-4531</strong></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Track -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">3</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 3 · Tracking</span>
-          <h3>You see it improve, week by week</h3>
-          <p>Every week you get a recap: how many reviews came in, your rating that week, and how it compares to the week before. Every month, a report comparing your full evolution month over month — rating, volume, all in one place.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">WhatsApp · Weekly report</div>
-            </div>
-            <div class="wa-bubble">
-              <div class="wa-label">THIS WEEK'S SUMMARY</div>
-              📋 12 reviews processed<br>
-              ⭐ 4.6 average (+0.2 vs last week)<br>
-              ⏱️ ~96 min saved<br><br>
-              <strong style="color:var(--blue);">→ View full report (PDF)</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
 
 <!-- SERVICES -->
 <section class="packs" id="packs">
@@ -881,6 +777,127 @@
           <li>Accessible from any tablet in the kitchen</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP / HOW IT WORKS -->
+<section class="roadmap" id="como-funciona">
+  <div class="container">
+    <div class="fade-in" style="max-width:600px;">
+      <div class="eyebrow">How it works</div>
+      <h2 class="section-title">Get more reviews.<br><span style="color:var(--blue)">Answer every one.</span></h2>
+      <p class="section-sub">Four steps, all automatic. Nothing to install, nothing to learn.</p>
+    </div>
+
+    <div class="roadmap-list">
+
+      <!-- Step 0: Audit -->
+      <div class="roadmap-item fade-in">
+        <div class="roadmap-num">0</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag">Before anything else</span>
+          <h3>We analyze your reputation, free</h3>
+          <p>Review count, real rating, response rate — audited from your Google profile. Sent as a free PDF, no strings attached.</p>
+          <div class="roadmap-visual mock-window">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">Free audit · your-hotel.com</div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat"><div class="mini-stat-num">142</div><div class="mini-stat-label">Reviews</div></div>
+              <div class="mini-stat"><div class="mini-stat-num">4.3⭐</div><div class="mini-stat-label">Rating</div></div>
+              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">35%</div><div class="mini-stat-label">Unanswered</div></div>
+              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">8/12</div><div class="mini-stat-label">Negative, unanswered</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Get more reviews -->
+      <div class="roadmap-item fade-in">
+        <div class="roadmap-num">1</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag">Step 1 · Growth</span>
+          <h3>We get you more reviews</h3>
+          <p>Tap the NFC card — review written in seconds. On departure day we reach out automatically in their language, by WhatsApp, SMS or email — plus a quick mid-stay check-in on longer stays, so problems get fixed before checkout, not in a public review.</p>
+          <div class="roadmap-visual" style="max-width:680px;display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;">
+          <div class="mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">Table / counter card</div>
+            </div>
+            <div style="flex:1;overflow:hidden;">
+              <img src="assets/nfc-card-photo.png" alt="Hospera NFC/QR review card" style="display:block;width:100%;height:100%;object-fit:cover;">
+            </div>
+          </div>
+
+          <div class="channel-explain mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">Departure day</div>
+            </div>
+            <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:center;">
+              <p style="font-size:13px;color:#4b5563;margin-bottom:14px;">We send this automatically, by whichever channel we have:</p>
+              <div class="channel-row" style="border-top:none;padding-top:0;margin-top:0;">
+              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#25D366"/><path d="M20 10.5c-5.2 0-9.5 4.3-9.5 9.5 0 1.7.4 3.3 1.3 4.7L10.5 30l5.5-1.4c1.3.7 2.8 1.1 4.4 1.1h0c5.2 0 9.5-4.3 9.5-9.5S25.2 10.5 20 10.5z" fill="#fff"/><path d="M20 12.3c-4.2 0-7.7 3.4-7.7 7.7 0 1.5.4 2.9 1.2 4.1l-.8 2.9 3-.8c1.2.7 2.5 1 3.9 1h0c4.2 0 7.7-3.4 7.7-7.7s-3.6-7.2-7.7-7.2z" fill="#25D366"/><path d="M17.1 16c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3 4.7 4.1 2.3.9 2.8.7 3.3.7.5 0 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3l-1.8-.9c-.3-.1-.5-.2-.7.1-.2.3-.8 1-1 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.2-1.4-.8-.8-1.4-1.6-1.5-1.9-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.2-.5.1-.2 0-.4-.1-.5l-.6-1.6z" fill="#fff"/></svg><span>WhatsApp</span></div>
+              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#30D158"/><rect x="9" y="10" width="22" height="15" rx="5" fill="#fff"/><path d="M13 25 L13 30 L18 25 Z" fill="#fff"/></svg><span>SMS</span></div>
+              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#3B82F6"/><rect x="8" y="12" width="24" height="16" rx="2" fill="#fff"/><path d="M9 13.5 L20 22 L31 13.5" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></div>
+              </div>
+              <p style="font-size:13px;color:#4b5563;margin:14px 0 0;">Longer stays also get a quick mid-stay check-in, so we catch problems before checkout.</p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Respond -->
+      <div class="roadmap-item fade-in">
+        <div class="roadmap-num">2</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag">Step 2 · Response</span>
+          <h3>We answer every one for you</h3>
+          <p>As soon as a review comes in, the AI drafts a reply in your hotel's voice and sends it to your WhatsApp — with the link to paste it straight into Google.</p>
+          <div class="roadmap-visual mock-window">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">WhatsApp · Hosperai</div>
+            </div>
+            <div class="wa-bubble">
+              <div class="wa-label">✨ Hospera · new review at Art Deco Marela (Google)</div>
+              ★★★★ <strong>María G.</strong><br>
+              <em>"Great location, very friendly staff..."</em><br><br>
+              💬 <strong>Suggested reply:</strong><br>
+              <em>Hi María, thank you for staying with us. We're so glad you felt well taken care of.</em>
+            </div>
+            <div style="padding:0 12px 14px;font-size:11.5px;color:#4b5563;">👉 Copy &amp; paste this to publish it:<br><strong style="color:var(--blue);">hosperai.es/r/maria-g-4531</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Track -->
+      <div class="roadmap-item fade-in">
+        <div class="roadmap-num">3</div>
+        <div class="roadmap-content">
+          <span class="roadmap-tag">Step 3 · Tracking</span>
+          <h3>You see it improve, week by week</h3>
+          <p>Every week you get a recap: how many reviews came in, your rating that week, and how it compares to the week before. Every month, a report comparing your full evolution month over month — rating, volume, all in one place.</p>
+          <div class="roadmap-visual mock-window">
+            <div class="mock-bar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <div class="mock-title">WhatsApp · Weekly report</div>
+            </div>
+            <div class="wa-bubble">
+              <div class="wa-label">THIS WEEK'S SUMMARY</div>
+              📋 12 reviews processed<br>
+              ⭐ 4.6 average (+0.2 vs last week)<br>
+              ⏱️ ~96 min saved<br><br>
+              <strong style="color:var(--blue);">→ View full report (PDF)</strong>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -1039,6 +1056,16 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const heroSection = document.getElementById('heroSection');
+  const cursorGlow = document.getElementById('cursorGlow');
+  if (heroSection && cursorGlow) {
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      cursorGlow.style.left = (e.clientX - rect.left) + 'px';
+      cursorGlow.style.top = (e.clientY - rect.top) + 'px';
+    });
+  }
 
   document.getElementById('theme-toggle').addEventListener('click', () => {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
