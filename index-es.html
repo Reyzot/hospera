@@ -199,16 +199,16 @@
   .hero-glow { position:absolute; z-index:0; pointer-events:none; border-radius:50%; }
   .hero-glow-1 { width:420px; height:420px; left:-140px; bottom:-120px; background:radial-gradient(circle, rgba(37,99,235,.18), transparent 70%); }
   .hero-glow-2 { width:380px; height:380px; right:-120px; top:18%; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); }
+  .hero > *:not(.hero-glow) { position:relative; z-index:1; }
   .cursor-glow {
-    position:absolute; z-index:0; pointer-events:none;
+    position:fixed; z-index:3; pointer-events:none;
     width:420px; height:420px; border-radius:50%;
-    background:radial-gradient(circle, rgba(37,99,235,.35), rgba(37,99,235,.10) 45%, transparent 72%);
+    background:radial-gradient(circle, rgba(37,99,235,.30), rgba(37,99,235,.08) 45%, transparent 72%);
     left:50%; top:40%; transform:translate(-50%,-50%);
-    transition:left .12s linear, top .12s linear, opacity .3s ease;
+    transition:left .12s linear, top .12s linear, opacity .4s ease;
     opacity:0;
   }
-  .hero:hover .cursor-glow { opacity:1; }
-  .hero > *:not(.hero-glow):not(.cursor-glow) { position:relative; z-index:1; }
+  .cursor-glow.active { opacity:1; }
   .hero-tag {
     display:inline-flex; align-items:center; gap:9px;
     border:1px solid var(--blue-100); color:var(--blue);
@@ -596,11 +596,12 @@
   </nav>
 </div>
 
+<div class="cursor-glow" id="cursorGlow"></div>
+
 <!-- HERO -->
 <section class="hero" id="heroSection">
   <div class="hero-glow hero-glow-1"></div>
   <div class="hero-glow hero-glow-2"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
   <div class="hero-tag"><span class="hero-dot"></span>IA para hoteles independientes</div>
   <h1>La reputación de tu hotel.<br><span class="blue">Resuelta del todo.</span></h1>
   <p>Hosperai responde tus reseñas, te trae más, y vigila a la competencia por ti — todo desde WhatsApp.</p>
@@ -1076,13 +1077,12 @@
   }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  const heroSection = document.getElementById('heroSection');
   const cursorGlow = document.getElementById('cursorGlow');
-  if (heroSection && cursorGlow) {
-    heroSection.addEventListener('mousemove', (e) => {
-      const rect = heroSection.getBoundingClientRect();
-      cursorGlow.style.left = (e.clientX - rect.left) + 'px';
-      cursorGlow.style.top = (e.clientY - rect.top) + 'px';
+  if (cursorGlow && matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mousemove', (e) => {
+      cursorGlow.classList.add('active');
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
     });
   }
 
