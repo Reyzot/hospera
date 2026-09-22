@@ -149,7 +149,28 @@
 
   /* ── SECTIONS ── */
   section { padding:96px 24px; }
-  .container { max-width:1100px; margin:0 auto; }
+  .container { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+
+  /* ── AMBIENT BACKGROUND (dots + glow, continues past the hero) ── */
+  .packs, .roadmap, .about, .faq, .contact { position:relative; overflow:hidden; }
+  .packs::before, .roadmap::before, .about::before, .faq::before, .contact::before {
+    content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image: radial-gradient(var(--dot-color) 1.3px, transparent 1.3px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 25%, transparent 70%);
+            mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 25%, transparent 70%);
+    opacity:.55;
+  }
+  .packs::after, .about::after {
+    content:''; position:absolute; z-index:0; pointer-events:none; border-radius:50%;
+    width:420px; height:420px; left:-160px; top:15%;
+    background:radial-gradient(circle, rgba(37,99,235,.12), transparent 70%);
+  }
+  .roadmap::after, .faq::after, .contact::after {
+    content:''; position:absolute; z-index:0; pointer-events:none; border-radius:50%;
+    width:420px; height:420px; right:-160px; top:25%;
+    background:radial-gradient(circle, rgba(99,102,241,.12), transparent 70%);
+  }
 
   /* ── HERO ── */
   .hero {
@@ -180,10 +201,10 @@
   .hero-glow-2 { width:380px; height:380px; right:-120px; top:18%; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); }
   .cursor-glow {
     position:absolute; z-index:0; pointer-events:none;
-    width:320px; height:320px; border-radius:50%;
-    background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%);
+    width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, rgba(37,99,235,.35), rgba(37,99,235,.10) 45%, transparent 72%);
     left:50%; top:40%; transform:translate(-50%,-50%);
-    transition:left .15s ease-out, top .15s ease-out, opacity .3s ease;
+    transition:left .12s linear, top .12s linear, opacity .3s ease;
     opacity:0;
   }
   .hero:hover .cursor-glow { opacity:1; }
@@ -386,7 +407,7 @@
 
   .pack-card {
     background:var(--white); border:1px solid var(--gray-200);
-    border-radius:20px; padding:36px; display:flex; flex-direction:column;
+    border-radius:16px; padding:24px; display:flex; flex-direction:column;
     box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:box-shadow .2s, transform .2s;
   }
   .pack-card:hover { box-shadow:0 8px 24px rgba(0,0,0,0.1); transform:translateY(-2px); }
@@ -401,26 +422,27 @@
     white-space:nowrap;
   }
   .pack-icon {
-    width:52px; height:52px; border-radius:13px;
+    width:40px; height:40px; border-radius:11px;
     background:var(--blue-50); border:1px solid var(--blue-100);
-    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:12px;
   }
-  .pack-tags { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .pack-icon svg { width:18px; height:18px; }
+  .pack-tags { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
   .pack-tag {
     display:inline-flex; align-items:center;
     border:1px solid var(--gray-200); color:var(--gray-500);
-    padding:3px 10px; border-radius:100px;
-    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+    padding:2px 8px; border-radius:100px;
+    font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
   }
-  .pack-name { font-size:24px; font-weight:800; letter-spacing:-0.5px; margin-bottom:10px; }
-  .pack-desc { font-size:15px; color:var(--gray-500); line-height:1.7; margin-bottom:24px; }
-  .pack-features { list-style:none; display:flex; flex-direction:column; gap:12px; flex:1; }
-  .pack-features li { display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--gray-700); line-height:1.4; }
+  .pack-name { font-size:18px; font-weight:800; letter-spacing:-0.3px; margin-bottom:6px; }
+  .pack-desc { font-size:12.5px; color:var(--gray-500); line-height:1.55; margin-bottom:14px; }
+  .pack-features { list-style:none; display:flex; flex-direction:column; gap:6px; flex:1; }
+  .pack-features li { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--gray-700); line-height:1.35; }
   .pack-features li::before { content:'→'; color:var(--blue); font-weight:700; flex-shrink:0; }
   .pack-cta {
-    display:block; text-align:center; margin-top:28px;
+    display:block; text-align:center; margin-top:16px;
     background:var(--gray-900); color:#fff;
-    padding:15px; border-radius:10px; font-size:15px; font-weight:700;
+    padding:11px; border-radius:9px; font-size:13px; font-weight:700;
     text-decoration:none; transition:background .2s;
   }
   .pack-cta:hover { background:var(--gray-700); }
@@ -653,7 +675,7 @@
   <div class="container">
     <div class="fade-in">
       <div class="eyebrow">Services</div>
-      <h2 class="section-title">Every service,<br>on its own.</h2>
+      <h2 class="section-title">Our <span style="color:var(--blue)">services.</span></h2>
       <p class="section-sub">No lock-in. Get what you need, nothing more — each one works alone or combined with the rest.</p>
     </div>
     <div class="packs-grid fade-in">
@@ -667,9 +689,8 @@
         <p class="pack-desc">Every Google and TripAdvisor review answered by AI, in the guest's language. Approve from WhatsApp with one tap.</p>
         <ul class="pack-features">
           <li>24/7 monitoring on Google and TripAdvisor</li>
-          <li>Replies generated in your business's voice</li>
           <li>Approve, edit or reject from WhatsApp</li>
-          <li>Negative reviews flagged instantly, not queued</li>
+          <li>Negative reviews flagged instantly</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
@@ -680,7 +701,7 @@
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Get more reviews</div>
-        <p class="pack-desc">NFC/QR card at the table or counter, plus automatic SMS/WhatsApp (or email if that's all you have) on departure day — and a halfway check-in for longer stays.</p>
+        <p class="pack-desc">NFC/QR card at checkout, plus automatic SMS/WhatsApp on departure day and a mid-stay check-in for longer stays.</p>
         <ul class="pack-features">
           <li>Guest chooses Google or TripAdvisor</li>
           <li>Message in their language, automatically</li>
@@ -753,12 +774,11 @@
         </div>
         <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Staff training app</div>
-        <p class="pack-desc">A simple app your kitchen team actually uses — onboarding, quizzes tied to your own recipes, hands-free with voice.</p>
+        <p class="pack-desc">A simple app your kitchen team actually uses — onboarding and quizzes tied to your own recipes.</p>
         <ul class="pack-features">
           <li>PIN login per employee, no accounts to manage</li>
           <li>Quizzes generated from your own recipes</li>
           <li>Reads recipes aloud, hands-free in the kitchen</li>
-          <li>Tracks who's completed what</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
@@ -774,7 +794,6 @@
           <li>Step-by-step photos and video per recipe</li>
           <li>Cost per ingredient, totaled automatically</li>
           <li>Margin vs. your menu price at a glance</li>
-          <li>Accessible from any tablet in the kitchen</li>
         </ul>
         <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
       </div>
