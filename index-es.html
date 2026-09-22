@@ -172,41 +172,22 @@
     background:radial-gradient(circle, rgba(99,102,241,.12), transparent 70%);
   }
 
-  /* ── CALCULATOR ── */
+  /* ── LIVE DEMO ── */
   .calculator { background:var(--white); }
-  .calc-box {
-    position:relative; z-index:1;
-    max-width:640px; margin:40px auto 0; background:var(--gray-50);
-    border:1px solid var(--gray-200); border-radius:16px; padding:32px;
+  .demo-box { position:relative; z-index:1; max-width:520px; margin:40px auto 0; }
+  .demo-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; justify-content:center; }
+  .demo-tab {
+    padding:9px 15px; border-radius:100px; border:1px solid var(--gray-200);
+    background:var(--white); color:var(--gray-600); font-size:12.5px; font-weight:700;
+    cursor:pointer; transition:background .15s, border-color .15s, color .15s;
   }
-  .calc-input { margin-bottom:22px; }
-  .calc-input label {
-    display:flex; justify-content:space-between; font-size:13.5px; font-weight:700;
-    color:var(--gray-700); margin-bottom:10px;
-  }
-  .calc-input label span { color:var(--blue); font-family:var(--mono); }
-  .calc-input input[type="range"] {
-    width:100%; -webkit-appearance:none; appearance:none;
-    height:6px; border-radius:999px; background:var(--gray-200); outline:none;
-  }
-  .calc-input input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance:none; appearance:none;
-    width:20px; height:20px; border-radius:50%; background:var(--blue);
-    cursor:pointer; border:3px solid var(--white); box-shadow:0 1px 4px rgba(0,0,0,.25);
-  }
-  .calc-input input[type="range"]::-moz-range-thumb {
-    width:20px; height:20px; border-radius:50%; background:var(--blue);
-    cursor:pointer; border:3px solid var(--white); box-shadow:0 1px 4px rgba(0,0,0,.25);
-  }
-  .calc-results {
-    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
-    margin:28px 0 24px; padding-top:24px; border-top:1px solid var(--gray-200);
-  }
-  .calc-result { text-align:center; }
-  .calc-result-num { font-family:var(--mono); font-size:24px; font-weight:800; color:var(--blue); }
-  .calc-result-label { font-size:11px; color:var(--gray-500); margin-top:4px; line-height:1.3; }
-  .calc-box .btn-primary { display:block; text-align:center; width:100%; }
-  @media(max-width:560px) { .calc-results { grid-template-columns:1fr; gap:16px; } }
+  .demo-tab:hover:not(.active) { border-color:var(--blue-100); color:var(--blue); }
+  .demo-tab.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .demo-typing { padding:10px 16px 14px; display:flex; gap:4px; }
+  .demo-typing span { width:6px; height:6px; border-radius:50%; background:var(--gray-400); animation:typingBounce 1.2s infinite ease-in-out; }
+  .demo-typing span:nth-child(2) { animation-delay:.15s; }
+  .demo-typing span:nth-child(3) { animation-delay:.3s; }
+  @keyframes typingBounce { 0%,60%,100%{transform:translateY(0); opacity:.4;} 30%{transform:translateY(-4px); opacity:1;} }
 
   /* ── HERO ── */
   .hero {
@@ -595,7 +576,7 @@
     <ul class="nav-links">
       <li><a href="#packs">Servicios</a></li>
       <li><a href="#como-funciona">Cómo funciona</a></li>
-      <li><a href="#calculator">Calculadora</a></li>
+      <li><a href="#calculator">Demo</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
     </ul>
@@ -621,7 +602,6 @@
   <div class="hero-glow hero-glow-2"></div>
   <div class="hero-tag"><span class="hero-dot"></span>Gestión con IA</div>
   <h1>La reputación de tu hotel.<br><span class="blue">Resuelta del todo.</span></h1>
-  <p>Hosperai responde tus reseñas, te trae más, y vigila a la competencia por ti — todo desde WhatsApp.</p>
   <div class="platform-badges fade-in">
     <span class="platform-badge"><svg viewBox="0 0 24 24" fill="#4285F4" xmlns="http://www.w3.org/2000/svg"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>Google</span>
     <span class="platform-badge"><svg viewBox="0 0 24 24" fill="#34E0A1" xmlns="http://www.w3.org/2000/svg"><path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 0 0 4.04 10.43 5.976 5.976 0 0 0 4.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 0 0 4.072 1.598 6 6 0 0 0 6-5.998 5.982 5.982 0 0 0-1.957-4.432L24 6.648h-4.35a13.573 13.573 0 0 0-7.644-2.353zM12 6.255c1.531 0 3.063.303 4.504.903C13.943 8.138 12 10.43 12 13.1c0-2.671-1.942-4.962-4.504-5.942A11.72 11.72 0 0 1 12 6.256zM6.002 9.157a4.059 4.059 0 1 1 0 8.118 4.059 4.059 0 0 1 0-8.118zm11.992.002a4.057 4.057 0 1 1 .003 8.115 4.057 4.057 0 0 1-.003-8.115zm-11.992 1.93a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256zm11.992 0a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256z"/></svg>TripAdvisor</span>
@@ -909,42 +889,29 @@
   </div>
 </section>
 
-<!-- CALCULATOR -->
+<!-- LIVE DEMO -->
 <section class="calculator" id="calculator">
   <div class="container">
     <div class="fade-in" style="max-width:600px;">
       <div class="eyebrow">Compruébalo tú mismo</div>
-      <h2 class="section-title">¿Cuánto te está <span style="color:var(--blue)">costando esto?</span></h2>
-      <p class="section-sub">Mueve los controles — son tus números, no los nuestros.</p>
+      <h2 class="section-title">Mira cómo se <span style="color:var(--blue)">escribe sola.</span></h2>
+      <p class="section-sub">Elige una reseña real. Mira a Hospera responderla — en el idioma del huésped.</p>
     </div>
-    <div class="calc-box fade-in">
-      <div class="calc-input">
-        <label>Reseñas que recibes al mes <span id="calcReviewsVal">15</span></label>
-        <input type="range" id="calcReviews" min="1" max="60" value="15">
+    <div class="demo-box fade-in">
+      <div class="demo-tabs">
+        <button class="demo-tab active" data-demo="0" type="button">★★☆☆☆ Negativa</button>
+        <button class="demo-tab" data-demo="1" type="button">★★★★★ Positiva</button>
+        <button class="demo-tab" data-demo="2" type="button">★★★☆☆ En francés</button>
       </div>
-      <div class="calc-input">
-        <label>Minutos que tardas en escribir cada respuesta <span id="calcMinutesVal">8</span></label>
-        <input type="range" id="calcMinutes" min="2" max="20" value="8">
-      </div>
-      <div class="calc-input">
-        <label>% que hoy se queda sin responder <span id="calcUnansweredVal">35%</span></label>
-        <input type="range" id="calcUnanswered" min="0" max="100" value="35">
-      </div>
-      <div class="calc-results">
-        <div class="calc-result">
-          <div class="calc-result-num" id="calcHoursMonth">2h</div>
-          <div class="calc-result-label">ahorradas cada mes</div>
+      <div class="mock-window" style="margin:0;">
+        <div class="mock-bar">
+          <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+          <div class="mock-title">WhatsApp · Hosperai</div>
         </div>
-        <div class="calc-result">
-          <div class="calc-result-num" id="calcHoursYear">24h</div>
-          <div class="calc-result-label">ahorradas cada año</div>
-        </div>
-        <div class="calc-result">
-          <div class="calc-result-num" id="calcMissed">5</div>
-          <div class="calc-result-label">sin responder hoy</div>
-        </div>
+        <div class="wa-bubble" id="demoReview"></div>
+        <div class="demo-typing" id="demoTyping"><span></span><span></span><span></span></div>
+        <div class="wa-reply" id="demoReply" style="display:none;"></div>
       </div>
-      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="btn-primary">Ver mis números reales →</a>
     </div>
   </div>
 </section>
@@ -1172,31 +1139,35 @@
   })();
 
   (function() {
-    const reviews = document.getElementById('calcReviews');
-    const minutes = document.getElementById('calcMinutes');
-    const unanswered = document.getElementById('calcUnanswered');
-    if (!reviews || !minutes || !unanswered) return;
-    const reviewsVal = document.getElementById('calcReviewsVal');
-    const minutesVal = document.getElementById('calcMinutesVal');
-    const unansweredVal = document.getElementById('calcUnansweredVal');
-    const hoursMonth = document.getElementById('calcHoursMonth');
-    const hoursYear = document.getElementById('calcHoursYear');
-    const missed = document.getElementById('calcMissed');
+    const tabs = document.querySelectorAll('.demo-tab');
+    const reviewEl = document.getElementById('demoReview');
+    const typingEl = document.getElementById('demoTyping');
+    const replyEl = document.getElementById('demoReply');
+    if (!tabs.length || !reviewEl) return;
 
-    function update() {
-      const r = parseInt(reviews.value, 10);
-      const m = parseInt(minutes.value, 10);
-      const u = parseInt(unanswered.value, 10);
-      reviewsVal.textContent = r;
-      minutesVal.textContent = m;
-      unansweredVal.textContent = u + '%';
-      const hMonth = (r * m) / 60;
-      hoursMonth.textContent = (hMonth < 10 ? hMonth.toFixed(1) : Math.round(hMonth)) + 'h';
-      hoursYear.textContent = Math.round(hMonth * 12) + 'h';
-      missed.textContent = Math.round(r * (u / 100));
+    const demos = [
+      { stars: '★★☆☆☆', author: 'Javier R.', review: "La habitación era más pequeña de lo que esperaba y el aire acondicionado estuvo roto toda la noche. No vale ese precio.", reply: "Hola Javier, sentimos mucho lo del aire acondicionado y el tamaño de la habitación — no es la experiencia que queremos para nuestros huéspedes. Ya se lo hemos comunicado a mantenimiento. Gracias por avisarnos, esperamos poder compensarte en tu próxima visita." },
+      { stars: '★★★★★', author: 'Sofía L.', review: "¡Ubicación increíble, personal súper amable, y el desayuno buenísimo!", reply: "¡Muchísimas gracias, Sofía! Nos alegra muchísimo que disfrutaras la ubicación, el equipo y el desayuno — significa mucho para nosotros. ¡Esperamos verte pronto de nuevo!" },
+      { stars: '★★★☆☆', author: 'Claire M.', review: "Chambre propre mais très bruyante la nuit à cause de la rue. Personnel adorable.", reply: "Bonjour Claire, merci pour votre retour. Ravis que notre équipe vous ait plu — et désolés pour le bruit, nous allons voir comment mieux isoler les chambres côté rue. Au plaisir de vous accueillir à nouveau !" },
+    ];
+
+    let timer;
+    function show(i) {
+      clearTimeout(timer);
+      tabs.forEach(t => t.classList.remove('active'));
+      tabs[i].classList.add('active');
+      const d = demos[i];
+      reviewEl.innerHTML = `<div class="wa-label">NUEVA RESEÑA — Google ${d.stars}</div><strong>${d.author}:</strong> "${d.review}"`;
+      replyEl.style.display = 'none';
+      typingEl.style.display = 'flex';
+      timer = setTimeout(() => {
+        typingEl.style.display = 'none';
+        replyEl.style.display = 'block';
+        replyEl.innerHTML = `<strong style="font-size:10px;color:var(--gray-500);display:block;margin-bottom:4px;">RESPUESTA GENERADA</strong>${d.reply}`;
+      }, 1100);
     }
-    [reviews, minutes, unanswered].forEach(el => el.addEventListener('input', update));
-    update();
+    tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+    show(0);
   })();
 
   const countObserver = new IntersectionObserver((entries) => {
