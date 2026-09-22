@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('hospera-theme');
+      var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch(e) {}
+  })();
+</script>
+<title>Hosperai — Formulario de alta de cliente</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:    #ffffff;
+    --gray-50:  #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --blue:     #2563eb;
+    --blue-50:  #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-700: #1d4ed8;
+    --green:    #059669;
+    --green-50: #ecfdf5;
+    --nav-bg:   rgba(255,255,255,0.92);
+    --dot-color: rgba(37,99,235,.28);
+  }
+  html[data-theme="dark"] {
+    --white:    #0d0f14;
+    --gray-50:  #14161d;
+    --gray-100: #1b1e27;
+    --gray-200: #2a2d38;
+    --gray-400: #7d8590;
+    --gray-500: #9ca3af;
+    --gray-600: #b0b7c3;
+    --gray-700: #cbd1db;
+    --gray-900: #f3f4f6;
+    --blue-50:  #142033;
+    --blue-100: #1e3a5f;
+    --nav-bg:   rgba(13,15,20,0.85);
+    --dot-color: rgba(109,155,255,.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Inter', -apple-system, sans-serif;
+    background:var(--white); color:var(--gray-900);
+    transition:background-color .25s ease, color .25s ease;
+  }
+  .container { max-width:720px; margin:0 auto; padding:0 24px; }
+
+  header {
+    padding:20px 0; border-bottom:1px solid var(--gray-200);
+  }
+  .logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+  .logo-icon-img { height:28px; width:auto; display:block; }
+  .logo-name { font-size:16px; font-weight:800; color:var(--gray-900); letter-spacing:-0.3px; }
+  .logo-name span { color:var(--blue); }
+
+  .hero-block {
+    position:relative; overflow:hidden;
+    background-image: radial-gradient(var(--dot-color) 1.3px, transparent 1.3px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
+            mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
+    padding:48px 0 8px;
+  }
+  .eyebrow { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; }
+  h1 { font-size:clamp(26px,4vw,36px); font-weight:800; letter-spacing:-0.5px; margin-bottom:12px; line-height:1.15; }
+  h1 .blue { color:var(--blue); }
+  .lead { font-size:15px; color:var(--gray-500); line-height:1.65; max-width:520px; }
+
+  form { padding:32px 0 80px; }
+  fieldset { border:none; margin:0 0 36px; }
+  legend { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; color:var(--blue); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--gray-200); width:100%; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:13.5px; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+  .field .hint { font-size:12px; color:var(--gray-500); margin-top:5px; line-height:1.4; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:600px) { .row { grid-template-columns:1fr; } }
+
+  input[type="text"], input[type="email"], input[type="tel"], input[type="url"], select, textarea {
+    width:100%; padding:11px 13px; border-radius:9px; border:1px solid var(--gray-200);
+    background:var(--gray-50); color:var(--gray-900); font-size:14px; font-family:inherit;
+    transition:border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--blue); }
+  textarea { resize:vertical; min-height:70px; line-height:1.5; }
+
+  .check-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:600px) { .check-grid { grid-template-columns:1fr; } }
+  .check-item {
+    display:flex; align-items:center; gap:9px; padding:10px 12px;
+    border:1px solid var(--gray-200); border-radius:9px; background:var(--gray-50);
+    font-size:13.5px; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .check-item:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .check-item input { accent-color:var(--blue); width:16px; height:16px; flex-shrink:0; }
+
+  .submit-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+  .btn-primary {
+    background:var(--blue); color:#fff; border:none;
+    padding:14px 28px; border-radius:9px; font-size:14.5px; font-weight:700;
+    cursor:pointer; font-family:inherit; transition:background .15s, transform .15s;
+  }
+  .btn-primary:hover { background:var(--blue-700); transform:translateY(-1px); }
+  .btn-secondary {
+    background:transparent; color:var(--gray-700); border:1px solid var(--gray-200);
+    padding:14px 20px; border-radius:9px; font-size:13.5px; font-weight:600;
+    cursor:pointer; font-family:inherit; transition:border-color .15s;
+  }
+  .btn-secondary:hover { border-color:var(--gray-400); }
+  .submit-note { font-size:12px; color:var(--gray-500); margin-top:10px; }
+  .copied-msg { font-size:12.5px; color:var(--green); font-weight:700; display:none; }
+  .copied-msg.show { display:inline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="index-es.html" class="logo">
+      <img src="assets/logo-icon.png" alt="Hosperai" class="logo-icon-img">
+      <span class="logo-name">Hosperai<span>.es</span></span>
+    </a>
+  </div>
+</header>
+
+<div class="hero-block">
+  <div class="container">
+    <div class="eyebrow">Alta de cliente</div>
+    <h1>Vamos a <span class="blue">activar</span> tu negocio.</h1>
+    <p class="lead">Rellena esto una vez — es todo lo que necesitamos para poner Hospera en marcha en tu negocio. Son unos 5 minutos. Al enviarlo se abre un email hacia nosotros con tus respuestas ya listas.</p>
+  </div>
+</div>
+
+<form id="onboardForm">
+  <div class="container">
+
+    <fieldset>
+      <legend>Con quién hablamos</legend>
+      <div class="row">
+        <div class="field">
+          <label>Tu nombre</label>
+          <input type="text" name="contact_name" required>
+        </div>
+        <div class="field">
+          <label>Tu email</label>
+          <input type="email" name="contact_email" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tu negocio</legend>
+      <div class="row">
+        <div class="field">
+          <label>Nombre del negocio</label>
+          <input type="text" name="business_name" required>
+        </div>
+        <div class="field">
+          <label>Tipo</label>
+          <select name="business_type" required>
+            <option value="">Elige uno</option>
+            <option value="Hotel">Hotel</option>
+            <option value="Restaurante">Restaurante</option>
+            <option value="Ambos">Ambos</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Dirección física</label>
+        <input type="text" name="address" required>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dónde están tus reseñas</legend>
+      <div class="field">
+        <label>Enlace de tu perfil de Google / Maps</label>
+        <input type="url" name="google_url" placeholder="https://maps.app.goo.gl/..." required>
+        <div class="hint">Busca tu negocio en Google Maps y pega el enlace — el resto lo hacemos nosotros.</div>
+      </div>
+      <div class="field">
+        <label>Enlace de tu ficha en TripAdvisor (si tienes)</label>
+        <input type="url" name="tripadvisor_url" placeholder="https://www.tripadvisor.es/...">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cómo quieres que funcione</legend>
+      <div class="row">
+        <div class="field">
+          <label>Número de WhatsApp para avisos</label>
+          <input type="tel" name="whatsapp" placeholder="+34 670 09 03 82" required>
+          <div class="hint">Aquí recibirás las reseñas nuevas y aprobarás las respuestas.</div>
+        </div>
+        <div class="field">
+          <label>Idioma de tus avisos</label>
+          <select name="notify_lang" required>
+            <option value="">Elige uno</option>
+            <option value="Español">Español</option>
+            <option value="English">English</option>
+            <option value="Català">Català</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Cómo quieres que se firmen las respuestas?</label>
+        <input type="text" name="signature" placeholder="p. ej. El equipo de Hotel Aurora">
+        <div class="hint">Opcional — si lo dejas en blanco, usaremos el nombre de tu negocio.</div>
+      </div>
+      <div class="field">
+        <label>¿Cómo controlas hoy las entradas y salidas de huéspedes?</label>
+        <textarea name="pms" placeholder="Nombre del PMS, Excel, sistema de reservas — lo que uses ahora mismo"></textarea>
+        <div class="hint">Solo hace falta si quieres el servicio automático de petición de reseñas (NFC/SMS).</div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Qué quieres activar</legend>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="services" value="Responder reseñas"> Responder reseñas</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Conseguir más reseñas"> Conseguir más reseñas</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Informes de evolución"> Informes de evolución</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Competitive Intel"> Competitive Intel</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Web a medida"> Web a medida</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Puesta a punto de Google"> Puesta a punto de Google</label>
+        <label class="check-item"><input type="checkbox" name="services" value="App de formación del personal"> App de formación del personal</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Recetario y escandallos"> Recetario y escandallos</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Algo más</legend>
+      <div class="field">
+        <textarea name="notes" placeholder="¿Algo más que debamos saber antes de activarlo?"></textarea>
+      </div>
+    </fieldset>
+
+    <div class="submit-row">
+      <button type="submit" class="btn-primary">Enviar a Hospera →</button>
+      <button type="button" class="btn-secondary" id="copyBtn">Copiar en su lugar</button>
+      <span class="copied-msg" id="copiedMsg">Copiado ✓</span>
+    </div>
+    <div class="submit-note">Esto abre tu app de correo con todo ya rellenado — solo dale a enviar. Si no funciona, usa "Copiar en su lugar" y pégalo en un email o WhatsApp hacia nosotros.</div>
+
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('onboardForm');
+  const DEST_EMAIL = 'hosperai.app@gmail.com';
+
+  function buildText() {
+    const d = new FormData(form);
+    const services = d.getAll('services').join(', ') || '—';
+    return [
+      `Alta de cliente nuevo en Hospera`,
+      ``,
+      `Contacto: ${d.get('contact_name') || '—'} (${d.get('contact_email') || '—'})`,
+      ``,
+      `Negocio: ${d.get('business_name') || '—'}`,
+      `Tipo: ${d.get('business_type') || '—'}`,
+      `Dirección: ${d.get('address') || '—'}`,
+      ``,
+      `Perfil de Google: ${d.get('google_url') || '—'}`,
+      `TripAdvisor: ${d.get('tripadvisor_url') || '—'}`,
+      ``,
+      `WhatsApp para avisos: ${d.get('whatsapp') || '—'}`,
+      `Idioma de avisos: ${d.get('notify_lang') || '—'}`,
+      `Firma de respuestas: ${d.get('signature') || '—'}`,
+      `Control de entradas/salidas: ${d.get('pms') || '—'}`,
+      ``,
+      `Servicios pedidos: ${services}`,
+      ``,
+      `Notas: ${d.get('notes') || '—'}`,
+    ].join('\n');
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const body = buildText();
+    const subject = `Alta de cliente nuevo — ${form.business_name.value || 'Hospera'}`;
+    window.location.href = `mailto:${DEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    const text = buildText();
+    navigator.clipboard.writeText(text).then(function() {
+      const msg = document.getElementById('copiedMsg');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 2000);
+    });
+  });
+</script>
+
+</body>
+</html>
