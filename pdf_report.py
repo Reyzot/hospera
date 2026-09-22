@@ -160,6 +160,8 @@ AUDIT_STRINGS = {
             f"Más volumen reciente y positivo desplaza poco a poco la media histórica de Google "
             f"({s['google_overall_rating']}⭐ hoy) hacia arriba — sin inventar nada, solo facilitando que cuenten los huéspedes que ya estaban satisfechos."
         ) if s.get('google_overall_rating') else "",
+        "how_title": "Así se vería, en la práctica",
+        "how_caption": "Reseña nueva → la IA redacta la respuesta → tú apruebas desde WhatsApp con un toque. Nada que instalar, nada que aprender.",
         "th_month": "Mes", "th_reviews": "Reseñas", "th_avg": "Puntuación media", "th_answered": "% Contestado",
         "footer_note": "Datos extraídos directamente de Google Maps. Este análisis es gratuito y no requiere que uses Hosperai — te lo enviamos porque creemos que te va a ser útil.",
         "footer_tag": "Esto se puede automatizar — reseñas respondidas por IA, sin dashboards, todo en WhatsApp.",
@@ -193,6 +195,8 @@ AUDIT_STRINGS = {
             f"who already left happy. More recent, positive volume gradually pulls the overall Google rating "
             f"(currently {s['google_overall_rating']}⭐) upward — nothing invented, just making it easy for already-satisfied guests to be counted."
         ) if s.get('google_overall_rating') else "",
+        "how_title": "What this would look like",
+        "how_caption": "New review comes in → AI drafts the reply → you approve from WhatsApp with one tap. Nothing to install, nothing to learn.",
         "th_month": "Month", "th_reviews": "Reviews", "th_avg": "Average rating", "th_answered": "% Answered",
         "footer_note": "Data pulled directly from Google Maps. This analysis is free and doesn't require using Hosperai — we're sending it because we think it'll be useful to you.",
         "footer_tag": "This can be automated — reviews answered by AI, no dashboards, all on WhatsApp.",
@@ -243,12 +247,34 @@ def render_audit_html(business_name, stats, monthly_rows, date_str, lang="es"):
     google_note = t['google_note'](stats)
     growth_text = t['growth_text'](stats)
     growth_html = ""
+    how_it_works_html = ""
     if growth_text:
         growth_html = f"""
         <div class="section-title" style="margin:10px 0 4px;">{t['growth_title']}</div>
         <div class="note" style="background:{BLUE_50};border:1px solid #dbeafe;color:{GRAY_900};padding:9px 14px;border-radius:10px;font-style:normal;margin-top:0;">
           {growth_text}
         </div>
+        """
+        how_it_works_html = f"""
+        <div class="section-title" style="margin:10px 0 4px;">{t['how_title']}</div>
+        <div style="border:1px solid {GRAY_200};border-radius:10px;overflow:hidden;max-width:380px;">
+          <div style="background:{GRAY_200};padding:6px 10px;font-size:9.5px;color:{GRAY_500};font-weight:600;">WhatsApp · Hosperai</div>
+          <div style="padding:10px;background:#fff;">
+            <div style="background:#e7ffd9;border-radius:10px 10px 3px 10px;padding:8px 11px;font-size:10.5px;line-height:1.45;margin-bottom:7px;color:{GRAY_900};">
+              <div style="font-weight:700;color:{GREEN};font-size:8.5px;margin-bottom:3px;">NEW REVIEW — Google ★★★★☆</div>
+              Maria G.: "Great location, very friendly staff..."
+            </div>
+            <div style="background:#fff;border:1px solid {GRAY_200};border-radius:10px 10px 10px 3px;padding:8px 11px;font-size:10.5px;color:{GRAY_900};margin-bottom:7px;">
+              <strong style="font-size:8.5px;color:{GRAY_500};display:block;margin-bottom:2px;">GENERATED REPLY</strong>
+              Hi Maria, thank you for staying with us — so glad you felt well taken care of!
+            </div>
+            <div style="display:flex;gap:6px;">
+              <div style="flex:1;background:{GREEN};color:#fff;text-align:center;padding:5px;border-radius:6px;font-size:9.5px;font-weight:700;">YES</div>
+              <div style="flex:1;background:{GRAY_200};color:{GRAY_500};text-align:center;padding:5px;border-radius:6px;font-size:9.5px;font-weight:700;">EDIT</div>
+            </div>
+          </div>
+        </div>
+        <div class="google-note" style="max-width:380px;margin-top:4px;">{t['how_caption']}</div>
         """
 
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8">
@@ -279,6 +305,7 @@ def render_audit_html(business_name, stats, monthly_rows, date_str, lang="es"):
 <ul class="key-points">{key_points_html}</ul>
 {example_html}
 {growth_html}
+{how_it_works_html}
 <div class="section-title" style="margin:8px 0 4px;">{t['evolution_title']}</div>
 <table class="compare-table">
   <tr><th>{t['th_month']}</th><th>{t['th_reviews']}</th><th>{t['th_avg']}</th><th>{t['th_answered']}</th></tr>
