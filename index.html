@@ -199,6 +199,12 @@
   .hero-glow { position:absolute; z-index:0; pointer-events:none; border-radius:50%; }
   .hero-glow-1 { width:420px; height:420px; left:-140px; bottom:-120px; background:radial-gradient(circle, rgba(37,99,235,.18), transparent 70%); }
   .hero-glow-2 { width:380px; height:380px; right:-120px; top:18%; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes drift { 0%,100% { transform:translate(0,0); } 50% { transform:translate(26px,-20px); } }
+    .hero-glow-1 { animation:drift 13s ease-in-out infinite; }
+    .hero-glow-2 { animation:drift 16s ease-in-out infinite reverse; }
+    .packs::after, .roadmap::after, .about::after, .faq::after, .contact::after { animation:drift 18s ease-in-out infinite; }
+  }
   .hero > *:not(.hero-glow) { position:relative; z-index:1; }
   .hero-tag {
     display:inline-flex; align-items:center; gap:9px;
@@ -262,6 +268,12 @@
     .stat-card { border-right:none; border-bottom:1px solid var(--gray-200); }
     .stat-card:last-child { border-bottom:none; }
   }
+  .trusted-by {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:24px; font-size:12px; color:var(--gray-400); flex-wrap:wrap;
+  }
+  .trusted-name { color:var(--gray-600); font-weight:700; }
+  .trusted-dot { color:var(--gray-400); }
 
   /* ── STRIP ── */
   .strip {
@@ -393,55 +405,35 @@
 
   /* ── PACKS ── */
   .packs { background:var(--gray-50); }
-  .packs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:56px; }
-  @media(max-width:900px) { .packs-grid { grid-template-columns:1fr; max-width:480px; margin-left:auto; margin-right:auto; } }
+  .packs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:48px; }
+  @media(max-width:900px) { .packs-grid { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:520px) { .packs-grid { grid-template-columns:1fr; max-width:380px; margin-left:auto; margin-right:auto; } }
 
   .pack-card {
     background:var(--white); border:1px solid var(--gray-200);
-    border-radius:16px; padding:24px; display:flex; flex-direction:column;
-    box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:box-shadow .2s, transform .2s;
+    border-radius:14px; padding:18px; display:flex; flex-direction:column;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:box-shadow .2s, transform .2s, border-color .2s;
+    text-decoration:none; color:inherit; cursor:pointer; position:relative;
   }
-  .pack-card:hover { box-shadow:0 8px 24px rgba(0,0,0,0.1); transform:translateY(-2px); }
-  .pack-card.featured {
-    border-color:var(--blue); box-shadow:0 0 0 2px var(--blue-100), 0 4px 16px rgba(37,99,235,0.12);
-    position:relative;
-  }
-  .pack-badge {
-    position:absolute; top:-13px; left:50%; transform:translateX(-50%);
-    background:var(--blue); color:#fff;
-    padding:4px 16px; border-radius:100px; font-size:11px; font-weight:700;
-    white-space:nowrap;
-  }
+  .pack-card:hover { box-shadow:0 10px 26px rgba(0,0,0,0.1); transform:translateY(-3px); border-color:var(--blue-100); }
+  .pack-arrow { position:absolute; top:16px; right:16px; color:var(--gray-400); transition:transform .2s, color .2s; }
+  .pack-arrow svg { width:14px; height:14px; display:block; }
+  .pack-card:hover .pack-arrow { color:var(--blue); transform:translate(2px,-2px); }
   .pack-icon {
-    width:40px; height:40px; border-radius:11px;
+    width:36px; height:36px; border-radius:10px;
     background:var(--blue-50); border:1px solid var(--blue-100);
     display:flex; align-items:center; justify-content:center; margin-bottom:12px;
   }
-  .pack-icon svg { width:18px; height:18px; }
-  .pack-tags { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+  .pack-icon svg { width:16px; height:16px; }
+  .pack-tags { display:flex; gap:5px; margin-bottom:8px; flex-wrap:wrap; }
   .pack-tag {
     display:inline-flex; align-items:center;
     border:1px solid var(--gray-200); color:var(--gray-500);
-    padding:2px 8px; border-radius:100px;
-    font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+    padding:2px 7px; border-radius:100px;
+    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
   }
-  .pack-name { font-size:18px; font-weight:800; letter-spacing:-0.3px; margin-bottom:6px; }
-  .pack-desc { font-size:12.5px; color:var(--gray-500); line-height:1.55; margin-bottom:14px; }
-  .pack-features { list-style:none; display:flex; flex-direction:column; gap:6px; flex:1; }
-  .pack-features li { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--gray-700); line-height:1.35; }
-  .pack-features li::before { content:'→'; color:var(--blue); font-weight:700; flex-shrink:0; }
-  .pack-cta {
-    display:block; text-align:center; margin-top:16px;
-    background:var(--gray-900); color:#fff;
-    padding:11px; border-radius:9px; font-size:13px; font-weight:700;
-    text-decoration:none; transition:background .2s;
-  }
-  .pack-cta:hover { background:var(--gray-700); }
-  .pack-card.featured .pack-cta { background:var(--blue); }
-  .pack-card.featured .pack-cta:hover { background:var(--blue-700); }
-  html[data-theme="dark"] .pack-cta { background:#e5e7eb; color:#0d0f14; }
-  html[data-theme="dark"] .pack-cta:hover { background:#ffffff; }
-  html[data-theme="dark"] .pack-card.featured .pack-cta { background:var(--blue); color:#fff; }
+  .pack-name { font-size:15px; font-weight:800; letter-spacing:-0.2px; margin-bottom:5px; padding-right:16px; }
+  .pack-desc { font-size:12px; color:var(--gray-500); line-height:1.5; }
   html[data-theme="dark"] .pack-card.featured .pack-cta:hover { background:var(--blue-700); }
 
   /* ── ROADMAP (how it works) ── */
@@ -604,17 +596,23 @@
   </div>
   <div class="hero-stats fade-in">
     <div class="stat-card">
-      <div class="stat-num">48h</div>
+      <div class="stat-num" data-count="48" data-suffix="h">0h</div>
       <div class="stat-label">Time to go live</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num">100%</div>
+      <div class="stat-num" data-count="100" data-suffix="%">0%</div>
       <div class="stat-label">Reviews answered automatically</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num">0</div>
+      <div class="stat-num" data-count="0" data-suffix="">0</div>
       <div class="stat-label">Dashboards, logins or new apps</div>
     </div>
+  </div>
+  <div class="trusted-by fade-in">
+    <span>Trusted by</span>
+    <span class="trusted-name">Arreu Begur</span>
+    <span class="trusted-dot">·</span>
+    <span class="trusted-name">Racó's Chiringuito</span>
   </div>
 </section>
 
@@ -670,123 +668,85 @@
     </div>
     <div class="packs-grid fade-in">
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Answer reviews</div>
-        <p class="pack-desc">Every Google and TripAdvisor review answered by AI, in the guest's language. Approve from WhatsApp with one tap.</p>
-        <ul class="pack-features">
-          <li>24/7 monitoring on Google and TripAdvisor</li>
-          <li>Approve, edit or reject from WhatsApp</li>
-          <li>Negative reviews flagged instantly</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Every review answered while you sleep.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Get more reviews</div>
-        <p class="pack-desc">NFC/QR card at checkout, plus automatic SMS/WhatsApp on departure day and a mid-stay check-in for longer stays.</p>
-        <ul class="pack-features">
-          <li>Guest chooses Google or TripAdvisor</li>
-          <li>Message in their language, automatically</li>
-          <li>For hotels: mid-stay check-in if something's wrong</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Guests leave reviews without a second ask.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Progress reports</div>
-        <p class="pack-desc">A PDF every week and every month with your rating, review volume, and how it changes vs. the prior period. No dashboards.</p>
-        <ul class="pack-features">
-          <li>Weekly recap by WhatsApp/email</li>
-          <li>Month-over-month comparison</li>
-          <li>Recurring complaints flagged automatically</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Your reputation, tracked without lifting a finger.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span></div>
         <div class="pack-name">Competitive Intel</div>
-        <p class="pack-desc">Every morning, a briefing with competitor pricing and local events that could move demand.</p>
-        <ul class="pack-features">
-          <li>Competitor prices refreshed every 24h</li>
-          <li>Detects nearby events and fairs</li>
-          <li>Your rating vs. the competition, not just price</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Know what they charge before you set your price.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Custom websites</div>
-        <p class="pack-desc">We build your professional website from scratch, ready in days — no generic templates.</p>
-        <ul class="pack-features">
-          <li>Unique design for your business</li>
-          <li>Ready in days, not weeks</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">A website that's actually yours.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Google Profile tune-up</div>
-        <p class="pack-desc">Photos, hours, category, FAQs — a complete profile, not just the reviews.</p>
-        <ul class="pack-features">
-          <li>Full review of your profile</li>
-          <li>Optimized to rank better in search</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Your Google listing, fully optimized.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Staff training app</div>
-        <p class="pack-desc">A simple app your kitchen team actually uses — onboarding and quizzes tied to your own recipes.</p>
-        <ul class="pack-features">
-          <li>PIN login per employee, no accounts to manage</li>
-          <li>Quizzes generated from your own recipes</li>
-          <li>Reads recipes aloud, hands-free in the kitchen</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Training your team actually opens.</p>
+      </a>
 
-      <div class="pack-card">
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
         <div class="pack-name">Recipe book & food costing</div>
-        <p class="pack-desc">Every recipe with photos and video, plus cost per dish and margin vs. your menu price — no more binders or spreadsheets.</p>
-        <ul class="pack-features">
-          <li>Step-by-step photos and video per recipe</li>
-          <li>Cost per ingredient, totaled automatically</li>
-          <li>Margin vs. your menu price at a glance</li>
-        </ul>
-        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/andreurey7'});return false;" class="pack-cta">Book a call →</a>
-      </div>
+        <p class="pack-desc">Every dish costed down to the cent.</p>
+      </a>
 
     </div>
   </div>
@@ -809,7 +769,7 @@
         <div class="roadmap-content">
           <span class="roadmap-tag">Before anything else</span>
           <h3>We analyze your reputation, free</h3>
-          <p>Review count, real rating, response rate — audited from your Google profile. Sent as a free PDF, no strings attached.</p>
+          <p>A free, no-strings audit of your Google reputation.</p>
           <div class="roadmap-visual mock-window">
             <div class="mock-bar">
               <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
@@ -831,7 +791,7 @@
         <div class="roadmap-content">
           <span class="roadmap-tag">Step 1 · Growth</span>
           <h3>We get you more reviews</h3>
-          <p>Tap the NFC card — review written in seconds. On departure day we reach out automatically in their language, by WhatsApp, SMS or email — plus a quick mid-stay check-in on longer stays, so problems get fixed before checkout, not in a public review.</p>
+          <p>One tap, and reviews write themselves.</p>
           <div class="roadmap-visual" style="max-width:680px;display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;">
           <div class="mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
             <div class="mock-bar">
@@ -868,7 +828,7 @@
         <div class="roadmap-content">
           <span class="roadmap-tag">Step 2 · Response</span>
           <h3>We answer every one for you</h3>
-          <p>As soon as a review comes in, the AI drafts a reply in your hotel's voice and sends it to your WhatsApp — with the link to paste it straight into Google.</p>
+          <p>A reply ready before you've even seen the review.</p>
           <div class="roadmap-visual mock-window">
             <div class="mock-bar">
               <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
@@ -892,7 +852,7 @@
         <div class="roadmap-content">
           <span class="roadmap-tag">Step 3 · Tracking</span>
           <h3>You see it improve, week by week</h3>
-          <p>Every week you get a recap: how many reviews came in, your rating that week, and how it compares to the week before. Every month, a report comparing your full evolution month over month — rating, volume, all in one place.</p>
+          <p>Your progress, delivered every week without asking.</p>
           <div class="roadmap-visual mock-window">
             <div class="mock-bar">
               <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
@@ -1065,6 +1025,25 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      countObserver.unobserve(e.target);
+      const target = parseInt(e.target.getAttribute('data-count'), 10);
+      const suffix = e.target.getAttribute('data-suffix') || '';
+      const duration = 900;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        e.target.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
   document.getElementById('theme-toggle').addEventListener('click', () => {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
