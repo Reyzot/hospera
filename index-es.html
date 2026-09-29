@@ -197,6 +197,11 @@
   .demo-typing span:nth-child(3) { animation-delay:.3s; }
   @keyframes typingBounce { 0%,60%,100%{transform:translateY(0); opacity:.4;} 30%{transform:translateY(-4px); opacity:1;} }
 
+  /* ── DEMO VIDEO ── */
+  .demo-video { background:var(--white); }
+  .demo-video-wrap { max-width:900px; margin:36px auto 0; border-radius:18px; overflow:hidden; box-shadow:0 24px 60px rgba(15,23,42,.18); background:#0b1020; line-height:0; }
+  .demo-video-wrap video { width:100%; height:auto; display:block; }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -683,6 +688,22 @@
     </div>
   </div>
 </div>
+
+<!-- DEMO VIDEO -->
+<section class="demo-video" id="video">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="eyebrow">Míralo en acción</div>
+      <h2 class="section-title">38 segundos. <span style="color:var(--blue)">Cero esfuerzo.</span></h2>
+      <p class="section-sub" style="margin:0 auto">Más reseñas. Menos trabajo. Así funciona HOSPERAI en un hotel.</p>
+    </div>
+    <div class="demo-video-wrap fade-in">
+      <video controls playsinline preload="none" poster="media/hosperai-demo-poster.jpg" onplay="gtag('event','demo_video_play')">
+        <source src="media/hosperai-demo.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
 
 <!-- SERVICIOS -->
 <section class="packs" id="packs">
