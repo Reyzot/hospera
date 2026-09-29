@@ -20,6 +20,7 @@ from collections import defaultdict
 
 from reports import fetch_reviews_covering_months
 from pdf_report import render_audit_html, html_to_pdf
+from maps_rank import maps_rank
 
 MESES_ES = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
@@ -143,6 +144,8 @@ def main():
     parser.add_argument('--months', type=int, default=6)
     parser.add_argument('--lang', choices=['es', 'en'], default='es')
     parser.add_argument('--out', default=None)
+    parser.add_argument('--keyword', default=None, help='búsqueda de Google Maps para medir su posición, ej. "brunch miami beach"')
+    parser.add_argument('--ll', default=None, help='opcional, centro del mapa "@lat,lng,14z"')
     args = parser.parse_args()
 
     print(f"Analizando {args.business_name}...")
@@ -153,6 +156,11 @@ def main():
     if not stats['covered']:
         print("  ⚠️  No se llegó a cubrir todo el rango de meses pedido (negocio con mucho volumen) "
               "— los meses más antiguos de la tabla pueden estar incompletos. Sube --months o revisa max_pages.")
+
+    if args.keyword:
+        stats['maps_rank'] = maps_rank(args.data_id, args.keyword, args.ll, hl=args.lang)
+        mr = stats['maps_rank']
+        print(f"  Google Maps '{args.keyword}': " + (f"#{mr['position']}" if mr['position'] else f"fuera del top {mr['checked']}"))
 
     date_str = datetime.now().strftime('%d/%m/%Y')
     html = render_audit_html(args.business_name, stats, monthly_rows, date_str, lang=args.lang)

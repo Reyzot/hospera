@@ -46,6 +46,7 @@ CLIENTS = [
         "state":     Path.home() / 'hospera/seen_arreu.json',
         "notify_lang": "es",
         "manager_email": "andreurey7@gmail.com",
+        "ranking_keyword": "restaurantes en Begur",
     },
     {
         "name":      "Racó'ns Chiringuito",
@@ -55,6 +56,7 @@ CLIENTS = [
         "signature": "El equipo de Racó'ns",
         "phone":     "whatsapp:+34670090382",
         "state":     Path.home() / 'hospera/seen_racons.json',
+        "ranking_keyword": "restaurantes en Begur",
         "notify_lang": "es",
         "manager_email": "andreurey7@gmail.com",
     },

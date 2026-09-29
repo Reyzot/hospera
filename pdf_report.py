@@ -83,7 +83,23 @@ def render_weekly_html(client, weekly, date_str):
 {_footer()}
 </body></html>"""
 
-def render_monthly_html(client, current, previous, covered, date_str):
+def render_monthly_html(client, current, previous, covered, date_str, rank_now=None, rank_prev=None):
+    ranking_html = ""
+    if rank_now:
+        keyword = client.get('ranking_keyword', '')
+        rank_delta_html = ""
+        if rank_prev and rank_prev != rank_now:
+            improved = rank_now < rank_prev
+            cls = "delta-up" if improved else "delta-down"
+            arrow = "▲" if improved else "▼"
+            rank_delta_html = f' <span class="{cls}">{arrow} antes puesto {rank_prev}</span>'
+        ranking_html = f"""
+<div class="section-title">Posición en Google Maps</div>
+<table class="compare-table">
+  <tr><th>Búsqueda</th><th>Puesto</th></tr>
+  <tr><td>"{keyword}"</td><td><strong>#{rank_now}</strong>{rank_delta_html}</td></tr>
+</table>
+"""
     delta_count_html = ""
     delta_rating_html = ""
     if covered and previous['count']:
@@ -131,6 +147,7 @@ def render_monthly_html(client, current, previous, covered, date_str):
   <tr><td>{delta_count_html or '—'}</td><td>{delta_rating_html or '—'}</td></tr>
 </table>
 {complaints_html}
+{ranking_html}
 {note}
 {_footer()}
 </body></html>"""
@@ -233,6 +250,21 @@ def render_audit_html(business_name, stats, monthly_rows, date_str, lang="es"):
 
     key_points_html = "".join(f'<li>{p}</li>' for p in t['key_points'](stats))
 
+    rank_html = ""
+    mr = stats.get('maps_rank')
+    if mr:
+        es = lang == "es"
+        pos = f"#{mr['position']}" if mr['position'] else (f"+{mr['checked']}")
+        head = (f"Posición en Google Maps para «{mr['keyword']}»" if es else f"Google Maps position for “{mr['keyword']}”")
+        who = ("Quién sale arriba" if es else "Who shows up first")
+        top_rows = "".join(f"<tr><td>{i}</td><td>{x['title']}</td><td>{x['rating'] or '—'}⭐</td><td>{x['reviews'] or '—'}</td></tr>" for i, x in enumerate(mr['top'], 1))
+        rank_html = f"""
+        <div class="section-title" style="margin:10px 0 4px;">{head}</div>
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:6px;">
+          <div class="stat-card" style="padding:10px 16px;min-width:110px;"><div class="stat-num">{pos}</div><div class="stat-label">{'posición' if es else 'position'}</div></div>
+          <table class="compare-table" style="flex:1;"><tr><th>#</th><th>{who}</th><th>⭐</th><th>{'Reseñas' if es else 'Reviews'}</th></tr>{top_rows}</table>
+        </div>"""
+
     example = stats.get('example_unanswered_negative')
     example_html = ""
     if example:
@@ -301,6 +333,7 @@ def render_audit_html(business_name, stats, monthly_rows, date_str, lang="es"):
   <div class="stat-card" style="padding:12px 16px;"><div class="stat-num">{stats['negative_unanswered']}/{stats['negative']}</div><div class="stat-label">{t['stat_negative']}</div></div>
 </div>
 {unanswered_html}
+{rank_html}
 <div class="section-title" style="margin:8px 0 4px;">{t['why_title']}</div>
 <ul class="key-points">{key_points_html}</ul>
 {example_html}

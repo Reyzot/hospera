@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 import anthropic
 from review_monitor import CLIENTS, SERPAPI_KEY, load_seen, LOW_RATING_THRESHOLD
 from pdf_report import render_weekly_html, render_monthly_html, html_to_pdf
+from maps_rank import maps_rank
 import requests
 
 load_dotenv(dotenv_path=os.path.expanduser('~/hospera/.env'))
@@ -108,6 +109,29 @@ def fetch_reviews_covering_months(data_id, n_months=2, max_pages=6):
             break
         params = {**params, "next_page_token": next_token}
     return all_reviews, covered, place_info
+
+
+def ranking_history(client, cache):
+    """Comprueba el ranking una vez al mes (cacheado, mismo patrón que
+    monthly_comparison) y devuelve (posición actual, posición mes anterior)."""
+    ranking_cache = cache.setdefault('_ranking', {})
+    entry = ranking_cache.get(client['name'], {})
+    now = datetime.now()
+    current_month_key = now.strftime('%Y-%m')
+
+    if current_month_key not in entry:
+        keyword = client.get('ranking_keyword')
+        result = maps_rank(client['data_id'], keyword, client.get('ranking_ll')) if keyword else {"position": None, "checked": 0}
+        entry[current_month_key] = {
+            "position": result.get("position"), "total": result.get("checked", 0),
+            "checked_at": now.isoformat()
+        }
+        ranking_cache[client['name']] = entry
+
+    prev_month_key = (now.replace(day=1) - timedelta(days=1)).strftime('%Y-%m')
+    current_position  = entry.get(current_month_key, {}).get('position')
+    previous_position = entry.get(prev_month_key, {}).get('position')
+    return current_position, previous_position
 
 
 def load_monthly_cache():
@@ -248,7 +272,11 @@ def run_monthly(test_mode=False):
 
         print(f"\n  📍 {client['name']} — informe mensual")
         current, previous, covered = monthly_comparison(client, cache)
-        html = render_monthly_html(client, current, previous, covered, date_str)
+        rank_now, rank_prev = ranking_history(client, cache)
+        if rank_now:
+            print(f"  📍 Ranking '{client.get('ranking_keyword')}': puesto {rank_now}"
+                  + (f" (antes {rank_prev})" if rank_prev else ""))
+        html = render_monthly_html(client, current, previous, covered, date_str, rank_now, rank_prev)
         pdf_path = f"/tmp/hospera_mensual_{client['name'].replace(' ', '_')}.pdf"
         html_to_pdf(html, pdf_path)
         print(f"  📄 PDF generado: {pdf_path}")
