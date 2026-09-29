@@ -22,3 +22,5 @@ guest_state/
 .last_guestfollowup_run
 guestfollowup_out.log
 guestfollowup_err.log
+healthcheck_out.log
+healthcheck_err.log
