@@ -20,7 +20,8 @@ CHECKIN_SECRET = os.getenv("CHECKIN_SECRET", "")
 
 def checkin_link(c):
     t = hmac.new(CHECKIN_SECRET.encode(), c["slug"].encode(), hashlib.sha256).hexdigest()[:16]
-    return f"{SITE}/checkin/?h={c['slug']}&t={t}&n={urllib.parse.quote(c['name'])}"
+    m = "&m=1" if "Mid-stay check-in" in (c.get("services") or []) else ""
+    return f"{SITE}/checkin/?h={c['slug']}&t={t}&n={urllib.parse.quote(c['name'])}{m}"
 
 
 def welcome_email(c):

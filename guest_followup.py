@@ -59,6 +59,7 @@ _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [
     {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", ""),
      "review_links": c.get("review_links") or {}, "guest_contact": c.get("guest_contact", ""),
+     "midstay": "Mid-stay check-in" in (c.get("services") or []),
      "state": STATE_DIR / f"{c['slug']}.json"}
     for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
     if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
@@ -311,7 +312,7 @@ def run_client(client, test_mode=False):
             sent += 1
 
         nights = (guest['checkout'] - guest['checkin']).days if guest['checkin'] else 0
-        if nights > 1:
+        if nights > 1 and client.get('midstay'):
             midpoint = guest['checkin'] + timedelta(days=nights // 2)
             if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not (record.get('midstay_sent') or guest.get('midstay_sent')):
                 gc = re.sub(r"[^0-9]", "", client.get('guest_contact', '').split("@")[0]) if client.get('guest_contact') else ""

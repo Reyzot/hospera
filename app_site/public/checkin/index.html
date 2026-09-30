@@ -105,7 +105,7 @@
   const LANGS = ['English', 'Español', 'Français', 'Deutsch', 'Italiano', 'Português', 'Català'];
   const SEND_HOUR = 11;
   const p = new URLSearchParams(location.search);
-  const h = p.get('h'), t = p.get('t'), n = p.get('n');
+  const h = p.get('h'), t = p.get('t'), n = p.get('n'), MIDSTAY = p.get('m') === '1';
   const $ = s => document.querySelector(s);
   const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const langOpts = sel => LANGS.map(l => `<option${l === sel ? ' selected' : ''}>${l}</option>`).join('');
@@ -171,7 +171,7 @@
 
   function nextSend(g) {
     // fecha del próximo mensaje pendiente (mitad de estancia si aún toca, si no el de salida)
-    if (g.checkin && g.checkout && !g.midstay_sent) {
+    if (MIDSTAY && g.checkin && g.checkout && !g.midstay_sent) {
       const nights = Math.round((Date.parse(g.checkout) - Date.parse(g.checkin)) / 864e5);
       if (nights > 1) {
         const mid = iso(new Date(Date.parse(g.checkin + 'T12:00:00') + Math.floor(nights / 2) * 864e5));
@@ -183,7 +183,7 @@
 
   function schedule(g) {
     const lines = [];
-    if (g.checkin && g.checkout) {
+    if (MIDSTAY && g.checkin && g.checkout) {
       const nights = Math.round((Date.parse(g.checkout) - Date.parse(g.checkin)) / 864e5);
       if (nights > 1) {
         const mid = iso(new Date(Date.parse(g.checkin + 'T12:00:00') + Math.floor(nights / 2) * 864e5));
