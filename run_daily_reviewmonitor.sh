@@ -3,6 +3,9 @@
 # review_monitor.py una vez al día, en cuanto sean las 9:00 o más tarde
 # y el Mac esté despierto — así no se pierde el día si a las 9:00 en
 # punto el portátil estaba dormido.
+# Altas nuevas del formulario → clients.json + email de aviso (cada 30 min)
+(cd ~/hospera && /usr/bin/python3 onboard_clients.py >/dev/null 2>&1)
+
 MARKER=~/hospera/.last_review_run
 TODAY=$(date +%F)
 HOUR=$(date +%H)
@@ -18,6 +21,3 @@ fi
 cd ~/hospera
 /usr/bin/python3 review_monitor.py --once
 echo "$TODAY" > "$MARKER"
-
-# Altas nuevas del formulario → clients.json + email de aviso
-/usr/bin/python3 ~/hospera/onboard_clients.py >/dev/null 2>&1
