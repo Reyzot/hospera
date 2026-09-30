@@ -101,4 +101,11 @@ python3 guest_followup.py --test
 python3 health_check.py --test
 python3 onboard_clients.py            # lista clientes y enlaces de check-in
 ```
-Hotel demo para enseñar: slug `hosperai-demo-hotel`, WhatsApp de Andreu +34 675 680 256.
+Hotel demo de Andreu: slug `hosperai-demo-hotel` (flujo real: mensaje el día de salida), WhatsApp +34 675 680 256.
+
+## 10. Demo en reuniones (WhatsApp al instante)
+
+Enlace: https://app.hosperai.es/checkin/?h=hosperai-live-demo&t=9c9ae088e96cdebf&n=Hosperai%20Live%20Demo
+- Se escribe el nombre del hotel del cliente + su nombre y móvil → el WhatsApp "Gracias por elegir {su hotel}" le llega en segundos.
+- Lo envía directamente la función de Cloudflare (secrets TWILIO_SID, TWILIO_TOKEN, WA_FROM, TPL_ES, TPL_EN en Pages). No está en clients.json, guest_followup no lo toca.
+- Si responde 63016: la plantilla aún no está aprobada por Meta.

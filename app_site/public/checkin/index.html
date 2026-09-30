@@ -66,6 +66,11 @@
       <h1>New guest</h1>
       <p class="lead">Takes 10 seconds. On checkout day the guest gets a personal thank-you with a link to leave a review.</p>
       <form id="f" autocomplete="off">
+        <div id="demoBox" style="display:none">
+          <label>Hotel name for this demo</label>
+          <input name="demo_hotel" placeholder="e.g. The Harbor Hotel">
+          <div class="hint">Demo mode: the WhatsApp is sent right away to the number below, as if the guest were checking out today.</div>
+        </div>
         <label>Guest name</label>
         <input name="name" required placeholder="Maria Thompson">
         <label>Mobile (with country code)</label>
@@ -118,6 +123,8 @@
   };
 
   const f = $('#f');
+  const DEMO = h === 'hosperai-live-demo';
+  if (DEMO && f) { $('#demoBox').style.display = ''; f.checkout.value = iso(new Date()); document.querySelector('#v-add .lead').textContent = 'Live demo: add yourself as a guest and you will get the WhatsApp in a few seconds.'; }
   if (f) { f.lang.innerHTML = langOpts('English'); f.checkin.value = iso(new Date()); }
 
   document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
@@ -145,10 +152,19 @@
     if (err) { msg.textContent = err; msg.className = 'msg err'; return; }
     btn.disabled = true; btn.textContent = 'Saving…';
     try {
-      await api({ action: 'add', ...d });
-      msg.textContent = '✅ ' + d.name + ' saved. Thank-you message on ' + pretty(d.checkout) + '.';
-      msg.className = 'msg ok';
-      const keep = f.checkin.value; f.reset(); f.lang.innerHTML = langOpts('English'); f.checkin.value = keep; f.name.focus();
+      const res = await api({ action: 'add', ...d });
+      if (res.demo) {
+        const okSent = ['delivered', 'read', 'sent'].includes(res.demo.status);
+        msg.textContent = okSent ? '📲 WhatsApp sent to ' + d.phone + ' — check your phone!'
+          : res.demo.error == 63016 ? '⏳ WhatsApp not sent: the message template is still waiting for Meta approval.'
+          : res.demo.error == 63024 || res.demo.error == 63003 ? '⚠️ That number does not have WhatsApp.'
+          : '⚠️ WhatsApp not delivered (' + (res.demo.error || res.demo.status) + ').';
+        msg.className = okSent ? 'msg ok' : 'msg err';
+      } else {
+        msg.textContent = '✅ ' + d.name + ' saved. Thank-you message on ' + pretty(d.checkout) + '.';
+        msg.className = 'msg ok';
+      }
+      const keep = f.checkin.value, keepHotel = f.demo_hotel.value; f.reset(); f.lang.innerHTML = langOpts('English'); f.checkin.value = keep; f.demo_hotel.value = keepHotel; if (DEMO) f.checkout.value = iso(new Date()); f.name.focus();
     } catch (er) { msg.textContent = 'Could not save (' + er.message + '). Please try again.'; msg.className = 'msg err'; }
     btn.disabled = false; btn.textContent = 'Save guest';
   });
