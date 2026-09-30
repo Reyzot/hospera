@@ -3,8 +3,8 @@
   "hosperai_thanks_es": "HX9ab45b80a2afc3bcefc6d4dc0d78f980",
   "hosperai_midstay_en": "HX964ddfb620241eb74bd9512092d1a3d5",
   "hosperai_midstay_es": "HX6abc119160198d9e70b26742743422e2",
-  "hosperai_review_alert_es": "HXf6fd996a72123f95a99bcca329819d8f",
-  "hosperai_review_alert_en": "HXd98d2dc60d5b911accd2f36f9d0a227d",
+  "hosperai_review_alert_es": "HX0c9098af42193c4db34ffb7a9d31e4c4",
+  "hosperai_review_alert_en": "HX5b9ee9af6c1e3f9c3b79ca8c68c794cf",
   "hosperai_activated_es": "HX4119fdd7e23a3f71edccde5ff6925d33",
   "hosperai_activated_en": "HXd10a007700361edab3c8c40ae9383242",
   "hosperai_thanks_vip_en": "HX800745e335753d70562873cbb10a34f0",
@@ -28,5 +28,7 @@
   "hosperai_midstay_it": "HXcfa27e38a324145f13899551d197d7ab",
   "hosperai_review_g_pt": "HXf67b05c3bbb011f3f6f549b6d0a018ca",
   "hosperai_review_gt_pt": "HXd4e18f037748717f38e71a1a6a565c82",
-  "hosperai_midstay_pt": "HX4b58392fe9097fa5160ff2fff1f6e329"
+  "hosperai_midstay_pt": "HX4b58392fe9097fa5160ff2fff1f6e329",
+  "hosperai_review_alert_tr_en": "HX03ea9ab367c9bcc7cd85b185822563a2",
+  "hosperai_review_alert_tr_es": "HX33d5fed5b56e3ef256a26b2dc039df69"
 }

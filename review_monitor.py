@@ -319,13 +319,13 @@ def send_whatsapp(client, author, rating, text, response_text, review_translated
     response_short = response_text[:500] + "..." if len(response_text) > 500 else response_text
     platform_label = PLATFORM_LABEL.get(platform, "Google")
 
-    review_block = f"_{text_short}_"
+    review_block = text_short                      # original en normal, traducción en cursiva
     if review_translated:
-        review_block += f"\n🇪🇸 _{review_translated[:400]}_"
+        review_block += f"\n🌐 _{review_translated[:400]}_"
 
-    response_block = f"_{response_short}_"
+    response_block = response_short
     if reply_translated:
-        response_block += f"\n🇪🇸 _{reply_translated[:500]}_"
+        response_block += f"\n🌐 _{reply_translated[:500]}_"
 
     reply_url = review_link or MAPS_URL
 
@@ -357,12 +357,14 @@ _Hosperai responde por ti — tú solo confirmas._"""
         head = "🚨 Negative review — needs attention" if is_urgent else "✨ New review"
     else:
         head = "🚨 Reseña negativa, requiere atención" if is_urgent else "✨ Nueva reseña"
-    flag = "🌐"
-    rev_var = text_short + (f" · {flag} {review_translated[:300]}" if review_translated else "")
-    rep_var = response_short + (f" · {flag} {reply_translated[:300]}" if reply_translated else "")
-    ok = send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {
-        "1": head, "2": client['name'], "3": platform_label, "4": stars, "5": author,
-        "6": _wa_var(rev_var, 330), "7": _wa_var(rep_var, 480), "8": reply_url})
+    base = {"1": head, "2": client['name'], "3": platform_label, "4": stars, "5": author}
+    if review_translated or reply_translated:
+        ok = send_wa(client['phone'], msg, f"hosperai_review_alert_tr_{lang}", {**base,
+            "6": _wa_var(text_short, 300), "7": _wa_var(review_translated or "—", 300),
+            "8": _wa_var(response_short, 400), "9": _wa_var(reply_translated or "—", 400), "10": reply_url})
+    else:
+        ok = send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {**base,
+            "6": _wa_var(text_short, 450), "7": _wa_var(response_short, 550), "8": reply_url})
     if ok:
         print(f"  ✅ WhatsApp entregado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
     return ok

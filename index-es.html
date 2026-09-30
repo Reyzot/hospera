@@ -821,8 +821,8 @@
   <div class="container">
     <div class="fade-in" style="text-align:center">
       <div class="eyebrow">Míralo en acción</div>
-      <h2 class="section-title">Lo que recibe <span style="color:var(--blue)">cada uno.</span></h2>
-      <p class="section-sub" style="margin:0 auto">Mensajes reales, tal cual llegan por WhatsApp.</p>
+      <h2 class="section-title">Así se ve <span style="color:var(--blue)">en WhatsApp.</span></h2>
+      <p class="section-sub" style="margin:0 auto">Lo que recibe tu cliente y lo que recibes tú, tal cual llega.</p>
     </div>
     <div class="fade-in">
       <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">1 · Lo que recibe tu cliente</button><button class="pd-tab" data-view="owner" type="button">2 · Lo que recibes tú</button></div>
@@ -1144,7 +1144,7 @@
       reset(); sub.style.visibility = 'visible'; cap.textContent = T.cap2; headSub.textContent = 'online';
       sub.querySelectorAll('.demo-tab').forEach((b, j) => b.classList.toggle('active', j === i));
       const [stars, neg, author, review, reply, tr, rtr] = DEMOS[i];
-      add('<b>Hosperai</b> · ' + (neg ? '🚨 ' + T.negrev : '✨ ' + T.newrev) + ' — <b>' + T.biz + '</b> (Google)\n\n' + stars + ' <b>' + esc(author) + '</b>\n<i>' + esc(review) + '</i>' + (rtr ? '\n🌐 <i>' + esc(rtr) + '</i>' : '') + '<span class="t">10:06</span>');
+      add('<b>Hosperai</b> · ' + (neg ? '🚨 ' + T.negrev : '✨ ' + T.newrev) + ' — <b>' + T.biz + '</b> (Google)\n\n' + stars + ' <b>' + esc(author) + '</b>\n' + esc(review) + (rtr ? '\n🌐 <i>' + esc(rtr) + '</i>' : '') + '<span class="t">10:06</span>');
       const tp = typing();
       later(1100, () => {
         tp.remove();
