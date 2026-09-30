@@ -123,6 +123,11 @@ def find_place(d):
     return url_id or place.get("data_id"), place.get("place_id")
 
 
+PLAN_SERVICES = {
+    "Basic": ["Answer reviews", "Get more reviews"],
+    "Pro": ["Answer reviews", "Get more reviews", "Mid-stay check-in", "VIP", "Progress reports", "Own WhatsApp number"],
+}
+
 SCENARIOS = {
     "1": ("Nice location but the room was really small for the price.", {
         "A": "Thank you, Maria! We're sorry the room felt small — our rooms are cozy by design, and next time just ask us about our larger categories.",
@@ -161,7 +166,8 @@ def to_client(sub):
         "voice_examples": [{"review": SCENARIOS[n][0], "reply": SCENARIOS[n][1][d[f"scenario_{n}"]]}
                            for n in SCENARIOS if d.get(f"scenario_{n}") in SCENARIOS[n][1]],
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),
-        "services": d.get("services") or [], "pms": d.get("pms", ""), "notes": d.get("notes", ""),
+        "plan": d.get("plan") or "Basic",
+        "services": PLAN_SERVICES.get(d.get("plan") or "Basic", PLAN_SERVICES["Basic"]) + (d.get("services") or []), "pms": d.get("pms", ""), "notes": d.get("notes", ""),
         "google_url": d.get("google_url", ""), "created": sub.get("created_at", ""),
         "data_id": None, "place_id": None,
     } | dict(zip(("data_id", "place_id"), find_place(d)))
@@ -206,7 +212,7 @@ def main():
     FILE.write_text(json.dumps(clients, indent=2, ensure_ascii=False))
     print(f"\n{len(clients)} clientes del formulario:")
     for c in clients:
-        print(f"  [{c['status']:7}] {c['slug']:30} {c['phone']:22} {c['notify_lang']}  {', '.join(c['services'])}")
+        print(f"  [{c['status']:7}] {c['slug']:30} {c.get('plan', '—'):6} {c['phone']:22} {c['notify_lang']}  {', '.join(c['services'])}")
         if c["status"] == "active":
             print(f"            check-in: {checkin_link(c)}")
 

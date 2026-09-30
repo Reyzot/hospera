@@ -57,7 +57,7 @@ CHECKIN_API = "https://app.hosperai.es/api/checkin"
 CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [
-    {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", ""),
+    {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", "") if ("VIP" in (c.get("services") or []) or "plan" not in c) else "",
      "review_links": c.get("review_links") or {}, "guest_contact": c.get("guest_contact", ""),
      "midstay": "Mid-stay check-in" in (c.get("services") or []),
      "state": STATE_DIR / f"{c['slug']}.json"}

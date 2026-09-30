@@ -79,6 +79,17 @@
             mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
   }
   .hero-block > * { position:relative; z-index:1; }
+  .plans { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:600px) { .plans { grid-template-columns:1fr; } }
+  .plan { position:relative; display:block; border:1px solid var(--gray-200); border-radius:14px; padding:16px 16px 12px; cursor:pointer; }
+  .plan:has(input:checked) { border-color:var(--blue); background:var(--blue-50); box-shadow:0 0 0 1px var(--blue); }
+  .plan input { position:absolute; top:18px; right:16px; accent-color:var(--blue); }
+  .plan-top { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; }
+  .plan-top b { font-size:17px; }
+  .plan .price { font-size:20px; font-weight:800; color:var(--blue); }
+  .plan .price small { font-size:12px; color:var(--gray-500); font-weight:600; }
+  .plan ul { margin:0; padding-left:18px; font-size:13px; line-height:1.55; color:var(--gray-700); }
+  .plan.pro .plan-top b::after { content:"Recommended"; margin-left:8px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; background:var(--blue); color:#fff; padding:3px 7px; border-radius:20px; vertical-align:middle; }
   .pills { display:flex; flex-wrap:wrap; gap:8px; }
   .pill { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--gray-200); border-radius:10px; cursor:pointer; font-size:14px; }
   .pill:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
@@ -242,17 +253,21 @@
     </fieldset>
 
     <fieldset>
-      <legend>What you want turned on</legend>
+      <legend>Your plan</legend>
+      <div class="plans">
+        <label class="plan"><input type="radio" name="plan" value="Basic" checked>
+          <div class="plan-top"><b>Basic</b><span class="price">$99<small>/month</small></span></div>
+          <ul><li>AI replies to every Google review, sent to your WhatsApp</li><li>Thank-you message after checkout with direct Google &amp; Tripadvisor review links</li><li>Reception check-in link + guest list</li></ul></label>
+        <label class="plan pro"><input type="radio" name="plan" value="Pro">
+          <div class="plan-top"><b>Pro</b><span class="price">$149<small>/month</small></span></div>
+          <ul><li><b>Everything in Basic</b></li><li>Mid-stay check-in: catch problems before they become bad reviews</li><li>VIP / member messages</li><li>Messages sent from your own WhatsApp number, name &amp; logo</li><li>Monthly report with your Google Maps ranking</li></ul></label>
+      </div>
+      <div style="font-size:12px;color:var(--gray-500);margin-top:8px">No lock-in. Change or cancel your plan anytime.</div>
+      <label style="display:block;font-size:13.5px;font-weight:700;margin:22px 0 8px">Extras (optional)</label>
       <div class="check-grid">
-        <label class="check-item"><input type="checkbox" name="services" value="Answer reviews"> Answer reviews</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Get more reviews"> Get more reviews</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Mid-stay check-in"> Mid-stay check-in (stays of 3+ nights)</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Progress reports"> Progress reports</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Competitive Intel"> Competitive Intel</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Custom website"> Custom website</label>
         <label class="check-item"><input type="checkbox" name="services" value="Google Profile tune-up"> Google Profile tune-up</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Staff training app"> Staff training app</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Recipe book & food costing"> Recipe book &amp; food costing</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Custom website"> Custom website</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Competitive Intel"> Competitor tracking</label>
       </div>
     </fieldset>
 
@@ -311,7 +326,7 @@
       <div class="field">
         <label>Special message for VIP / member guests (optional)</label>
         <textarea name="vip_message" placeholder="e.g. As one of our members, enjoy 10% off your next stay with code VIP10."></textarea>
-        <div class="hint">Reception can mark a guest as VIP at check-in. VIP guests get this line added to their thank-you message.</div>
+        <div class="hint">Pro plan. Reception can mark a guest as VIP at check-in; VIP guests get this line added to their thank-you message.</div>
       </div>
       <div class="field">
         <label>Anything replies should always mention? (optional)</label>
