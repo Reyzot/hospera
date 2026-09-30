@@ -10,12 +10,17 @@ async function sendDemoWhatsApp(env, rec, hotelName) {
   const lang = rec.lang === "Español" || rec.lang === "Català" ? "es" : "en";
   const phone = "+" + rec.phone.replace(/[^0-9]/g, "");
   const first = rec.name.split(" ")[0];
-  const vars = { 1: first.charAt(0).toUpperCase() + first.slice(1), 2: hotelName, 3: DEMO_REVIEW_LINK };
+  const q = encodeURIComponent(hotelName);
+  const useNew = !!(lang === "es" ? env.TPL_GT_ES : env.TPL_GT_EN);  // plantilla nueva con Google + Tripadvisor (cuando Meta la apruebe)
+  const vars = useNew
+    ? { 1: first.charAt(0).toUpperCase() + first.slice(1), 2: hotelName,
+        3: `https://www.google.com/maps/search/${q}`, 4: `https://www.tripadvisor.com/Search?q=${q}` }
+    : { 1: first.charAt(0).toUpperCase() + first.slice(1), 2: hotelName, 3: DEMO_REVIEW_LINK };
   const auth = "Basic " + btoa(`${env.TWILIO_SID}:${env.TWILIO_TOKEN}`);
   const base = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_SID}/Messages`;
   const r = await fetch(`${base}.json`, {
     method: "POST", headers: { Authorization: auth, "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ From: env.WA_FROM, To: `whatsapp:${phone}`, ContentSid: lang === "es" ? env.TPL_ES : env.TPL_EN,
+    body: new URLSearchParams({ From: env.WA_FROM, To: `whatsapp:${phone}`, ContentSid: useNew ? (lang === "es" ? env.TPL_GT_ES : env.TPL_GT_EN) : (lang === "es" ? env.TPL_ES : env.TPL_EN),
                                 ContentVariables: JSON.stringify(vars) }),
   });
   let m = await r.json();

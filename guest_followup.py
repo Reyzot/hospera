@@ -58,6 +58,7 @@ CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [
     {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", ""),
+     "review_links": c.get("review_links") or {},
      "state": STATE_DIR / f"{c['slug']}.json"}
     for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
     if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
@@ -228,19 +229,29 @@ def send_email(to_addr, subject, body, test_mode=False):
     print(f"    ✅ Email enviado a {to_addr}")
 
 
-def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="", vip_message=""):
+def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="", vip_message="", links=None):
     """WhatsApp → (SMS si está activado) → email. Devuelve el canal usado, o None si hay que reintentar más tarde.
-    Huésped VIP + mensaje VIP del hotel → plantilla VIP (si Meta aún no la ha aprobado, se usa la normal)."""
+    Salida: plantilla hosperai_review_[vip_]{g|gt}_{lang} con enlaces directos de Google (y Tripadvisor si lo hay);
+    si Meta aún no la ha aprobado, la antigua hosperai_thanks_{lang} con el enlace de Google."""
+    links = links or {}
     vip = kind == "departure" and guest.get("vip") and vip_message
+    if kind == "departure" and links.get("google"):
+        link = links["google"]
+        extra = f"\nTripadvisor: {links['tripadvisor']}" if links.get("tripadvisor") else ""
+        body = MESSAGES['departure'][lang].format(name=guest['name'], business=business_name, link=f"\nGoogle: {link}{extra}")
     if vip:
-        body = body.replace(link, f"{link}\n\n{vip_message}")
+        body = body + f"\n\n{vip_message}"
     if guest['phone']:
         tpl, wa_vars = None, {"1": guest['name'], "2": business_name, "3": link}
-        vip_tpl = f"hosperai_thanks_vip_{lang}"
-        if vip and not test_mode and template_approved(WA_TEMPLATES.get(vip_tpl, "")):
-            tpl, wa_vars = vip_tpl, {"1": guest['name'], "2": business_name, "3": vip_message, "4": link}
-        elif vip and test_mode:
-            tpl, wa_vars = vip_tpl, {"1": guest['name'], "2": business_name, "3": vip_message, "4": link}
+        if kind == "departure" and links.get("google"):
+            gt = "gt" if links.get("tripadvisor") else "g"
+            name = f"hosperai_review_{'vip_' if vip else ''}{gt}_{lang}"
+            v = {"1": guest['name'], "2": business_name}
+            v.update({"3": vip_message, "4": links["google"]} if vip else {"3": links["google"]})
+            if links.get("tripadvisor"):
+                v[str(len(v) + 1)] = links["tripadvisor"]
+            if test_mode or template_approved(WA_TEMPLATES.get(name, "")):
+                tpl, wa_vars = name, v
         res = send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode, tpl)
         if res == "sent":
             return "WhatsApp"
@@ -278,7 +289,7 @@ def run_client(client, test_mode=False):
         due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
         if due and (today - guest['checkout']).days <= 2 and not (record.get('departure_sent') or guest.get('departure_sent')):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
-            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''))
+            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''), client.get('review_links'))
             if via and not test_mode:
                 record['departure_sent'] = True
                 if guest.get('id'):

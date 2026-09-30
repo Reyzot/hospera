@@ -12,6 +12,7 @@ warnings.filterwarnings("ignore")
 from review_monitor import SERPAPI_KEY  # noqa: E402
 
 SITE = "https://app.hosperai.es"
+KV_NAMESPACE = "f71c0bf1f39642dfab08ecc33108701a"
 from dotenv import load_dotenv
 load_dotenv(Path.home() / "hospera" / ".env")
 CHECKIN_SECRET = os.getenv("CHECKIN_SECRET", "")
@@ -52,21 +53,23 @@ Hosperai
 ─────────────────────────────────────────────────────────────────"""
 
 
-def publish_review_page(c):
-    """Página hosperai.es/r/<slug>.html (elige Google/TripAdvisor) → se publica con git push."""
-    if not c.get("place_id"):
-        print("  ⚠️  Sin place_id: no puedo crear el enlace de reseña de Google")
-        return
-    google = f"https://search.google.com/local/writereview?placeid={c['place_id']}"
-    lang = "es" if c["notify_lang"] == "es" else "en"
-    home = Path.home() / "hospera"
-    subprocess.run(["python3", "generate_choice_page.py", c["name"], google, "--lang", lang, "--slug", c["slug"]], cwd=home, check=True)
-    subprocess.run(["git", "add", f"r/{c['slug']}.html"], cwd=home, check=True)
-    subprocess.run(["git", "commit", "-q", "-m", f"Página de reseña para {c['name']}"], cwd=home)
-    subprocess.run(["git", "push", "-q", "origin", "HEAD"], cwd=home, capture_output=True)
-    print(f"  🔗 Página de reseña: https://hosperai.es/r/{c['slug']}.html")
-FILE = Path.home() / "hospera" / "clients.json"
-LANG = {"English": "en", "Español": "es", "Català": "es"}
+def review_links(c):
+    """Enlaces directos al formulario de reseña: Google (place_id) y Tripadvisor (UserReviewEdit desde su URL)."""
+    links = {}
+    if c.get("place_id"):
+        links["google"] = f"https://search.google.com/local/writereview?placeid={c['place_id']}"
+    m = re.search(r"-g(\d+)-d(\d+)", c.get("tripadvisor_url") or "")
+    if m:
+        links["tripadvisor"] = f"https://www.tripadvisor.com/UserReviewEdit-g{m.group(1)}-d{m.group(2)}"
+    return links
+
+
+def save_review_links(slug, links):
+    """Guarda en Cloudflare KV (r:<slug>) → app.hosperai.es/g/<slug> y /t/<slug> redirigen ahí."""
+    acc, tok = os.getenv("CLOUDFLARE_ACCOUNT_ID"), os.getenv("CLOUDFLARE_API_TOKEN")
+    r = requests.put(f"https://api.cloudflare.com/client/v4/accounts/{acc}/storage/kv/namespaces/{KV_NAMESPACE}/values/r:{slug}",
+                     headers={"Authorization": f"Bearer {tok}"}, data=json.dumps(links), timeout=20)
+    r.raise_for_status()
 
 
 def fetch_submissions():
@@ -189,7 +192,12 @@ def main():
             c["status"] = status
             print(f"{'✅ Activado' if status == 'active' else '⏸️  Pausado'}: {c['name']}")
             if status == "active":
-                publish_review_page(c)
+                links = review_links(c)
+                if not links.get("google"):
+                    print("  ⚠️  Sin place_id: no hay enlace directo de Google. Añádelo a mano en clients.json y vuelve a activar.")
+                save_review_links(c["slug"], links)
+                c["review_links"] = {k: f"{SITE}/{k[0]}/{c['slug']}" for k in links}
+                print(f"  ⭐ Enlaces de reseña: {', '.join(c['review_links'].values()) or '—'}")
                 print(f"  🛎️  Enlace de check-in para recepción:\n     {checkin_link(c)}")
                 print(welcome_email(c))
 
