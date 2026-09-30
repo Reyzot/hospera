@@ -35,7 +35,7 @@ Logs: `launchd_out.log`, `launchd_err.log`, `guestfollowup_out.log`, `guestfollo
 3. Andreu revisa la info y que ha pagado → le dice a Claude **"activa X"**.
 4. Claude: `cd ~/hospera && python3 onboard_clients.py --approve SLUG`
    - si dice "no tiene data_id": buscar la ficha de Maps y ponerla a mano en `clients.json`.
-   - crea `hosperai.es/r/SLUG.html` (página de reseña, se publica con git push)
+   - guarda los enlaces directos de reseña (Google con place_id, Tripadvisor si el hotel dio su URL) → `app.hosperai.es/g/SLUG` y `/t/SLUG`
    - imprime el **enlace de check-in** y el **Email 2 de bienvenida ya redactado** → pasárselo a Andreu.
 5. Esa misma tarde/día: le llega al dueño el WhatsApp "Hosperai activado" con su histórico (en la primera pasada del monitor).
 6. Comprobar al día siguiente en la pestaña Guests del hotel que recepción está metiendo huéspedes.
@@ -71,7 +71,9 @@ Admin del check-in (desde scripts): `GET /api/checkin?h=SLUG&key=CHECKIN_SECRET`
 - El primer mensaje a alguien SIEMPRE tiene que ser una plantilla aprobada por Meta. Texto libre solo llega si esa persona nos escribió en las últimas 24 h.
 - Los scripts no envían con plantillas sin aprobar y solo marcan "enviado" si WhatsApp confirma la entrega.
 - Errores típicos: 63016 = plantilla sin aprobar / fuera de ventana 24 h · 63024 / 63003 = el número no tiene WhatsApp (→ se usa el email del huésped).
-- Plantillas: `hosperai_thanks_{es,en}`, `hosperai_thanks_vip_{es,en}`, `hosperai_midstay_{es,en}`, `hosperai_review_alert_{es,en}` (v2), `hosperai_activated_{es,en}`. Idiomas distintos de es → inglés.
+- Mensaje de salida (actual): `hosperai_review_{g,gt}_{es,en}` y VIP `hosperai_review_vip_{g,gt}_{es,en}` — g = solo Google, gt = Google + Tripadvisor. Enlaces directos al formulario de reseña vía `app.hosperai.es/g/<slug>` y `/t/<slug>` (KV `r:<slug>`, clics por mes en `n:<slug>:<google|tripadvisor>:<YYYY-MM>`). Si la nueva no está aprobada se usa la antigua `hosperai_thanks_{es,en}`.
+- Demo de reuniones: cuando Meta apruebe `hosperai_review_gt_{es,en}`, poner sus SID como secrets `TPL_GT_ES` / `TPL_GT_EN` en Cloudflare Pages (y redeploy) → el WhatsApp de demo lleva Google Maps + Tripadvisor del hotel del cliente.
+- Otras plantillas: `hosperai_thanks_{es,en}`, `hosperai_thanks_vip_{es,en}`, `hosperai_midstay_{es,en}`, `hosperai_review_alert_{es,en}` (v2), `hosperai_activated_{es,en}`. Idiomas distintos de es → inglés.
 - Límite sin verificar empresa en Meta: 250 personas/día. Verificar cuando haya volumen (necesita documento de empresa + email @hosperai.es).
 - SMS de respaldo desactivado (`SMS_ENABLED` en `.env`) hasta que Twilio apruebe A2P (rechazado: se registró con datos de España).
 
