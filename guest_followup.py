@@ -16,7 +16,7 @@ Uso:
 import sys
 sys.path.insert(0, '/Users/andreurey/Library/Python/3.9/lib/python/site-packages')
 
-import os, csv, io, json, re, argparse, smtplib
+import os, csv, io, json, re, time, argparse, smtplib
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from email.mime.text import MIMEText
@@ -161,23 +161,55 @@ def send_sms(to_phone, body, test_mode=False):
     print(f"    ✅ SMS enviado a {to_phone}")
 
 
+_APPROVED = None
+
+
+def template_approved(sid):
+    """Solo se envía con plantillas que Meta ya ha aprobado (si no, Twilio las acepta y luego no las entrega)."""
+    global _APPROVED
+    if _APPROVED is None:
+        try:
+            r = requests.get("https://content.twilio.com/v1/ContentAndApprovals", auth=(TWILIO_SID, TWILIO_TOKEN), timeout=20).json()
+            _APPROVED = {c["sid"] for c in r.get("contents", []) if (c.get("approval_requests") or {}).get("status") == "approved"}
+        except Exception:
+            _APPROVED = set()
+    return sid in _APPROVED
+
+
+NO_WHATSAPP_ERRORS = {63003, 63024}  # el número no tiene WhatsApp
+
+
 def send_whatsapp(to_phone, kind, lang, variables, test_mode=False):
-    """Plantilla aprobada por Meta. Devuelve False si no se pudo (y entonces se usa SMS)."""
+    """Devuelve "sent", "no_whatsapp" (probar email) o "retry" (plantilla sin aprobar / fallo temporal: no marcar, reintentar)."""
     sid = WA_TEMPLATES.get(f"{WA_TEMPLATE_BY_KIND[kind]}_{lang}")
     if not (TWILIO_WA_FROM and sid):
-        return False
+        return "retry"
     if test_mode:
         print(f"    [TEST] WhatsApp a {to_phone}: {WA_TEMPLATE_BY_KIND[kind]}_{lang} {variables}")
-        return True
+        return "sent"
+    if not template_approved(sid):
+        print(f"    ⏳ Plantilla {WA_TEMPLATE_BY_KIND[kind]}_{lang} aún sin aprobar por Meta — reintento más tarde ({to_phone})")
+        return "retry"
     try:
-        Client(TWILIO_SID, TWILIO_TOKEN).messages.create(
-            from_=TWILIO_WA_FROM, to=f"whatsapp:{to_phone}", content_sid=sid,
-            content_variables=json.dumps(variables))
-        print(f"    ✅ WhatsApp enviado a {to_phone}")
-        return True
+        tw = Client(TWILIO_SID, TWILIO_TOKEN)
+        msg = tw.messages.create(from_=TWILIO_WA_FROM, to=f"whatsapp:{to_phone}", content_sid=sid,
+                                 content_variables=json.dumps(variables))
+        for _ in range(12):  # esperamos hasta ~36 s a saber si se ha entregado
+            time.sleep(3)
+            msg = tw.messages(msg.sid).fetch()
+            if msg.status in ("delivered", "read"):
+                break
+            if msg.status in ("failed", "undelivered"):
+                print(f"    ⚠️  WhatsApp no entregado a {to_phone} (error {msg.error_code})")
+                return "no_whatsapp" if msg.error_code in NO_WHATSAPP_ERRORS else "retry"
+        print(f"    ✅ WhatsApp {msg.status} a {to_phone}")
+        return "sent"
     except Exception as e:
-        print(f"    ⚠️  WhatsApp falló ({e}), pruebo SMS")
-        return False
+        print(f"    ⚠️  WhatsApp falló ({e})")
+        return "retry"
+
+
+SMS_ENABLED = os.getenv('SMS_ENABLED') == '1'  # activar cuando Twilio apruebe el registro A2P (SMS en EE. UU.)
 
 
 def send_email(to_addr, subject, body, test_mode=False):
@@ -197,21 +229,22 @@ def send_email(to_addr, subject, body, test_mode=False):
 
 
 def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link=""):
-    """Manda por SMS si hay teléfono; si no, por email si lo hay. Si no hay
-    ninguno de los dos, no se manda nada (no debería pasar, fetch_checkins
-    ya exige al menos uno)."""
+    """WhatsApp → (SMS si está activado) → email. Devuelve el canal usado, o None si hay que reintentar más tarde."""
     if guest['phone']:
-        wa_vars = {"1": guest['name'], "2": business_name, "3": link}
-        if send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode):
+        res = send_whatsapp(guest['phone'], kind, lang, {"1": guest['name'], "2": business_name, "3": link}, test_mode)
+        if res == "sent":
             return "WhatsApp"
-        send_sms(guest['phone'], body, test_mode)
-        return "SMS"
-    elif guest['email']:
+        if res == "retry":
+            return None
+        if SMS_ENABLED:
+            send_sms(guest['phone'], body, test_mode)
+            return "SMS"
+    if guest['email']:
         subject = EMAIL_SUBJECTS[kind][lang].format(business=business_name)
         send_email(guest['email'], subject, body, test_mode)
         return "Email"
-    else:
-        print(f"    ⚠️  {guest['name']}: sin teléfono ni email, no se puede avisar")
+    print(f"    ⚠️  {guest['name']}: no se ha podido avisar (sin WhatsApp y sin email)")
+    return "Not delivered"
 
 
 def run_client(client, test_mode=False):

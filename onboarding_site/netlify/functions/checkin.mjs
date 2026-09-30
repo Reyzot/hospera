@@ -66,6 +66,11 @@ export default async (req) => {
     await store.setJSON(key, rec);
     return Response.json({ ok: true });
   }
+  if (action === "reset" && admin) {
+    for (const f of ["departure_sent", "departure_sent_via", "midstay_sent", "midstay_sent_via"]) delete rec[f];
+    await store.setJSON(key, rec);
+    return Response.json({ ok: true });
+  }
   return new Response("bad action", { status: 400 });
 };
 

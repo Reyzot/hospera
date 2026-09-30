@@ -42,18 +42,43 @@ def _wa_var(v, limit=None):
     return v[:limit - 1] + "…" if limit and len(v) > limit else v
 
 
+_APPROVED = None
+
+
+def _approved(sid):
+    global _APPROVED
+    if _APPROVED is None:
+        try:
+            r = requests.get("https://content.twilio.com/v1/ContentAndApprovals", auth=(TWILIO_SID, TWILIO_TOKEN), timeout=20).json()
+            _APPROVED = {c["sid"] for c in r.get("contents", []) if (c.get("approval_requests") or {}).get("status") == "approved"}
+        except Exception:
+            _APPROVED = set()
+    return sid in _APPROVED
+
+
 def send_wa(to, body, template=None, variables=None):
-    """Plantilla aprobada si existe (funciona siempre); si falla, texto libre (solo llega si el destinatario escribió en las últimas 24 h)."""
+    """Plantilla aprobada si la hay; si no, texto libre (solo llega si el destinatario escribió en las últimas 24 h).
+    Devuelve True solo si WhatsApp confirma la entrega — si no, quien llama no lo marca como avisado y se reintenta."""
     twilio = Client(TWILIO_SID, TWILIO_TOKEN)
     sid = WA_TEMPLATES.get(template) if template else None
-    if sid:
-        try:
-            twilio.messages.create(from_=TWILIO_FROM, to=to, content_sid=sid,
-                                   content_variables=json.dumps({k: _wa_var(v) for k, v in variables.items()}))
-            return
-        except Exception as e:
-            print(f"  ⚠️  Plantilla {template} falló ({e}), pruebo texto libre")
-    twilio.messages.create(body=body, from_=TWILIO_FROM, to=to)
+    try:
+        if sid and _approved(sid):
+            msg = twilio.messages.create(from_=TWILIO_FROM, to=to, content_sid=sid,
+                                         content_variables=json.dumps({k: _wa_var(v) for k, v in variables.items()}))
+        else:
+            msg = twilio.messages.create(body=body, from_=TWILIO_FROM, to=to)
+        for _ in range(12):
+            time.sleep(3)
+            msg = twilio.messages(msg.sid).fetch()
+            if msg.status in ("delivered", "read"):
+                return True
+            if msg.status in ("failed", "undelivered"):
+                print(f"  ⚠️  WhatsApp NO entregado a {to} (error {msg.error_code}) — se reintentará")
+                return False
+        return msg.status == "sent"
+    except Exception as e:
+        print(f"  ⚠️  WhatsApp falló ({e}) — se reintentará")
+        return False
 
 # ── Lista de clientes ───────────────────────────────────────────────────────
 # "tripadvisor_id" es opcional — el place_id de TripAdvisor (se saca vía
@@ -334,10 +359,12 @@ _Hospera responde por ti — tú solo confirmas._"""
     flag = "🇺🇸" if lang == "en" else "🇪🇸"
     rev_var = text_short + (f" · {flag} {review_translated[:300]}" if review_translated else "")
     rep_var = response_short + (f" · {flag} {reply_translated[:300]}" if reply_translated else "")
-    send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {
+    ok = send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {
         "1": head, "2": client['name'], "3": platform_label, "4": stars, "5": author,
         "6": _wa_var(rev_var, 330), "7": _wa_var(rep_var, 480), "8": reply_url})
-    print(f"  ✅ WhatsApp enviado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
+    if ok:
+        print(f"  ✅ WhatsApp entregado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
+    return ok
 
 def send_onboarding_summary(client, platform, total, backlog, negative_backlog):
     twilio = Client(TWILIO_SID, TWILIO_TOKEN)
@@ -412,7 +439,8 @@ def run_platform(client, platform, reviews, seen, onboarded, test_mode=False, ma
             print(f"  → Traducción reseña: {review_tr[:70]}...")
 
         if not test_mode:
-            send_whatsapp(client, author, rating, text, response_text, review_tr, reply_tr, review["link"], platform)
+            if not send_whatsapp(client, author, rating, text, response_text, review_tr, reply_tr, review["link"], platform):
+                continue  # no se marca como vista: se vuelve a intentar en la próxima vuelta
         else:
             print(f"  [TEST] WhatsApp no enviado")
 
