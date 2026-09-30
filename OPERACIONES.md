@@ -109,3 +109,12 @@ Enlace: https://app.hosperai.es/checkin/?h=hosperai-live-demo&t=9c9ae088e96cdebf
 - Se escribe el nombre del hotel del cliente + su nombre y móvil → el WhatsApp "Gracias por elegir {su hotel}" le llega en segundos.
 - Lo envía directamente la función de Cloudflare (secrets TWILIO_SID, TWILIO_TOKEN, WA_FROM, TPL_ES, TPL_EN en Pages). No está en clients.json, guest_followup no lo toca.
 - Si responde 63016: la plantilla aún no está aprobada por Meta.
+
+## 11. Guion de venta por videollamada (15-20 min, Zoom/Meet)
+
+Antes: mini-auditoría del hotel (sus números vs competencia) + pestañas abiertas: auditoría, enlace demo (sección 10), hosperai.es/demo. Probar la demo con el móvil de Andreu el mismo día.
+1. Preguntar (5'): ¿cuántas reseñas llegan, quién contesta, piden reseñas?
+2. Compartir pantalla con su auditoría (3').
+3. Demo en directo (5'): pedir su WhatsApp → en el enlace demo poner SU hotel + su nombre + su móvil → Save guest → le vibra el móvil en la llamada. Enseñar pestaña Guests.
+4. Aviso al dueño (1'): vídeo de 38 s desde el segundo 25 (respuesta ya escrita, copiar y pegar).
+5. Cierre (3'): 79 $/mes fundadores (99 $ precio normal), sin permanencia, 48 h. Si sí: pegar app.hosperai.es en el chat y rellenarlo juntos en la llamada.
