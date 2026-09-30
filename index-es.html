@@ -227,6 +227,37 @@
   .plan-card .btn-primary, .plan-card .btn-secondary { text-align:center; justify-content:center; }
   .plans-note { text-align:center; font-size:13px; color:var(--gray-500); margin-top:18px; }
 
+
+  .ptable-wrap { max-width:900px; margin:44px auto 0; background:var(--white); border:1px solid var(--gray-200); border-radius:20px; overflow:hidden; }
+  .ptable { width:100%; border-collapse:collapse; }
+  .ptable th, .ptable td { padding:14px 18px; border-top:1px solid var(--gray-100); font-size:14.5px; line-height:1.45; color:var(--gray-700); text-align:left; vertical-align:middle; }
+  .ptable thead th { border-top:0; padding:24px 18px 18px; vertical-align:bottom; }
+  .ptable .col { width:22%; text-align:center; }
+  .ptable .col.pro { background:rgba(37,99,235,.06); }
+  .ptable .pname { font-size:18px; font-weight:800; color:var(--gray-900); display:block; }
+  .ptable .pprice { font-size:30px; font-weight:900; letter-spacing:-.8px; color:var(--gray-900); display:block; margin-top:4px; }
+  .ptable .pprice small { font-size:13px; font-weight:600; color:var(--gray-500); letter-spacing:0; }
+  .ptable .pbadge { display:inline-block; background:var(--blue); color:#fff; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; padding:4px 9px; border-radius:20px; margin-bottom:8px; }
+  .ptable .yes { color:var(--blue); font-size:18px; font-weight:900; }
+  .ptable .no { color:var(--gray-400); font-size:18px; }
+  .ptable tfoot td { padding:18px; }
+  .cta-s { display:none; }
+  .ptable tfoot .btn-primary, .ptable tfoot .btn-secondary { display:flex; justify-content:center; padding:11px 10px; font-size:14px; }
+  @media(max-width:600px) {
+    .ptable { table-layout:fixed; }
+    .ptable th, .ptable td { padding:11px 8px; font-size:13px; }
+    .ptable td:first-child { padding-left:14px; }
+    .ptable .col { width:74px; }
+    .ptable .pname { font-size:15px; }
+    .ptable .pprice { font-size:19px; }
+    .ptable .pprice small { display:block; font-size:11px; }
+    .ptable .pbadge { font-size:7.5px; letter-spacing:0; padding:3px 5px; }
+    .ptable tfoot td { padding:14px 6px; }
+    .cta-l { display:none; } .cta-s { display:inline !important; }
+    .ptable .pbadge { font-size:8.5px; padding:3px 6px; }
+    .ptable tfoot .btn-primary, .ptable tfoot .btn-secondary { font-size:12px; padding:9px 4px; }
+  }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -738,21 +769,15 @@
       <h2 class="section-title">Precios <span style="color:var(--blue)">claros.</span></h2>
       <p class="section-sub" style="margin:0 auto">Sin permanencia ni coste de alta. Funcionando en 48 horas.</p>
     </div>
-    <div class="plans-grid fade-in">
-      <div class="plan-card">
-        <div class="plan-name">Basic</div>
-        <div class="plan-price">$99<small>/mes</small></div>
-        <ul><li>Mensaje de agradecimiento después de cada visita o estancia, con enlaces directos a Google y Tripadvisor</li><li>Respuestas con IA a todas tus reseñas de Google, por WhatsApp</li><li>Enlace sencillo para que recepción añada clientes + lista de mensajes</li></ul>
-        <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary">Reservar llamada →</a>
-      </div>
-      <div class="plan-card pro">
-        <div class="plan-badge">Recomendado</div>
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">$149<small>/mes</small></div>
-        <ul><li><b>Todo lo del Basic</b></li><li>Seguimiento durante estancias largas: detecta problemas antes de que sean malas reseñas</li><li>Mensajes para VIP / miembros</li><li>Mensajes desde tu propio WhatsApp, con tu nombre y logo</li><li>Informe mensual con tu posición en Google Maps</li></ul>
-        <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary">Reservar llamada →</a>
-      </div>
-    </div>
+    <div class="ptable-wrap fade-in"><table class="ptable">
+      <thead><tr><th></th>
+        <th class="col"><span class="pname">Basic</span><span class="pprice">$99<small>/mes</small></span></th>
+        <th class="col pro"><span class="pbadge"><span class="cta-l">Recomendado</span><span class="cta-s">★ Top</span></span><span class="pname">Pro</span><span class="pprice">$149<small>/mes</small></span></th></tr></thead>
+      <tbody><tr><td>Agradecimiento + enlaces directos de reseña</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Respuestas IA a todas las reseñas, por WhatsApp</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Enlace para que recepción añada clientes</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Lista de mensajes programados y enviados</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Español e inglés</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Respuesta automática si el cliente contesta</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Listo en 48 h · sin alta · sin permanencia</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Seguimiento en estancias largas</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Mensajes VIP / miembros</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Tu propio número de WhatsApp y logo</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td></tr><tr><td>Informe mensual + ranking en Maps</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td></tr></tbody>
+      <tfoot><tr><td></td>
+        <td class="col"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary"><span class="cta-l">Reservar llamada →</span><span class="cta-s">Reservar</span></a></td>
+        <td class="col pro"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary"><span class="cta-l">Reservar llamada →</span><span class="cta-s">Reservar</span></a></td></tr></tfoot>
+    </table></div>
     <p class="plans-note">Cambia o cancela cuando quieras.</p>
   </div>
 </section>
