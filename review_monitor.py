@@ -273,6 +273,7 @@ Después de la respuesta, si la reseña NO está ya en el idioma '{notify_lang}'
         "highlights": "Lo que más gusta del negocio (puedes reforzarlo si encaja): {}",
         "recurring_complaints": "Quejas habituales y cómo las resuelve el negocio (úsalo si la reseña va de eso): {}",
         "not_offered": "Cosas que el negocio NO ofrece, nunca des a entender que sí: {}",
+        "reply_preferences": "Otras preferencias del negocio para las respuestas (respétalas): {}",
     }
     lines = [tpl.format(st[k]) for k, tpl in guide.items() if st.get(k)]
     if lines:

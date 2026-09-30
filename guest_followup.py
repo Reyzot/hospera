@@ -59,7 +59,7 @@ CHECKIN_API = "https://app.hosperai.es/api/checkin"
 CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [
-    {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""),
+    {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", ""),
      "state": STATE_DIR / f"{c['slug']}.json"}
     for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
     if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
@@ -122,6 +122,7 @@ def fetch_checkins(slug):
             "checkin": parse_date(g.get("checkin")),
             "checkout": checkout,
             "id": g.get("id"),
+            "vip": bool(g.get("vip")),
             "departure_sent": g.get("departure_sent"),
             "midstay_sent": g.get("midstay_sent"),
         })
@@ -179,21 +180,22 @@ def template_approved(sid):
 NO_WHATSAPP_ERRORS = {63003, 63024}  # el número no tiene WhatsApp
 
 
-def send_whatsapp(to_phone, kind, lang, variables, test_mode=False):
+def send_whatsapp(to_phone, kind, lang, variables, test_mode=False, template=None):
     """Devuelve "sent", "no_whatsapp" (probar email) o "retry" (plantilla sin aprobar / fallo temporal: no marcar, reintentar)."""
-    sid = WA_TEMPLATES.get(f"{WA_TEMPLATE_BY_KIND[kind]}_{lang}")
+    template = template or f"{WA_TEMPLATE_BY_KIND[kind]}_{lang}"
+    sid = WA_TEMPLATES.get(template)
     if not (TWILIO_WA_FROM and sid):
         return "retry"
     if test_mode:
-        print(f"    [TEST] WhatsApp a {to_phone}: {WA_TEMPLATE_BY_KIND[kind]}_{lang} {variables}")
+        print(f"    [TEST] WhatsApp a {to_phone}: {template} {variables}")
         return "sent"
     if not template_approved(sid):
-        print(f"    ⏳ Plantilla {WA_TEMPLATE_BY_KIND[kind]}_{lang} aún sin aprobar por Meta — reintento más tarde ({to_phone})")
+        print(f"    ⏳ Plantilla {template} aún sin aprobar por Meta — reintento más tarde ({to_phone})")
         return "retry"
     try:
         tw = Client(TWILIO_SID, TWILIO_TOKEN)
         msg = tw.messages.create(from_=TWILIO_WA_FROM, to=f"whatsapp:{to_phone}", content_sid=sid,
-                                 content_variables=json.dumps(variables))
+                                 content_variables=json.dumps({k: re.sub(r"\s+", " ", str(v)).strip() or "—" for k, v in variables.items()}))
         for _ in range(12):  # esperamos hasta ~36 s a saber si se ha entregado
             time.sleep(3)
             msg = tw.messages(msg.sid).fetch()
@@ -228,10 +230,20 @@ def send_email(to_addr, subject, body, test_mode=False):
     print(f"    ✅ Email enviado a {to_addr}")
 
 
-def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link=""):
-    """WhatsApp → (SMS si está activado) → email. Devuelve el canal usado, o None si hay que reintentar más tarde."""
+def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="", vip_message=""):
+    """WhatsApp → (SMS si está activado) → email. Devuelve el canal usado, o None si hay que reintentar más tarde.
+    Huésped VIP + mensaje VIP del hotel → plantilla VIP (si Meta aún no la ha aprobado, se usa la normal)."""
+    vip = kind == "departure" and guest.get("vip") and vip_message
+    if vip:
+        body = body.replace(link, f"{link}\n\n{vip_message}")
     if guest['phone']:
-        res = send_whatsapp(guest['phone'], kind, lang, {"1": guest['name'], "2": business_name, "3": link}, test_mode)
+        tpl, wa_vars = None, {"1": guest['name'], "2": business_name, "3": link}
+        vip_tpl = f"hosperai_thanks_vip_{lang}"
+        if vip and not test_mode and template_approved(WA_TEMPLATES.get(vip_tpl, "")):
+            tpl, wa_vars = vip_tpl, {"1": guest['name'], "2": business_name, "3": vip_message, "4": link}
+        elif vip and test_mode:
+            tpl, wa_vars = vip_tpl, {"1": guest['name'], "2": business_name, "3": vip_message, "4": link}
+        res = send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode, tpl)
         if res == "sent":
             return "WhatsApp"
         if res == "retry":
@@ -268,7 +280,7 @@ def run_client(client, test_mode=False):
         due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
         if due and (today - guest['checkout']).days <= 2 and not (record.get('departure_sent') or guest.get('departure_sent')):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
-            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link)
+            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''))
             if via and not test_mode:
                 record['departure_sent'] = True
                 if guest.get('id'):

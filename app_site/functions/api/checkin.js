@@ -1,7 +1,7 @@
 import { clean, json, text, rid, hotelToken } from "./_shared.js";
 
 const DAY = 86400000;
-const EDITABLE = { name: 80, phone: 30, email: 120, lang: 20, checkin: 10, checkout: 10 };
+const EDITABLE = { name: 80, phone: 30, email: 120, lang: 20, checkin: 10, checkout: 10, vip: 3 };
 const FLAGS = ["departure_sent", "departure_sent_via", "midstay_sent", "midstay_sent_via"];
 
 // Todos los huéspedes de un hotel en una sola clave (c:<slug>): lectura inmediata tras guardar.

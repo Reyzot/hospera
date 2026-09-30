@@ -23,6 +23,36 @@ def checkin_link(c):
     return f"{SITE}/checkin/?h={c['slug']}&t={t}&n={urllib.parse.quote(c['name'])}"
 
 
+def welcome_email(c):
+    """Email 2 (tras activar): el cliente ya está dentro, le damos el enlace de recepción."""
+    who = (c.get("contact_name") or "").split(" ")[0] or "there"
+    return f"""
+────────── EMAIL DE BIENVENIDA (copiar y enviar a {c.get('manager_email') or 'el cliente'}) ──────────
+Subject: {c['name']} is live on Hosperai ✅
+
+Hi {who},
+
+Great news — Hosperai is now live for {c['name']}.
+
+1) Your reception link (save it on the front-desk computer or tablet):
+{checkin_link(c)}
+
+   • "New guest": add each guest in 10 seconds (name, mobile or email, language, dates, VIP yes/no).
+   • "Guests": see which messages are scheduled and which were sent. Extended stay or cancellation? Edit or remove it there.
+
+2) What happens next:
+   • On checkout day, after 11:00, each guest gets a personal thank-you on WhatsApp with a one-tap link to review you on Google.
+   • Every new Google review reaches your WhatsApp with a reply already written in your style — just copy and paste it.
+
+You'll also get a WhatsApp from Hosperai confirming everything is on.
+
+Any question, just reply to this email or message me on WhatsApp.
+
+Andreu
+Hosperai
+─────────────────────────────────────────────────────────────────"""
+
+
 def publish_review_page(c):
     """Página hosperai.es/r/<slug>.html (elige Google/TripAdvisor) → se publica con git push."""
     if not c.get("place_id"):
@@ -121,7 +151,9 @@ def to_client(sub):
         "phone": f"whatsapp:{phone}", "notify_lang": lang,
         "tone": d.get("tone", ""), "always_mention": d.get("always_mention", ""), "never_say": d.get("never_say", ""),
         "style": {k: d.get(k, "") for k in ("formality", "length", "use_name", "emojis", "apologise", "take_offline",
-                                             "complaint_contact", "compensation", "highlights", "recurring_complaints", "not_offered")},
+                                             "complaint_contact", "compensation", "highlights", "recurring_complaints", "not_offered",
+                                             "reply_preferences")},
+        "vip_message": d.get("vip_message", ""),
         "voice_examples": [{"review": SCENARIOS[n][0], "reply": SCENARIOS[n][1][d[f"scenario_{n}"]]}
                            for n in SCENARIOS if d.get(f"scenario_{n}") in SCENARIOS[n][1]],
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),
@@ -160,6 +192,7 @@ def main():
             if status == "active":
                 publish_review_page(c)
                 print(f"  🛎️  Enlace de check-in para recepción:\n     {checkin_link(c)}")
+                print(welcome_email(c))
 
     FILE.write_text(json.dumps(clients, indent=2, ensure_ascii=False))
     print(f"\n{len(clients)} clientes del formulario:")

@@ -48,6 +48,11 @@
   .edit { margin-top:10px; padding-top:6px; border-top:1px dashed var(--line); }
   .edit .btn { margin-top:12px; padding:11px; font-size:14px; }
   .section { margin-top:22px; }
+  .vip-row { display:flex; gap:8px; }
+  .vip-opt { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; border:1px solid var(--line); border-radius:11px; cursor:pointer; font-size:15px; font-weight:600; }
+  .vip-opt:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .vip-opt input { accent-color:var(--blue); width:auto; }
+  .badge { display:inline-block; margin-left:6px; padding:2px 8px; border-radius:20px; background:#f59e0b; color:#111; font-size:11px; font-weight:800; vertical-align:middle; }
   @media (max-width:440px) { .row { grid-template-columns:1fr; } }
 </style>
 </head>
@@ -71,6 +76,9 @@
         <label>Guest language</label>
         <select name="lang"></select>
         <div class="hint">The message is sent in this language.</div>
+        <label>VIP / member guest?</label>
+        <div class="vip-row"><label class="vip-opt"><input type="radio" name="vip" value="" checked> No</label><label class="vip-opt"><input type="radio" name="vip" value="yes"> ⭐ Yes</label></div>
+        <div class="hint">VIP guests get your special VIP message in their thank-you.</div>
         <div class="row">
           <div><label>Check-in</label><input name="checkin" type="date"></div>
           <div><label>Check-out</label><input name="checkout" type="date" required></div>
@@ -179,7 +187,7 @@
   function card(g, editable) {
     return `<div class="guest" data-id="${esc(g.id)}">
       <div class="g-top">
-        <div><div class="g-name">${esc(g.name)}</div>
+        <div><div class="g-name">${esc(g.name)}${g.vip ? '<span class="badge">VIP</span>' : ''}</div>
           <div class="g-meta">${[g.phone, g.email].filter(Boolean).map(esc).join(' · ')} · ${esc(g.lang || 'English')}<br>${pretty(g.checkin)} → ${pretty(g.checkout)}</div></div>
         ${editable ? '<div class="g-actions"><button class="mini" data-a="edit">Edit</button><button class="mini danger" data-a="del">Remove</button></div>' : ''}
       </div>
@@ -214,6 +222,7 @@
         <label>Mobile</label><input name="phone" type="tel" value="${esc(g.phone)}">
         <label>Email</label><input name="email" type="email" value="${esc(g.email)}">
         <label>Language</label><select name="lang">${langOpts(g.lang || 'English')}</select>
+        <label>VIP / member guest?</label><div class="vip-row"><label class="vip-opt"><input type="radio" name="vip" value=""${g.vip ? '' : ' checked'}> No</label><label class="vip-opt"><input type="radio" name="vip" value="yes"${g.vip ? ' checked' : ''}> ⭐ Yes</label></div>
         <div class="row"><div><label>Check-in</label><input name="checkin" type="date" value="${esc(g.checkin)}"></div>
         <div><label>Check-out</label><input name="checkout" type="date" value="${esc(g.checkout)}"></div></div>
         <button class="btn" type="submit">Save changes</button><div class="msg"></div></form>`);
