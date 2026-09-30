@@ -9,6 +9,14 @@ async function validSignature(request, form, token) {
   return btoa(String.fromCharCode(...new Uint8Array(mac))) === sig;
 }
 const xml = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+// "WhatsApp +1 305 555 1234 · frontdesk@hotel.com" → una línea por canal
+function contactLines(contact) {
+  return contact.split(/\s*[·|;,\n]\s*/).map(x => x.trim()).filter(Boolean).map(x => {
+    if (x.includes("@")) return `📧 ${x.replace(/^e-?mail:?\s*/i, "")}`;
+    const num = x.replace(/^(whats\s*app|wa|phone|tel[eé]fono|tel)\s*:?\s*/i, "");
+    return /\d{6,}/.test(num.replace(/\s|-/g, "")) ? `💬 WhatsApp: ${num}` : `• ${x}`;
+  }).join("\n");
+}
 
 export async function onRequestPost({ request, env }) {
   const form = await request.formData();
@@ -19,8 +27,8 @@ export async function onRequestPost({ request, env }) {
   let msg;
   if (rec && rec.contact) {
     msg = es
-      ? `Hola 👋 Este número solo envía mensajes automáticos de ${rec.hotel} y no puede leer respuestas.\n\nPara contactar con ${rec.hotel}, escribe a: ${rec.contact}\n\n¡Gracias!`
-      : `Hi 👋 This number only sends automated messages from ${rec.hotel} and can't read replies.\n\nTo contact ${rec.hotel}, please reach them at: ${rec.contact}\n\nThank you!`;
+      ? `Hola 👋 Este número solo envía mensajes automáticos de ${rec.hotel} y no puede leer respuestas.\n\nPara contactar con ${rec.hotel}, escribe a:\n\n${contactLines(rec.contact)}\n\n¡Gracias!`
+      : `Hi 👋 This number only sends automated messages from ${rec.hotel} and can't read replies.\n\nTo contact ${rec.hotel}, please reach them at:\n\n${contactLines(rec.contact)}\n\nThank you!`;
   } else if (rec) {
     msg = es
       ? `Hola 👋 Este número solo envía mensajes automáticos de ${rec.hotel} y no puede leer respuestas. Para contactar con ${rec.hotel}, usa su WhatsApp, teléfono o email habituales. ¡Gracias!`
