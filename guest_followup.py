@@ -1,22 +1,20 @@
 """
-Hospera Boost Review — pide la reseña al huésped el día de salida, y si la
-estancia dura más de una noche, manda un aviso a mitad de estancia para
-detectar problemas antes de que se vaya (nunca selecciona a quién escribir
-según lo contento que esté — se manda a todos, ver docs/formulario_checkin.md).
+Hosperai Boost Review — mensajes a huéspedes de los hoteles activos con "Get more reviews".
 
-Lee el CSV publicado de la Sheet de check-ins de cada cliente (ver
-docs/formulario_checkin.md para cómo publicarla), calcula qué huéspedes
-tocan hoy, y manda el mensaje por SMS si tenemos su teléfono, o por email
-si solo tenemos su email de la reserva.
+Recepción registra a cada huésped en https://app.hosperai.es/checkin/?h=<hotel>&t=<token>.
+Este script (launchd, cada 30 min de 9:00 a 21:00) lee esos huéspedes y manda:
+  - día de salida (desde las 11:00): agradecimiento + enlace de reseña (VIP: con el mensaje VIP del hotel)
+  - estancias de más de 2 noches: a mitad de estancia, "¿va todo bien?" con el WhatsApp del hotel
+Canal: WhatsApp (plantilla aprobada por Meta) → email si el número no tiene WhatsApp.
+Solo se marca "enviado" cuando WhatsApp confirma la entrega; si no, se reintenta (hasta 2 días después).
 
-Uso:
   python3 guest_followup.py          # corre de verdad
   python3 guest_followup.py --test   # no manda nada, solo imprime qué mandaría
 """
 import sys
 sys.path.insert(0, '/Users/andreurey/Library/Python/3.9/lib/python/site-packages')
 
-import os, csv, io, json, re, time, argparse, smtplib
+import os, json, re, time, argparse, smtplib
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from email.mime.text import MIMEText
@@ -115,7 +113,7 @@ def fetch_checkins(slug):
         if not (g.get("name") and checkout and (g.get("phone") or g.get("email"))):
             continue
         guests.append({
-            "name": g["name"].strip().split(" ")[0],
+            "name": (lambda n: n.capitalize() if n.islower() else n)(g["name"].strip().split(" ")[0]),
             "phone": re.sub(r"[^\d+]", "", g.get("phone") or ""),
             "email": (g.get("email") or "").strip(),
             "lang": normalize_lang(g.get("lang")),
@@ -310,7 +308,7 @@ def main():
     parser.add_argument('--test', action='store_true')
     args = parser.parse_args()
 
-    print(f"\n🌱 Hospera Boost Review — {len(CHECKIN_CLIENTS)} clientes con check-in activado")
+    print(f"\n🌱 Hosperai Boost Review — {len(CHECKIN_CLIENTS)} clientes con check-in activado")
     if not CHECKIN_CLIENTS:
         print("  (todavía no hay ningún cliente configurado en CHECKIN_CLIENTS)")
         return

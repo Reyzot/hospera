@@ -116,7 +116,7 @@ CLIENTS = [
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 if _CLIENTS_FILE.exists():
     for _c in json.loads(_CLIENTS_FILE.read_text()):
-        if _c.get("status") == "active" and _c.get("data_id"):
+        if _c.get("status") == "active" and _c.get("data_id") and "Answer reviews" in (_c.get("services") or []):
             CLIENTS.append({**_c, "state": Path.home() / 'hospera' / f"seen_{_c['slug']}.json"})
 
 
@@ -331,9 +331,9 @@ def send_whatsapp(client, author, rating, text, response_text, review_translated
 
     is_urgent = rating_val and rating_val <= LOW_RATING_THRESHOLD
     header = (
-        f"🚨 *Hospera* · reseña negativa en *{client['name']}* ({platform_label}) — requiere atención"
+        f"🚨 *Hosperai* · reseña negativa en *{client['name']}* ({platform_label}) — requiere atención"
         if is_urgent else
-        f"✨ *Hospera* · nueva reseña en *{client['name']}* ({platform_label})"
+        f"✨ *Hosperai* · nueva reseña en *{client['name']}* ({platform_label})"
     )
 
     msg = f"""{header}
@@ -347,7 +347,7 @@ def send_whatsapp(client, author, rating, text, response_text, review_translated
 👉 Copia y pega la respuesta aquí para publicarla:
 {reply_url}
 
-_Hospera responde por ti — tú solo confirmas._"""
+_Hosperai responde por ti — tú solo confirmas._"""
 
     if len(msg) > 1580:
         msg = msg[:1577] + "..."
@@ -370,7 +370,7 @@ _Hospera responde por ti — tú solo confirmas._"""
 def send_onboarding_summary(client, platform, total, backlog, negative_backlog):
     twilio = Client(TWILIO_SID, TWILIO_TOKEN)
     platform_label = PLATFORM_LABEL.get(platform, "Google")
-    msg = f"""✨ *Hospera* activado en *{client['name']}* ({platform_label})
+    msg = f"""✨ *Hosperai* activado en *{client['name']}* ({platform_label})
 ────────────────
 He revisado el histórico de reseñas recientes:
 📋 {total} reseñas encontradas
@@ -491,7 +491,7 @@ def main():
     parser.add_argument('--test', action='store_true')
     args = parser.parse_args()
 
-    print(f"\n🏨 Hospera Review Monitor — {len(CLIENTS)} clientes")
+    print(f"\n🏨 Hosperai Review Monitor — {len(CLIENTS)} clientes")
     print(f"⏱️  Revisando cada {POLL_MINUTES} min\n")
 
     if args.once or args.test:

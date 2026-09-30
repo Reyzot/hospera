@@ -1,6 +1,6 @@
 """
-Alta de clientes desde el formulario https://hosperai-onboarding.netlify.app
-(Netlify Forms) → clients.json, que review_monitor.py carga solo.
+Alta de clientes desde el formulario https://app.hosperai.es (Cloudflare Pages + KV)
+→ clients.json, que review_monitor.py y guest_followup.py cargan solos.
 
   python3 onboard_clients.py                 # descarga respuestas nuevas y lista clientes
   python3 onboard_clients.py --approve slug  # activa un cliente (empieza a monitorizar y le llega el WhatsApp de bienvenida)
@@ -11,7 +11,6 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 from review_monitor import SERPAPI_KEY  # noqa: E402
 
-FORM_ID = "6abd2e3ba00054000889f57c"
 SITE = "https://app.hosperai.es"
 from dotenv import load_dotenv
 load_dotenv(Path.home() / "hospera" / ".env")

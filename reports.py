@@ -18,7 +18,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 import anthropic
-from review_monitor import CLIENTS, SERPAPI_KEY, load_seen, LOW_RATING_THRESHOLD
+from review_monitor import CLIENTS as _ALL_CLIENTS, SERPAPI_KEY, load_seen, LOW_RATING_THRESHOLD
+
+# Clientes antiguos (lista fija, sin "services") o del formulario que contrataron "Progress reports".
+# Los PDF están en español: a clientes en inglés no se les manda hasta tener versión en inglés.
+CLIENTS = [c for c in _ALL_CLIENTS if c.get("data_id")
+           and ("services" not in c or "Progress reports" in c["services"])]
 from pdf_report import render_weekly_html, render_monthly_html, html_to_pdf
 from maps_rank import maps_rank
 import requests
@@ -246,6 +251,9 @@ def run_weekly(test_mode=False):
             print(f"  ⏭️  {client['name']}: sin manager_email configurado, se salta")
             continue
 
+        if client.get("notify_lang") == "en":
+            print(f"  ⏭️  {client['name']}: informe solo disponible en español por ahora, se salta")
+            continue
         print(f"\n  📍 {client['name']} — informe semanal")
         weekly = weekly_digest(client)
         html = render_weekly_html(client, weekly, date_str)
@@ -253,9 +261,9 @@ def run_weekly(test_mode=False):
         html_to_pdf(html, pdf_path)
         print(f"  📄 PDF generado: {pdf_path}")
 
-        body = f"Hola,\n\nAdjunto el informe semanal de {client['name']}.\n\n— Hospera"
+        body = f"Hola,\n\nAdjunto el informe semanal de {client['name']}.\n\n— Hosperai"
         if not test_mode:
-            send_email_with_pdf(to_addr, f"Informe semanal Hospera — {client['name']}", body, pdf_path, "informe_semanal.pdf")
+            send_email_with_pdf(to_addr, f"Informe semanal Hosperai — {client['name']}", body, pdf_path, "informe_semanal.pdf")
             print(f"  ✅ Email enviado a {to_addr}")
         else:
             print(f"  [TEST] Email no enviado")
@@ -270,6 +278,9 @@ def run_monthly(test_mode=False):
             print(f"  ⏭️  {client['name']}: sin manager_email configurado, se salta")
             continue
 
+        if client.get("notify_lang") == "en":
+            print(f"  ⏭️  {client['name']}: informe solo disponible en español por ahora, se salta")
+            continue
         print(f"\n  📍 {client['name']} — informe mensual")
         current, previous, covered = monthly_comparison(client, cache)
         rank_now, rank_prev = ranking_history(client, cache)
@@ -281,9 +292,9 @@ def run_monthly(test_mode=False):
         html_to_pdf(html, pdf_path)
         print(f"  📄 PDF generado: {pdf_path}")
 
-        body = f"Hola,\n\nAdjunto la comparativa mensual de {client['name']} frente al mes anterior.\n\n— Hospera"
+        body = f"Hola,\n\nAdjunto la comparativa mensual de {client['name']} frente al mes anterior.\n\n— Hosperai"
         if not test_mode:
-            send_email_with_pdf(to_addr, f"Informe mensual Hospera — {client['name']}", body, pdf_path, "informe_mensual.pdf")
+            send_email_with_pdf(to_addr, f"Informe mensual Hosperai — {client['name']}", body, pdf_path, "informe_mensual.pdf")
             print(f"  ✅ Email enviado a {to_addr}")
         else:
             print(f"  [TEST] Email no enviado")
