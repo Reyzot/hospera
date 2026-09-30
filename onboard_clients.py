@@ -9,7 +9,7 @@ Alta de clientes desde el formulario https://hosperai-onboarding.netlify.app
 import json, re, subprocess, argparse, requests, warnings, hmac, hashlib, os, urllib.parse
 from pathlib import Path
 warnings.filterwarnings("ignore")
-from review_monitor import SERPAPI_KEY
+from review_monitor import SERPAPI_KEY  # noqa: E402
 
 FORM_ID = "6abd2e3ba00054000889f57c"
 SITE = "https://hosperai-onboarding.netlify.app"
@@ -40,9 +40,28 @@ FILE = Path.home() / "hospera" / "clients.json"
 LANG = {"English": "en", "Español": "es", "Català": "es"}
 
 
-def netlify(cmd, data):
-    out = subprocess.run(["netlify", "api", cmd, "--data", json.dumps(data)], capture_output=True, text=True, check=True).stdout
-    return json.loads(out)
+def fetch_submissions():
+    r = requests.get(f"{SITE}/api/onboarding", params={"key": CHECKIN_SECRET}, timeout=30)
+    r.raise_for_status()
+    return r.json()
+
+
+def email_me(c):
+    """Aviso a hosperai.app@gmail.com con los datos del hotel nuevo (Gmail SMTP del .env)."""
+    import smtplib
+    from email.mime.text import MIMEText
+    user, pwd = os.getenv("EMAIL_ADDRESS"), os.getenv("EMAIL_APP_PASSWORD")
+    if not (user and pwd):
+        return
+    lines = [f"{k}: {v if not isinstance(v, list) else ', '.join(v)}" for k, v in c.items() if k not in ("submission_id",)]
+    body = "Nuevo cliente desde el formulario de alta:\n\n" + "\n".join(lines) + \
+           f"\n\nPara activarlo:\n  cd ~/hospera && python3 onboard_clients.py --approve {c['slug']}"
+    msg = MIMEText(body)
+    msg["Subject"] = f"🆕 Nuevo cliente Hosperai: {c['name']}"
+    msg["From"] = user
+    msg["To"] = "hosperai.app@gmail.com"
+    with smtplib.SMTP("smtp.gmail.com", 587) as srv:
+        srv.starttls(); srv.login(user, pwd); srv.send_message(msg)
 
 
 def slugify(s):
@@ -93,11 +112,15 @@ def main():
     clients = json.loads(FILE.read_text()) if FILE.exists() else []
     known = {c["submission_id"] for c in clients}
 
-    for sub in netlify("listFormSubmissions", {"form_id": FORM_ID}):
+    for sub in fetch_submissions():
         if sub["id"] not in known:
             c = to_client(sub)
             clients.append(c)
             print(f"🆕 {c['name']} ({c['phone']}) — data_id: {c['data_id'] or '⚠️ NO ENCONTRADO'}")
+            try:
+                email_me(c)
+            except Exception as e:
+                print(f"  ⚠️  No pude mandarte el email: {e}")
 
     for slug, status in ((a.approve, "active"), (a.pause, "paused")):
         if slug:

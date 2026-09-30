@@ -321,7 +321,7 @@
     const btn = form.querySelector('button[type=submit]');
     btn.disabled = true; btn.textContent = 'Sending…';
     const data = new URLSearchParams(new FormData(form));
-    fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: data.toString()})
+    fetch('/api/onboarding', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: data.toString()})
       .then(function(r) {
         if (!r.ok) throw new Error(r.status);
         form.innerHTML = '<div class="container" style="padding:60px 0;text-align:center"><h2 style="font-size:32px;margin-bottom:12px">Thank you! ✅</h2><p class="lead" style="margin:0 auto">We have everything we need. We\'ll message you on WhatsApp as soon as Hosperai is live for your business (usually within 48 hours).</p></div>';

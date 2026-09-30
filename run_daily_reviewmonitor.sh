@@ -18,3 +18,6 @@ fi
 cd ~/hospera
 /usr/bin/python3 review_monitor.py --once
 echo "$TODAY" > "$MARKER"
+
+# Altas nuevas del formulario → clients.json + email de aviso
+/usr/bin/python3 ~/hospera/onboard_clients.py >/dev/null 2>&1
