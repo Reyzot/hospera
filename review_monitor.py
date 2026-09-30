@@ -357,7 +357,7 @@ _Hosperai responde por ti — tú solo confirmas._"""
         head = "🚨 Negative review — needs attention" if is_urgent else "✨ New review"
     else:
         head = "🚨 Reseña negativa, requiere atención" if is_urgent else "✨ Nueva reseña"
-    flag = "🇺🇸" if lang == "en" else "🇪🇸"
+    flag = "🌐"
     rev_var = text_short + (f" · {flag} {review_translated[:300]}" if review_translated else "")
     rep_var = response_short + (f" · {flag} {reply_translated[:300]}" if reply_translated else "")
     ok = send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {
