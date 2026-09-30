@@ -70,14 +70,27 @@
   .logo-name { font-size:16px; font-weight:800; color:var(--gray-900); letter-spacing:-0.3px; }
   .logo-name span { color:var(--blue); }
 
-  .hero-block {
-    position:relative; overflow:hidden;
+  .hero-block { position:relative; overflow:hidden; padding:48px 0 8px; }
+  .hero-block::before {
+    content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
     background-image: radial-gradient(var(--dot-color) 1.3px, transparent 1.3px);
     background-size: 22px 22px;
     -webkit-mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
             mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
-    padding:48px 0 8px;
   }
+  .hero-block > * { position:relative; z-index:1; }
+  .pills { display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--gray-200); border-radius:10px; cursor:pointer; font-size:14px; }
+  .pill:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .pill input { accent-color:var(--blue); }
+  .range-wrap { display:flex; align-items:center; gap:12px; font-size:12.5px; color:var(--gray-500); }
+  .range-wrap input[type=range] { flex:1; accent-color:var(--blue); }
+  .scenario { border:1px solid var(--gray-200); border-radius:14px; padding:16px; margin-bottom:16px; }
+  .scenario .q { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .scenario .review { font-size:13.5px; color:var(--gray-500); font-style:italic; margin-bottom:12px; }
+  .opt { display:flex; gap:10px; align-items:flex-start; padding:11px 12px; border:1px solid var(--gray-200); border-radius:10px; margin-top:8px; cursor:pointer; font-size:13.5px; line-height:1.5; }
+  .opt:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .opt input { accent-color:var(--blue); margin-top:3px; flex-shrink:0; }
   .eyebrow { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; }
   h1 { font-size:clamp(26px,4vw,36px); font-weight:800; letter-spacing:-0.5px; margin-bottom:12px; line-height:1.15; }
   h1 .blue { color:var(--blue); }
@@ -227,11 +240,6 @@
         <input type="text" name="signature" placeholder="e.g. The Team at Hotel Aurora">
         <div class="hint">Optional — if left blank, we'll use your business name.</div>
       </div>
-      <div class="field">
-        <label>How do you currently track check-ins / check-outs?</label>
-        <textarea name="pms" placeholder="PMS name, spreadsheet, booking system — whatever you actually use today"></textarea>
-        <div class="hint">Only needed if you want the automatic review-request (NFC/SMS) service.</div>
-      </div>
     </fieldset>
 
     <fieldset>
@@ -249,14 +257,47 @@
     </fieldset>
 
     <fieldset>
-      <legend>Anything else</legend>
+      <legend>How your replies should sound</legend>
       <div class="field">
-        <label>Tone of the replies</label>
-        <select name="tone">
-          <option value="Warm & friendly">Warm &amp; friendly</option>
-          <option value="Formal">Formal</option>
-          <option value="Fun & casual">Fun &amp; casual</option>
-        </select>
+        <label>How formal?</label>
+        <div class="range-wrap"><span>Very casual</span><input type="range" name="formality" min="1" max="5" value="3"><span>Very formal</span></div>
+      </div>
+      <div class="field"><label>Reply length</label><div class="pills"><label class="pill"><input type="radio" name="length" value="Short (1–2 sentences)"> Short (1–2 sentences)</label><label class="pill"><input type="radio" name="length" value="Medium (3–4 sentences)" checked> Medium (3–4 sentences)</label><label class="pill"><input type="radio" name="length" value="Detailed"> Detailed</label></div></div>
+      <div class="field"><label>Use the guest's first name?</label><div class="pills"><label class="pill"><input type="radio" name="use_name" value="Yes" checked> Yes</label><label class="pill"><input type="radio" name="use_name" value="No"> No</label></div></div>
+      <div class="field"><label>Emojis?</label><div class="pills"><label class="pill"><input type="radio" name="emojis" value="Never" checked> Never</label><label class="pill"><input type="radio" name="emojis" value="Sometimes"> Sometimes</label></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>When a review is negative</legend>
+      <div class="field"><label>Should we apologise?</label><div class="pills"><label class="pill"><input type="radio" name="apologise" value="Always apologise"> Always apologise</label><label class="pill"><input type="radio" name="apologise" value="Only if we were clearly at fault" checked> Only if we were clearly at fault</label><label class="pill"><input type="radio" name="apologise" value="Thank them, but don't apologise"> Thank them, but don't apologise</label></div></div>
+      <div class="field"><label>Invite the guest to continue the conversation privately?</label><div class="pills"><label class="pill"><input type="radio" name="take_offline" value="Yes" checked> Yes</label><label class="pill"><input type="radio" name="take_offline" value="No"> No</label></div></div>
+      <div class="field">
+        <label>Contact to give unhappy guests (optional)</label>
+        <input type="text" name="complaint_contact" placeholder="e.g. manager@yourhotel.com or +1 305 555 1234">
+      </div>
+      <div class="field"><label>Compensation</label><div class="pills"><label class="pill"><input type="radio" name="compensation" value="Never mention it" checked> Never mention it</label><label class="pill"><input type="radio" name="compensation" value="Invite them to contact us, no promises"> Invite them to contact us, no promises</label></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Real situations — pick the reply that sounds like you</legend>
+      <div class="scenario"><div class="q">A guest found the room smaller than expected</div><div class="review">“Nice location but the room was really small for the price.”</div><label class="opt"><input type="radio" name="scenario_1" value="A" checked><span><b>A.</b> Thank you, Maria! We're sorry the room felt small — our rooms are cozy by design, and next time just ask us about our larger categories.</span></label><label class="opt"><input type="radio" name="scenario_1" value="B"><span><b>B.</b> Dear Ms. Thompson, thank you for your feedback. We apologise for not meeting your expectations and have shared your comments with our team.</span></label><label class="opt"><input type="radio" name="scenario_1" value="C"><span><b>C.</b> Thanks for staying with us, Maria — noted, and we hope to welcome you back soon.</span></label></div>
+      <div class="scenario"><div class="q">A guest loved everything</div><div class="review">“Amazing stay, the staff were so kind and the breakfast was delicious!”</div><label class="opt"><input type="radio" name="scenario_2" value="A" checked><span><b>A.</b> Maria, this made our day! 🙌 We'll pass your kind words to the team — see you next time!</span></label><label class="opt"><input type="radio" name="scenario_2" value="B"><span><b>B.</b> Dear Ms. Thompson, thank you for your wonderful review. It was a pleasure to host you, and we look forward to welcoming you again.</span></label><label class="opt"><input type="radio" name="scenario_2" value="C"><span><b>C.</b> Thank you, Maria! So glad you enjoyed it.</span></label></div>
+      <div class="scenario"><div class="q">A guest complained about noise</div><div class="review">“Couldn't sleep, very noisy street at night.”</div><label class="opt"><input type="radio" name="scenario_3" value="A" checked><span><b>A.</b> We're sorry, Maria — the street can get lively. Next time ask for one of our courtyard rooms, they're much quieter, and we have earplugs at reception.</span></label><label class="opt"><input type="radio" name="scenario_3" value="B"><span><b>B.</b> Dear Ms. Thompson, we sincerely apologise for the disturbance. Your feedback has been forwarded to our management team.</span></label><label class="opt"><input type="radio" name="scenario_3" value="C"><span><b>C.</b> Thanks for the feedback, Maria — we'll keep working on it.</span></label></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>What we should know about your business</legend>
+      <div class="field">
+        <label>What do guests love most? (optional)</label>
+        <textarea name="highlights" placeholder="e.g. rooftop views, the breakfast, our concierge Ana"></textarea>
+      </div>
+      <div class="field">
+        <label>Recurring complaints — and how you handle them (optional)</label>
+        <textarea name="recurring_complaints" placeholder="e.g. Parking is tight → valet across the street, $20/night. Street noise → quieter courtyard rooms on request."></textarea>
+      </div>
+      <div class="field">
+        <label>Things you DON'T offer, so we never imply you do (optional)</label>
+        <textarea name="not_offered" placeholder="e.g. no pool, no restaurant, breakfast not included, no pets"></textarea>
       </div>
       <div class="field">
         <label>Anything replies should always mention? (optional)</label>
@@ -268,7 +309,7 @@
       </div>
       <div class="field">
         <label>Anything else we should know? (optional)</label>
-        <textarea name="notes" placeholder="Anything else we should know before we turn this on?"></textarea>
+        <textarea name="notes" placeholder="Anything else before we turn this on?"></textarea>
       </div>
     </fieldset>
 

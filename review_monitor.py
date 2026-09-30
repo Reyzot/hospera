@@ -235,9 +235,29 @@ Después de la respuesta, si la reseña NO está ya en el idioma '{notify_lang}'
         extra += f"\nSi encaja de forma natural, menciona: {client['always_mention']}."
     if client.get('never_say'):
         extra += f"\nNUNCA digas ni prometas: {client['never_say']}."
+    st = client.get('style') or {}
+    guide = {
+        "formality": "Formalidad del 1 (muy informal) al 5 (muy formal): {}",
+        "length": "Longitud: {}",
+        "use_name": "¿Llamar al cliente por su nombre?: {}",
+        "emojis": "¿Emojis?: {}",
+        "apologise": "En reseñas negativas, ¿pedir perdón?: {}",
+        "take_offline": "En reseñas negativas, ¿invitar a seguir la conversación en privado?: {}",
+        "complaint_contact": "Contacto que puedes dar a clientes descontentos: {}",
+        "compensation": "Compensaciones: {}",
+        "highlights": "Lo que más gusta del negocio (puedes reforzarlo si encaja): {}",
+        "recurring_complaints": "Quejas habituales y cómo las resuelve el negocio (úsalo si la reseña va de eso): {}",
+        "not_offered": "Cosas que el negocio NO ofrece, nunca des a entender que sí: {}",
+    }
+    lines = [tpl.format(st[k]) for k, tpl in guide.items() if st.get(k)]
+    if lines:
+        extra += "\nGuía de estilo que ha elegido el negocio:\n- " + "\n- ".join(lines)
+    if client.get('voice_examples'):
+        ex = "\n".join(f'Reseña: "{e["review"]}" → Respuesta que le gusta: "{e["reply"]}"' for e in client['voice_examples'])
+        extra += f"\nEjemplos de respuestas que el negocio eligió como su estilo (imita el tono, no copies el texto):\n{ex}"
     prompt = f"""Eres el responsable de {client['name']}, un {client['type']} en {client.get('location', 'Begur, Costa Brava')}.
 Responde a esta reseña de {PLATFORM_LABEL.get(platform, 'Google')} de forma profesional, cálida y personalizada.{extra}
-Escribe la respuesta en el mismo idioma que la reseña original (esto no cambia). Máximo 3 frases. No empieces con frases genéricas.
+Escribe la respuesta en el mismo idioma que la reseña original (esto no cambia). {"Respeta la longitud indicada en la guía de estilo." if (client.get('style') or {}).get('length') else "Máximo 3 frases."} No empieces con frases genéricas.
 Firma como: {client['signature']}{translate_instructions}
 
 Autor: {author}

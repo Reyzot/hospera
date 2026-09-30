@@ -84,6 +84,22 @@ def find_place(d):
     return url_id or place.get("data_id"), place.get("place_id")
 
 
+SCENARIOS = {
+    "1": ("Nice location but the room was really small for the price.", {
+        "A": "Thank you, Maria! We're sorry the room felt small — our rooms are cozy by design, and next time just ask us about our larger categories.",
+        "B": "Dear Ms. Thompson, thank you for your feedback. We apologise for not meeting your expectations and have shared your comments with our team.",
+        "C": "Thanks for staying with us, Maria — noted, and we hope to welcome you back soon."}),
+    "2": ("Amazing stay, the staff were so kind and the breakfast was delicious!", {
+        "A": "Maria, this made our day! 🙌 We'll pass your kind words to the team — see you next time!",
+        "B": "Dear Ms. Thompson, thank you for your wonderful review. It was a pleasure to host you, and we look forward to welcoming you again.",
+        "C": "Thank you, Maria! So glad you enjoyed it."}),
+    "3": ("Couldn't sleep, very noisy street at night.", {
+        "A": "We're sorry, Maria — the street can get lively. Next time ask for one of our courtyard rooms, they're much quieter, and we have earplugs at reception.",
+        "B": "Dear Ms. Thompson, we sincerely apologise for the disturbance. Your feedback has been forwarded to our management team.",
+        "C": "Thanks for the feedback, Maria — we'll keep working on it."}),
+}
+
+
 def to_client(sub):
     d = sub["data"]
     name = d.get("business_name", "").strip()
@@ -98,6 +114,10 @@ def to_client(sub):
         "signature": d.get("signature") or (f"The team at {name}" if lang == "en" else f"El equipo de {name}"),
         "phone": f"whatsapp:{phone}", "notify_lang": lang,
         "tone": d.get("tone", ""), "always_mention": d.get("always_mention", ""), "never_say": d.get("never_say", ""),
+        "style": {k: d.get(k, "") for k in ("formality", "length", "use_name", "emojis", "apologise", "take_offline",
+                                             "complaint_contact", "compensation", "highlights", "recurring_complaints", "not_offered")},
+        "voice_examples": [{"review": SCENARIOS[n][0], "reply": SCENARIOS[n][1][d[f"scenario_{n}"]]}
+                           for n in SCENARIOS if d.get(f"scenario_{n}") in SCENARIOS[n][1]],
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),
         "services": d.get("services") or [], "pms": d.get("pms", ""), "notes": d.get("notes", ""),
         "google_url": d.get("google_url", ""), "created": sub.get("created_at", ""),

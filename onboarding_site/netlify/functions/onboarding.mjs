@@ -3,7 +3,9 @@ import crypto from "node:crypto";
 
 const SECRET = process.env.CHECKIN_SECRET || "";
 const FIELDS = ["contact_name", "contact_email", "business_name", "business_type", "address", "google_url", "tripadvisor_url",
-  "whatsapp", "notify_lang", "signature", "pms", "tone", "always_mention", "never_say", "notes"];
+  "whatsapp", "notify_lang", "signature", "formality", "length", "use_name", "emojis", "apologise", "take_offline",
+  "complaint_contact", "compensation", "scenario_1", "scenario_2", "scenario_3", "highlights", "recurring_complaints",
+  "not_offered", "always_mention", "never_say", "notes"];
 
 export default async (req) => {
   const store = getStore("onboarding");
