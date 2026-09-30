@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 from review_monitor import SERPAPI_KEY  # noqa: E402
 
 FORM_ID = "6abd2e3ba00054000889f57c"
-SITE = "https://hosperai-onboarding.netlify.app"
+SITE = "https://app.hosperai.es"
 from dotenv import load_dotenv
 load_dotenv(Path.home() / "hospera" / ".env")
 CHECKIN_SECRET = os.getenv("CHECKIN_SECRET", "")

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Guest check-in · Hosperai</title>
+<link rel="icon" href="/assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --blue:#2563eb; --blue-50:#eff6ff; --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --line:#e5e7eb; --ok:#059669; --err:#dc2626; --amber:#b45309; }
+  @media (prefers-color-scheme: dark) { :root { --blue-50:#142033; --bg:#0d0f14; --card:#14161d; --text:#f3f4f6; --muted:#9ca3af; --line:#2a2d38; --amber:#f59e0b; } }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Inter,-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:24px 16px 110px; }
+  .wrap { max-width:620px; margin:0 auto; }
+  header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  header img { width:34px; height:34px; }
+  header .t { font-weight:700; font-size:15px; }
+  header .s { color:var(--muted); font-size:13px; }
+  .tabs { display:flex; gap:6px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:4px; margin-bottom:14px; }
+  .tab { flex:1; padding:10px; border:0; border-radius:9px; background:none; color:var(--muted); font:inherit; font-weight:700; font-size:14px; cursor:pointer; }
+  .tab.active { background:var(--blue); color:#fff; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:24px 20px; }
+  h1 { font-size:22px; letter-spacing:-.02em; margin-bottom:6px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.8px; color:var(--blue); margin:4px 0 10px; }
+  .lead { color:var(--muted); font-size:14.5px; margin-bottom:18px; line-height:1.5; }
+  label { display:block; font-size:13px; font-weight:600; margin:14px 0 6px; }
+  input, select { width:100%; padding:12px 13px; border:1px solid var(--line); border-radius:11px; font:inherit; font-size:16px; background:var(--bg); color:var(--text); }
+  input:focus, select:focus { outline:2px solid var(--blue); border-color:transparent; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .hint { color:var(--muted); font-size:12px; margin-top:6px; }
+  .btn { width:100%; margin-top:20px; padding:14px; border:0; border-radius:12px; background:var(--blue); color:#fff; font:inherit; font-weight:700; font-size:16px; cursor:pointer; }
+  .btn:disabled { opacity:.6; }
+  .msg { margin-top:14px; padding:12px 14px; border-radius:11px; font-size:14px; display:none; }
+  .msg.ok { display:block; background:rgba(5,150,105,.12); color:var(--ok); }
+  .msg.err { display:block; background:rgba(220,38,38,.12); color:var(--err); }
+  .bad, .empty { text-align:center; padding:26px 10px; color:var(--muted); font-size:14px; }
+  .guest { border:1px solid var(--line); border-radius:13px; padding:13px 14px; margin-bottom:10px; }
+  .g-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .g-name { font-weight:700; font-size:15px; }
+  .g-meta { color:var(--muted); font-size:12.5px; margin-top:3px; line-height:1.5; word-break:break-all; }
+  .g-when { font-size:13px; margin-top:8px; line-height:1.55; }
+  .g-when .pend { color:var(--amber); font-weight:600; }
+  .g-when .done { color:var(--ok); font-weight:600; }
+  .g-actions { display:flex; gap:6px; flex-shrink:0; }
+  .mini { padding:7px 11px; border:1px solid var(--line); border-radius:9px; background:var(--bg); color:var(--text); font:inherit; font-size:12.5px; font-weight:600; cursor:pointer; }
+  .mini.danger { color:var(--err); }
+  .edit { margin-top:10px; padding-top:6px; border-top:1px dashed var(--line); }
+  .edit .btn { margin-top:12px; padding:11px; font-size:14px; }
+  .section { margin-top:22px; }
+  @media (max-width:440px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="/assets/logo-icon.png" alt=""><div><div class="t">Hosperai</div><div class="s" id="hotelName">Guest check-in</div></div></header>
+  <div id="app">
+    <div class="tabs"><button class="tab active" data-v="add">New guest</button><button class="tab" data-v="list">Guests</button></div>
+
+    <div class="card" id="v-add">
+      <h1>New guest</h1>
+      <p class="lead">Takes 10 seconds. On checkout day the guest gets a personal thank-you with a link to leave a review.</p>
+      <form id="f" autocomplete="off">
+        <label>Guest name</label>
+        <input name="name" required placeholder="Maria Thompson">
+        <label>Mobile (with country code)</label>
+        <input name="phone" type="tel" placeholder="+1 305 555 1234">
+        <label>Email</label>
+        <input name="email" type="email" placeholder="maria@email.com">
+        <div class="hint">Phone or email — at least one. Phone is better (WhatsApp).</div>
+        <label>Guest language</label>
+        <select name="lang"></select>
+        <div class="hint">The message is sent in this language.</div>
+        <div class="row">
+          <div><label>Check-in</label><input name="checkin" type="date"></div>
+          <div><label>Check-out</label><input name="checkout" type="date" required></div>
+        </div>
+        <button type="submit" class="btn" id="btn">Save guest</button>
+        <div class="msg" id="msg"></div>
+      </form>
+    </div>
+
+    <div class="card" id="v-list" style="display:none">
+      <h1>Guests</h1>
+      <p class="lead">Messages go out automatically. Extended stay or cancelled booking? Edit or remove the guest before the message is sent.</p>
+      <div class="section"><h2>Scheduled</h2><div id="scheduled"></div></div>
+      <div class="section"><h2>Sent</h2><div id="sent"></div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const LANGS = ['English', 'Español', 'Français', 'Deutsch', 'Italiano', 'Português', 'Català'];
+  const SEND_HOUR = 11;
+  const p = new URLSearchParams(location.search);
+  const h = p.get('h'), t = p.get('t'), n = p.get('n');
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const langOpts = sel => LANGS.map(l => `<option${l === sel ? ' selected' : ''}>${l}</option>`).join('');
+  const iso = d => new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const pretty = s => s ? new Date(s + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : '';
+  const prettyTs = s => s ? new Date(s).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+
+  if (n) { $('#hotelName').textContent = n + ' · Guest check-in'; document.title = n + ' · Guest check-in'; }
+  if (!h || !t) $('#app').innerHTML = '<div class="card bad">This link is incomplete. Please use the check-in link Hosperai sent you.</div>';
+
+  const api = async body => {
+    const r = await fetch('/api/checkin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, h, t }) });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  };
+
+  const f = $('#f');
+  if (f) { f.lang.innerHTML = langOpts('English'); f.checkin.value = iso(new Date()); }
+
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === b));
+    $('#v-add').style.display = b.dataset.v === 'add' ? '' : 'none';
+    $('#v-list').style.display = b.dataset.v === 'list' ? '' : 'none';
+    if (b.dataset.v === 'list') load();
+  }));
+
+  function validate(d) {
+    if (!d.name) return 'Add the guest name.';
+    if (!d.phone && !d.email) return 'Add a phone number or an email.';
+    if (d.phone && !d.phone.trim().startsWith('+')) return 'Add the country code to the phone, e.g. +1 or +34.';
+    if (!d.checkout) return 'Add the check-out date.';
+    if (d.checkin && d.checkout < d.checkin) return 'Check-out is before check-in.';
+    return '';
+  }
+
+  f && f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = $('#msg'), btn = $('#btn');
+    msg.className = 'msg';
+    const d = Object.fromEntries(new FormData(f));
+    const err = validate(d);
+    if (err) { msg.textContent = err; msg.className = 'msg err'; return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await api({ action: 'add', ...d });
+      msg.textContent = '✅ ' + d.name + ' saved. Thank-you message on ' + pretty(d.checkout) + '.';
+      msg.className = 'msg ok';
+      const keep = f.checkin.value; f.reset(); f.lang.innerHTML = langOpts('English'); f.checkin.value = keep; f.name.focus();
+    } catch (er) { msg.textContent = 'Could not save (' + er.message + '). Please try again.'; msg.className = 'msg err'; }
+    btn.disabled = false; btn.textContent = 'Save guest';
+  });
+
+  function nextSend(g) {
+    // fecha del próximo mensaje pendiente (mitad de estancia si aún toca, si no el de salida)
+    if (g.checkin && g.checkout && !g.midstay_sent) {
+      const nights = Math.round((Date.parse(g.checkout) - Date.parse(g.checkin)) / 864e5);
+      if (nights > 1) {
+        const mid = iso(new Date(Date.parse(g.checkin + 'T12:00:00') + Math.floor(nights / 2) * 864e5));
+        if (mid >= iso(new Date())) return mid;
+      }
+    }
+    return g.checkout || '';
+  }
+
+  function schedule(g) {
+    const lines = [];
+    if (g.checkin && g.checkout) {
+      const nights = Math.round((Date.parse(g.checkout) - Date.parse(g.checkin)) / 864e5);
+      if (nights > 1) {
+        const mid = iso(new Date(Date.parse(g.checkin + 'T12:00:00') + Math.floor(nights / 2) * 864e5));
+        lines.push(g.midstay_sent
+          ? `<span class="done">✓ Mid-stay check-in sent</span> · ${prettyTs(g.midstay_sent)}${g.midstay_sent_via ? ' · ' + esc(g.midstay_sent_via) : ''}`
+          : (g.departure_sent || mid < iso(new Date()))
+            ? `<span style="color:var(--muted)">– Mid-stay check-in not sent</span>`
+            : `<span class="pend">⏳ Mid-stay check-in</span> · ${pretty(mid)} after ${SEND_HOUR}:00`);
+      }
+    }
+    lines.push(g.departure_sent
+      ? `<span class="done">✓ Thank-you + review link sent</span> · ${prettyTs(g.departure_sent)}${g.departure_sent_via ? ' · ' + esc(g.departure_sent_via) : ''}`
+      : `<span class="pend">⏳ Thank-you + review link</span> · ${pretty(g.checkout)} after ${SEND_HOUR}:00`);
+    return lines.join('<br>');
+  }
+
+  function card(g, editable) {
+    return `<div class="guest" data-id="${esc(g.id)}">
+      <div class="g-top">
+        <div><div class="g-name">${esc(g.name)}</div>
+          <div class="g-meta">${[g.phone, g.email].filter(Boolean).map(esc).join(' · ')} · ${esc(g.lang || 'English')}<br>${pretty(g.checkin)} → ${pretty(g.checkout)}</div></div>
+        ${editable ? '<div class="g-actions"><button class="mini" data-a="edit">Edit</button><button class="mini danger" data-a="del">Remove</button></div>' : ''}
+      </div>
+      <div class="g-when">${schedule(g)}</div>
+    </div>`;
+  }
+
+  let guests = [];
+  async function load() {
+    $('#scheduled').innerHTML = $('#sent').innerHTML = '<div class="empty">Loading…</div>';
+    try { guests = await api({ action: 'list' }); }
+    catch (e) { $('#scheduled').innerHTML = `<div class="empty">Could not load (${esc(e.message)})</div>`; $('#sent').innerHTML = ''; return; }
+    const sched = guests.filter(g => !g.departure_sent)
+      .sort((a, b) => nextSend(a).localeCompare(nextSend(b)) || (b.created || '').localeCompare(a.created || ''));
+    const sent = guests.filter(g => g.departure_sent)
+      .sort((a, b) => (b.departure_sent || '').localeCompare(a.departure_sent || ''));
+    $('#scheduled').innerHTML = sched.map(g => card(g, true)).join('') || '<div class="empty">No messages scheduled.</div>';
+    $('#sent').innerHTML = sent.map(g => card(g, false)).join('') || '<div class="empty">Nothing sent yet.</div>';
+  }
+
+  $('#scheduled') && $('#scheduled').addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const el = b.closest('.guest'), id = el.dataset.id, g = guests.find(x => x.id === id);
+    if (b.dataset.a === 'del') {
+      if (!confirm('Remove ' + g.name + '? No message will be sent.')) return;
+      try { await api({ action: 'delete', id }); load(); } catch (er) { alert('Could not remove: ' + er.message); }
+    }
+    if (b.dataset.a === 'edit') {
+      if (el.querySelector('.edit')) { el.querySelector('.edit').remove(); return; }
+      el.insertAdjacentHTML('beforeend', `<form class="edit">
+        <label>Guest name</label><input name="name" value="${esc(g.name)}">
+        <label>Mobile</label><input name="phone" type="tel" value="${esc(g.phone)}">
+        <label>Email</label><input name="email" type="email" value="${esc(g.email)}">
+        <label>Language</label><select name="lang">${langOpts(g.lang || 'English')}</select>
+        <div class="row"><div><label>Check-in</label><input name="checkin" type="date" value="${esc(g.checkin)}"></div>
+        <div><label>Check-out</label><input name="checkout" type="date" value="${esc(g.checkout)}"></div></div>
+        <button class="btn" type="submit">Save changes</button><div class="msg"></div></form>`);
+      el.querySelector('.edit').addEventListener('submit', async ev => {
+        ev.preventDefault();
+        const fields = Object.fromEntries(new FormData(ev.target)), m = ev.target.querySelector('.msg');
+        const err = validate(fields);
+        if (err) { m.textContent = err; m.className = 'msg err'; return; }
+        try { await api({ action: 'update', id, fields }); load(); } catch (er) { m.textContent = 'Could not save: ' + er.message; m.className = 'msg err'; }
+      });
+    }
+  });
+</script>
+</body>
+</html>

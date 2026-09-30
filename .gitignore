@@ -30,3 +30,5 @@ healthcheck_err.log
 clients.json
 onboarding_site/.netlify
 node_modules
+app_site/node_modules
+app_site/.wrangler

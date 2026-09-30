@@ -55,7 +55,7 @@ STATE_DIR.mkdir(exist_ok=True)
 #         "state":             STATE_DIR / "uma-house.json",
 #     },
 # ]
-CHECKIN_API = "https://hosperai-onboarding.netlify.app/api/checkin"
+CHECKIN_API = "https://app.hosperai.es/api/checkin"
 CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [

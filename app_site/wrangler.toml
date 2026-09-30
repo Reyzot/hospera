@@ -1,0 +1,7 @@
+name = "hosperai-app"
+pages_build_output_dir = "public"
+compatibility_date = "2026-09-01"
+
+[[kv_namespaces]]
+binding = "DB"
+id = "f71c0bf1f39642dfab08ecc33108701a"

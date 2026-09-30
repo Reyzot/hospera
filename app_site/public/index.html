@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('hospera-theme');
+      var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch(e) {}
+  })();
+</script>
+<title>Hosperai — Client setup form</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:    #ffffff;
+    --gray-50:  #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --blue:     #2563eb;
+    --blue-50:  #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-700: #1d4ed8;
+    --green:    #059669;
+    --green-50: #ecfdf5;
+    --nav-bg:   rgba(255,255,255,0.92);
+    --dot-color: rgba(37,99,235,.28);
+  }
+  html[data-theme="dark"] {
+    --white:    #0d0f14;
+    --gray-50:  #14161d;
+    --gray-100: #1b1e27;
+    --gray-200: #2a2d38;
+    --gray-400: #7d8590;
+    --gray-500: #9ca3af;
+    --gray-600: #b0b7c3;
+    --gray-700: #cbd1db;
+    --gray-900: #f3f4f6;
+    --blue-50:  #142033;
+    --blue-100: #1e3a5f;
+    --nav-bg:   rgba(13,15,20,0.85);
+    --dot-color: rgba(109,155,255,.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Inter', -apple-system, sans-serif;
+    background:var(--white); color:var(--gray-900);
+    transition:background-color .25s ease, color .25s ease;
+  }
+  .container { max-width:720px; margin:0 auto; padding:0 24px; }
+
+  header {
+    padding:20px 0; border-bottom:1px solid var(--gray-200);
+  }
+  .logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+  .logo-icon-img { height:28px; width:auto; display:block; }
+  .logo-name { font-size:16px; font-weight:800; color:var(--gray-900); letter-spacing:-0.3px; }
+  .logo-name span { color:var(--blue); }
+
+  .hero-block { position:relative; overflow:hidden; padding:48px 0 8px; }
+  .hero-block::before {
+    content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image: radial-gradient(var(--dot-color) 1.3px, transparent 1.3px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
+            mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, #000 30%, transparent 85%);
+  }
+  .hero-block > * { position:relative; z-index:1; }
+  .pills { display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--gray-200); border-radius:10px; cursor:pointer; font-size:14px; }
+  .pill:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .pill input { accent-color:var(--blue); }
+  .range-wrap { display:flex; align-items:center; gap:12px; font-size:12.5px; color:var(--gray-500); }
+  .range-wrap input[type=range] { flex:1; accent-color:var(--blue); }
+  .scenario { border:1px solid var(--gray-200); border-radius:14px; padding:16px; margin-bottom:16px; }
+  .scenario .q { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .scenario .review { font-size:13.5px; color:var(--gray-500); font-style:italic; margin-bottom:12px; }
+  .opt { display:flex; gap:10px; align-items:flex-start; padding:11px 12px; border:1px solid var(--gray-200); border-radius:10px; margin-top:8px; cursor:pointer; font-size:13.5px; line-height:1.5; }
+  .opt:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .opt input { accent-color:var(--blue); margin-top:3px; flex-shrink:0; }
+  .eyebrow { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; }
+  h1 { font-size:clamp(26px,4vw,36px); font-weight:800; letter-spacing:-0.5px; margin-bottom:12px; line-height:1.15; }
+  h1 .blue { color:var(--blue); }
+  .lead { font-size:15px; color:var(--gray-500); line-height:1.65; max-width:520px; }
+
+  form { padding:32px 0 80px; }
+  fieldset { border:none; margin:0 0 36px; }
+  legend { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; color:var(--blue); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--gray-200); width:100%; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:13.5px; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+  .field .hint { font-size:12px; color:var(--gray-500); margin-top:5px; line-height:1.4; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:600px) { .row { grid-template-columns:1fr; } }
+
+  input[type="text"], input[type="email"], input[type="tel"], input[type="url"], select, textarea {
+    width:100%; padding:11px 13px; border-radius:9px; border:1px solid var(--gray-200);
+    background:var(--gray-50); color:var(--gray-900); font-size:14px; font-family:inherit;
+    transition:border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--blue); }
+  textarea { resize:vertical; min-height:70px; line-height:1.5; }
+
+  .check-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:600px) { .check-grid { grid-template-columns:1fr; } }
+  .check-item {
+    display:flex; align-items:center; gap:9px; padding:10px 12px;
+    border:1px solid var(--gray-200); border-radius:9px; background:var(--gray-50);
+    font-size:13.5px; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .check-item:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
+  .check-item input { accent-color:var(--blue); width:16px; height:16px; flex-shrink:0; }
+
+  .submit-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+  .btn-primary {
+    background:var(--blue); color:#fff; border:none;
+    padding:14px 28px; border-radius:9px; font-size:14.5px; font-weight:700;
+    cursor:pointer; font-family:inherit; transition:background .15s, transform .15s;
+  }
+  .btn-primary:hover { background:var(--blue-700); transform:translateY(-1px); }
+  .btn-secondary {
+    background:transparent; color:var(--gray-700); border:1px solid var(--gray-200);
+    padding:14px 20px; border-radius:9px; font-size:13.5px; font-weight:600;
+    cursor:pointer; font-family:inherit; transition:border-color .15s;
+  }
+  .btn-secondary:hover { border-color:var(--gray-400); }
+  .submit-note { font-size:12px; color:var(--gray-500); margin-top:10px; }
+  .copied-msg { font-size:12.5px; color:var(--green); font-weight:700; display:none; }
+  .copied-msg.show { display:inline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="https://hosperai.es" class="logo">
+      <img src="assets/logo-icon.png" alt="Hosperai" class="logo-icon-img">
+      <span class="logo-name">Hosperai<span>.es</span></span>
+    </a>
+  </div>
+</header>
+
+<div class="hero-block">
+  <div class="container">
+    <div class="eyebrow">Client setup</div>
+    <h1>Let's get <span class="blue">your business</span> set up.</h1>
+    <p class="lead">Fill this in once — it's everything we need to turn Hosperai on for your business. Takes about 5 minutes.</p>
+  </div>
+</div>
+
+<form id="onboardForm" name="onboarding" method="POST">
+  <p style="display:none"><label>Leave empty <input name="bot-field"></label></p>
+  <div class="container">
+
+    <fieldset>
+      <legend>Who we're talking to</legend>
+      <div class="row">
+        <div class="field">
+          <label>Your name</label>
+          <input type="text" name="contact_name" required>
+        </div>
+        <div class="field">
+          <label>Your email</label>
+          <input type="email" name="contact_email" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Your business</legend>
+      <div class="row">
+        <div class="field">
+          <label>Business name</label>
+          <input type="text" name="business_name" required>
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <select name="business_type" required>
+            <option value="">Choose one</option>
+            <option value="Hotel">Hotel</option>
+            <option value="Restaurant">Restaurant</option>
+            <option value="Clinic">Clinic</option>
+            <option value="Spa / Salon">Spa / Salon</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Physical address</label>
+        <input type="text" name="address" required>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Where your reviews live</legend>
+      <div class="field">
+        <label>Google Business Profile / Maps link</label>
+        <input type="url" name="google_url" placeholder="https://maps.app.goo.gl/..." required>
+        <div class="hint">Search your business on Google Maps and paste the link — we'll take it from there.</div>
+      </div>
+      <div class="field">
+        <label>TripAdvisor listing link (if you have one)</label>
+        <input type="url" name="tripadvisor_url" placeholder="https://www.tripadvisor.com/...">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How you want to run it</legend>
+      <div class="row">
+        <div class="field">
+          <label>WhatsApp number for review alerts</label>
+          <input type="tel" name="whatsapp" placeholder="+1 305 555 1234" required>
+          <div class="hint">This is where you'll get new reviews and approve replies.</div>
+        </div>
+        <div class="field">
+          <label>Language for your notifications</label>
+          <select name="notify_lang" required>
+            <option value="">Choose one</option>
+            <option value="English">English</option>
+            <option value="Español">Español</option>
+            <option value="Català">Català</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>How should replies be signed?</label>
+        <input type="text" name="signature" placeholder="e.g. The Team at Hotel Aurora">
+        <div class="hint">Optional — if left blank, we'll use your business name.</div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>What you want turned on</legend>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="services" value="Answer reviews"> Answer reviews</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Get more reviews"> Get more reviews</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Progress reports"> Progress reports</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Competitive Intel"> Competitive Intel</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Custom website"> Custom website</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Google Profile tune-up"> Google Profile tune-up</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Staff training app"> Staff training app</label>
+        <label class="check-item"><input type="checkbox" name="services" value="Recipe book & food costing"> Recipe book &amp; food costing</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How your replies should sound</legend>
+      <div class="field">
+        <label>How formal?</label>
+        <div class="range-wrap"><span>Very casual</span><input type="range" name="formality" min="1" max="5" value="3"><span>Very formal</span></div>
+      </div>
+      <div class="field"><label>Reply length</label><div class="pills"><label class="pill"><input type="radio" name="length" value="Short (1–2 sentences)"> Short (1–2 sentences)</label><label class="pill"><input type="radio" name="length" value="Medium (3–4 sentences)" checked> Medium (3–4 sentences)</label><label class="pill"><input type="radio" name="length" value="Detailed"> Detailed</label></div></div>
+      <div class="field"><label>Use the guest's first name?</label><div class="pills"><label class="pill"><input type="radio" name="use_name" value="Yes" checked> Yes</label><label class="pill"><input type="radio" name="use_name" value="No"> No</label></div></div>
+      <div class="field"><label>Emojis?</label><div class="pills"><label class="pill"><input type="radio" name="emojis" value="Never" checked> Never</label><label class="pill"><input type="radio" name="emojis" value="Sometimes"> Sometimes</label></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>When a review is negative</legend>
+      <div class="field"><label>Should we apologise?</label><div class="pills"><label class="pill"><input type="radio" name="apologise" value="Always apologise"> Always apologise</label><label class="pill"><input type="radio" name="apologise" value="Only if we were clearly at fault" checked> Only if we were clearly at fault</label><label class="pill"><input type="radio" name="apologise" value="Thank them, but don't apologise"> Thank them, but don't apologise</label></div></div>
+      <div class="field"><label>Invite the guest to continue the conversation privately?</label><div class="pills"><label class="pill"><input type="radio" name="take_offline" value="Yes" checked> Yes</label><label class="pill"><input type="radio" name="take_offline" value="No"> No</label></div></div>
+      <div class="field">
+        <label>Contact to give unhappy guests (optional)</label>
+        <input type="text" name="complaint_contact" placeholder="e.g. manager@yourhotel.com or +1 305 555 1234">
+      </div>
+      <div class="field"><label>Compensation</label><div class="pills"><label class="pill"><input type="radio" name="compensation" value="Never mention it" checked> Never mention it</label><label class="pill"><input type="radio" name="compensation" value="Invite them to contact us, no promises"> Invite them to contact us, no promises</label></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Real situations — pick the reply that sounds like you</legend>
+      <div class="scenario"><div class="q">A guest found the room smaller than expected</div><div class="review">“Nice location but the room was really small for the price.”</div><label class="opt"><input type="radio" name="scenario_1" value="A" checked><span><b>A.</b> Thank you, Maria! We're sorry the room felt small — our rooms are cozy by design, and next time just ask us about our larger categories.</span></label><label class="opt"><input type="radio" name="scenario_1" value="B"><span><b>B.</b> Dear Ms. Thompson, thank you for your feedback. We apologise for not meeting your expectations and have shared your comments with our team.</span></label><label class="opt"><input type="radio" name="scenario_1" value="C"><span><b>C.</b> Thanks for staying with us, Maria — noted, and we hope to welcome you back soon.</span></label></div>
+      <div class="scenario"><div class="q">A guest loved everything</div><div class="review">“Amazing stay, the staff were so kind and the breakfast was delicious!”</div><label class="opt"><input type="radio" name="scenario_2" value="A" checked><span><b>A.</b> Maria, this made our day! 🙌 We'll pass your kind words to the team — see you next time!</span></label><label class="opt"><input type="radio" name="scenario_2" value="B"><span><b>B.</b> Dear Ms. Thompson, thank you for your wonderful review. It was a pleasure to host you, and we look forward to welcoming you again.</span></label><label class="opt"><input type="radio" name="scenario_2" value="C"><span><b>C.</b> Thank you, Maria! So glad you enjoyed it.</span></label></div>
+      <div class="scenario"><div class="q">A guest complained about noise</div><div class="review">“Couldn't sleep, very noisy street at night.”</div><label class="opt"><input type="radio" name="scenario_3" value="A" checked><span><b>A.</b> We're sorry, Maria — the street can get lively. Next time ask for one of our courtyard rooms, they're much quieter, and we have earplugs at reception.</span></label><label class="opt"><input type="radio" name="scenario_3" value="B"><span><b>B.</b> Dear Ms. Thompson, we sincerely apologise for the disturbance. Your feedback has been forwarded to our management team.</span></label><label class="opt"><input type="radio" name="scenario_3" value="C"><span><b>C.</b> Thanks for the feedback, Maria — we'll keep working on it.</span></label></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>What we should know about your business</legend>
+      <div class="field">
+        <label>What do guests love most? (optional)</label>
+        <textarea name="highlights" placeholder="e.g. rooftop views, the breakfast, our concierge Ana"></textarea>
+      </div>
+      <div class="field">
+        <label>Recurring complaints — and how you handle them (optional)</label>
+        <textarea name="recurring_complaints" placeholder="e.g. Parking is tight → valet across the street, $20/night. Street noise → quieter courtyard rooms on request."></textarea>
+      </div>
+      <div class="field">
+        <label>Things you DON'T offer, so we never imply you do (optional)</label>
+        <textarea name="not_offered" placeholder="e.g. no pool, no restaurant, breakfast not included, no pets"></textarea>
+      </div>
+      <div class="field">
+        <label>Anything replies should always mention? (optional)</label>
+        <textarea name="always_mention" placeholder="e.g. our new rooftop bar, free parking"></textarea>
+      </div>
+      <div class="field">
+        <label>Anything replies should never say or promise? (optional)</label>
+        <textarea name="never_say" placeholder="e.g. never offer refunds, never mention competitors"></textarea>
+      </div>
+      <div class="field">
+        <label>Anything else we should know? (optional)</label>
+        <textarea name="notes" placeholder="Anything else before we turn this on?"></textarea>
+      </div>
+    </fieldset>
+
+    <div class="submit-row">
+      <button type="submit" class="btn-primary">Send to Hosperai →</button>
+      <button type="button" class="btn-secondary" id="copyBtn">Copy instead</button>
+      <span class="copied-msg" id="copiedMsg">Copied ✓</span>
+    </div>
+    <div class="submit-note">Your answers go straight to our team. We'll confirm on WhatsApp once everything is live.</div>
+
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('onboardForm');
+  const DEST_EMAIL = 'hosperai.app@gmail.com';
+
+  function buildText() {
+    const d = new FormData(form);
+    const services = d.getAll('services').join(', ') || '—';
+    return [
+      `New Hospera client setup`,
+      ``,
+      `Contact: ${d.get('contact_name') || '—'} (${d.get('contact_email') || '—'})`,
+      ``,
+      `Business: ${d.get('business_name') || '—'}`,
+      `Type: ${d.get('business_type') || '—'}`,
+      `Address: ${d.get('address') || '—'}`,
+      ``,
+      `Google profile: ${d.get('google_url') || '—'}`,
+      `TripAdvisor: ${d.get('tripadvisor_url') || '—'}`,
+      ``,
+      `WhatsApp for alerts: ${d.get('whatsapp') || '—'}`,
+      `Notification language: ${d.get('notify_lang') || '—'}`,
+      `Reply signature: ${d.get('signature') || '—'}`,
+      `Check-in/out tracking: ${d.get('pms') || '—'}`,
+      ``,
+      `Services requested: ${services}`,
+      ``,
+      `Tone: ${d.get('tone') || '—'}`,
+      `Always mention: ${d.get('always_mention') || '—'}`,
+      `Never say: ${d.get('never_say') || '—'}`,
+      ``,
+      `Notes: ${d.get('notes') || '—'}`,
+    ].join('\n');
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = form.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const data = new URLSearchParams(new FormData(form));
+    fetch('/api/onboarding', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: data.toString()})
+      .then(function(r) {
+        if (!r.ok) throw new Error(r.status);
+        form.innerHTML = '<div class="container" style="padding:60px 0;text-align:center"><h2 style="font-size:32px;margin-bottom:12px">Thank you! ✅</h2><p class="lead" style="margin:0 auto">We have everything we need. We\'ll message you on WhatsApp as soon as Hosperai is live for your business (usually within 48 hours).</p></div>';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      })
+      .catch(function() {
+        btn.disabled = false; btn.textContent = 'Send to Hosperai →';
+        alert('Something went wrong. Please try again or use "Copy instead" and email it to hosperai.app@gmail.com');
+      });
+  });
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    const text = buildText();
+    navigator.clipboard.writeText(text).then(function() {
+      const msg = document.getElementById('copiedMsg');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 2000);
+    });
+  });
+</script>
+
+</body>
+</html>
