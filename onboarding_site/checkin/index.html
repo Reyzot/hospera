@@ -145,6 +145,18 @@
     btn.disabled = false; btn.textContent = 'Save guest';
   });
 
+  function nextSend(g) {
+    // fecha del próximo mensaje pendiente (mitad de estancia si aún toca, si no el de salida)
+    if (g.checkin && g.checkout && !g.midstay_sent) {
+      const nights = Math.round((Date.parse(g.checkout) - Date.parse(g.checkin)) / 864e5);
+      if (nights > 1) {
+        const mid = iso(new Date(Date.parse(g.checkin + 'T12:00:00') + Math.floor(nights / 2) * 864e5));
+        if (mid >= iso(new Date())) return mid;
+      }
+    }
+    return g.checkout || '';
+  }
+
   function schedule(g) {
     const lines = [];
     if (g.checkin && g.checkout) {
@@ -180,7 +192,10 @@
     $('#scheduled').innerHTML = $('#sent').innerHTML = '<div class="empty">Loading…</div>';
     try { guests = await api({ action: 'list' }); }
     catch (e) { $('#scheduled').innerHTML = `<div class="empty">Could not load (${esc(e.message)})</div>`; $('#sent').innerHTML = ''; return; }
-    const sched = guests.filter(g => !g.departure_sent), sent = guests.filter(g => g.departure_sent).reverse();
+    const sched = guests.filter(g => !g.departure_sent)
+      .sort((a, b) => nextSend(a).localeCompare(nextSend(b)) || (b.created || '').localeCompare(a.created || ''));
+    const sent = guests.filter(g => g.departure_sent)
+      .sort((a, b) => (b.departure_sent || '').localeCompare(a.departure_sent || ''));
     $('#scheduled').innerHTML = sched.map(g => card(g, true)).join('') || '<div class="empty">No messages scheduled.</div>';
     $('#sent').innerHTML = sent.map(g => card(g, false)).join('') || '<div class="empty">Nothing sent yet.</div>';
   }

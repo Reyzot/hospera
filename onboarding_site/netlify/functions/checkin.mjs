@@ -21,7 +21,7 @@ async function listHotel(store, slug) {
 
 export default async (req) => {
   if (!SECRET) return new Response("not configured", { status: 500 });
-  const store = getStore("checkins");
+  const store = getStore({ name: "checkins", consistency: "strong" });
   const url = new URL(req.url);
 
   if (req.method === "GET") {

@@ -8,7 +8,7 @@ const FIELDS = ["contact_name", "contact_email", "business_name", "business_type
   "not_offered", "always_mention", "never_say", "notes"];
 
 export default async (req) => {
-  const store = getStore("onboarding");
+  const store = getStore({ name: "onboarding", consistency: "strong" });
   if (req.method === "POST") {
     const form = await req.formData();
     if (form.get("bot-field")) return Response.json({ ok: true });
