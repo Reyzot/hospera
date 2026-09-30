@@ -825,7 +825,7 @@
       <p class="section-sub" style="margin:0 auto">What your customers get, and what you get. Exactly as it arrives.</p>
     </div>
     <div class="fade-in">
-      <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">1 · What your customer gets</button><button class="pd-tab" data-view="owner" type="button">2 · What you get</button></div>
+      <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">Customer</button><button class="pd-tab" data-view="owner" type="button">Business</button></div>
       <div class="pd-sub" id="pdSub" style="visibility:hidden"><button class="demo-tab active" data-sub="0" type="button">★★☆☆☆ Negative</button><button class="demo-tab" data-sub="1" type="button">★★★★★ Positive</button><button class="demo-tab" data-sub="2" type="button">★★★☆☆ In French</button></div>
       <p class="pd-caption" id="pdCaption"></p>
       <div class="pd-phone"><div class="pd-screen"><div class="pd-island"></div>
@@ -1167,9 +1167,11 @@
       const tp = typing();
       later(1100, () => {
         tp.remove();
-        const b = add('💬 <b>' + T.sugg + '</b>\n<span class="rep"></span>' + (tr ? '\n\n<i>' + esc(tr) + '</i>' : '') + '\n\n👉 ' + T.copy + '\n<a>g.page/r/hotel/review</a><span class="pd-btn">' + T.open + '</span>\n<i style="font-size:12px">' + T.foot + '</i><span class="t">10:06</span>');
-        const rep = b.querySelector('.rep'); let k = 0;
-        (function type() { rep.textContent = reply.slice(0, k); chat.scrollTop = chat.scrollHeight; if (k++ < reply.length) timers.push(setTimeout(type, 14)); else later(700, () => add(esc(T.posted) + '<span class="t">10:07 ✓✓</span>', 'me')); })();
+        const b = add('💬 <b>' + T.sugg + '</b>\n<span class="rep"></span>' + (tr ? '\n<i class="trn"></i>' : '') + '\n\n👉 ' + T.copy + '\n<a>g.page/r/hotel/review</a><span class="pd-btn">' + T.open + '</span>\n<i style="font-size:12px">' + T.foot + '</i><span class="t">10:06</span>');
+        const rep = b.querySelector('.rep'), trn = b.querySelector('.trn');
+        const typeInto = (el, text, done) => { let k = 0; (function step() { el.textContent = text.slice(0, k); chat.scrollTop = chat.scrollHeight; if (k++ < text.length) timers.push(setTimeout(step, 14)); else done(); })(); };
+        const finish = () => later(700, () => add(esc(T.posted) + '<span class="t">10:07 ✓✓</span>', 'me'));
+        typeInto(rep, reply, () => trn ? later(250, () => typeInto(trn, tr, finish)) : finish());
       });
     }
     document.querySelectorAll('.pd-tab').forEach(b => b.addEventListener('click', () => {
