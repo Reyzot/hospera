@@ -58,7 +58,7 @@ CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
 _CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
 CHECKIN_CLIENTS = [
     {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""), "vip_message": c.get("vip_message", ""),
-     "review_links": c.get("review_links") or {},
+     "review_links": c.get("review_links") or {}, "guest_contact": c.get("guest_contact", ""),
      "state": STATE_DIR / f"{c['slug']}.json"}
     for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
     if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
@@ -126,6 +126,18 @@ def fetch_checkins(slug):
             "midstay_sent": g.get("midstay_sent"),
         })
     return guests
+
+
+def remember_guest_phone(phone, hotel, contact, lang):
+    """Si el huésped contesta al WhatsApp de Hosperai, la respuesta automática (app.hosperai.es/api/wa-inbound)
+    le da el contacto de SU hotel. Se guarda en Cloudflare KV p:<teléfono> durante 60 días."""
+    acc, tok = os.getenv("CLOUDFLARE_ACCOUNT_ID"), os.getenv("CLOUDFLARE_API_TOKEN")
+    try:
+        requests.put(f"https://api.cloudflare.com/client/v4/accounts/{acc}/storage/kv/namespaces/f71c0bf1f39642dfab08ecc33108701a/values/p:{re.sub(r'[^0-9]', '', phone)}",
+                     params={"expiration_ttl": 60 * 86400}, headers={"Authorization": f"Bearer {tok}"},
+                     data=json.dumps({"hotel": hotel, "contact": contact, "lang": lang}), timeout=20).raise_for_status()
+    except Exception as e:
+        print(f"    ⚠️  No pude guardar el teléfono para la respuesta automática: {e}")
 
 
 def mark_sent(slug, guest_id, field, via):
@@ -291,6 +303,8 @@ def run_client(client, test_mode=False):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
             via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''), client.get('review_links'))
             if via and not test_mode:
+                if via == "WhatsApp":
+                    remember_guest_phone(guest['phone'], client['name'], client.get('guest_contact', ''), lang)
                 record['departure_sent'] = True
                 if guest.get('id'):
                     mark_sent(client['slug'], guest['id'], 'departure_sent', via)
@@ -300,7 +314,8 @@ def run_client(client, test_mode=False):
         if nights > 1:
             midpoint = guest['checkin'] + timedelta(days=nights // 2)
             if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not (record.get('midstay_sent') or guest.get('midstay_sent')):
-                contact_link = f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link
+                gc = re.sub(r"[^0-9]", "", client.get('guest_contact', '').split("@")[0]) if client.get('guest_contact') else ""
+                contact_link = f"https://wa.me/{gc}" if len(gc) >= 8 else (f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link)
                 body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
                 via = notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)
                 if via and not test_mode:

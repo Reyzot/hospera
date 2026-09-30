@@ -156,6 +156,7 @@ def to_client(sub):
                                              "complaint_contact", "compensation", "highlights", "recurring_complaints", "not_offered",
                                              "reply_preferences")},
         "vip_message": d.get("vip_message", ""),
+        "guest_contact": d.get("guest_contact", ""),
         "voice_examples": [{"review": SCENARIOS[n][0], "reply": SCENARIOS[n][1][d[f"scenario_{n}"]]}
                            for n in SCENARIOS if d.get(f"scenario_{n}") in SCENARIOS[n][1]],
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),

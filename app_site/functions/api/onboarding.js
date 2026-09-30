@@ -3,7 +3,7 @@ import { clean, json, text, rid } from "./_shared.js";
 const FIELDS = ["contact_name", "contact_email", "business_name", "business_type", "address", "google_url", "tripadvisor_url",
   "whatsapp", "notify_lang", "signature", "formality", "length", "use_name", "emojis", "apologise", "take_offline",
   "complaint_contact", "compensation", "scenario_1", "scenario_2", "scenario_3", "highlights", "recurring_complaints",
-  "not_offered", "always_mention", "never_say", "notes", "reply_preferences", "vip_message"];
+  "not_offered", "always_mention", "never_say", "notes", "reply_preferences", "vip_message", "guest_contact"];
 
 export async function onRequest({ request, env }) {
   if (request.method === "POST") {

@@ -71,7 +71,12 @@ export async function onRequest({ request, env }) {
     let demo = null;
     if (slug === DEMO_SLUG && rec.phone) {
       demo = await sendDemoWhatsApp(env, rec, clean(b.demo_hotel, 80) || "Hosperai Demo Hotel");
-      if (["delivered", "read", "sent"].includes(demo.status)) { rec.departure_sent = new Date().toISOString(); rec.departure_sent_via = "WhatsApp"; }
+      if (["delivered", "read", "sent"].includes(demo.status)) {
+        rec.departure_sent = new Date().toISOString(); rec.departure_sent_via = "WhatsApp";
+        await env.DB.put(`p:${rec.phone.replace(/[^0-9]/g, "")}`, JSON.stringify({
+          hotel: clean(b.demo_hotel, 80) || "Hosperai Demo Hotel", contact: "",
+          lang: rec.lang === "Español" || rec.lang === "Català" ? "es" : "en" }), { expirationTtl: 60 * 86400 });
+      }
     }
     list.push(rec);
     await save(env, slug, list);
