@@ -7,6 +7,7 @@ Uso:
   python3 review_monitor.py --once   # ejecuta una vez y sale
   python3 review_monitor.py --test   # busca reseñas sin mandar WhatsApp
 """
+import re
 import sys
 sys.path.insert(0, '/Users/andreurey/Library/Python/3.9/lib/python/site-packages')
 
@@ -30,6 +31,29 @@ POLL_MINUTES  = 60
 MAPS_URL      = "https://business.google.com/reviews"
 
 PLATFORM_LABEL = {"google": "Google", "tripadvisor": "TripAdvisor"}
+
+_TPL_FILE = Path.home() / 'hospera' / 'whatsapp_templates.json'
+WA_TEMPLATES = json.loads(_TPL_FILE.read_text()) if _TPL_FILE.exists() else {}
+
+
+def _wa_var(v, limit=None):
+    """Meta no admite saltos de línea, tabs ni >4 espacios seguidos dentro de una variable, ni variables vacías."""
+    v = re.sub(r"\s+", " ", str(v or "")).strip() or "—"
+    return v[:limit - 1] + "…" if limit and len(v) > limit else v
+
+
+def send_wa(to, body, template=None, variables=None):
+    """Plantilla aprobada si existe (funciona siempre); si falla, texto libre (solo llega si el destinatario escribió en las últimas 24 h)."""
+    twilio = Client(TWILIO_SID, TWILIO_TOKEN)
+    sid = WA_TEMPLATES.get(template) if template else None
+    if sid:
+        try:
+            twilio.messages.create(from_=TWILIO_FROM, to=to, content_sid=sid,
+                                   content_variables=json.dumps({k: _wa_var(v) for k, v in variables.items()}))
+            return
+        except Exception as e:
+            print(f"  ⚠️  Plantilla {template} falló ({e}), pruebo texto libre")
+    twilio.messages.create(body=body, from_=TWILIO_FROM, to=to)
 
 # ── Lista de clientes ───────────────────────────────────────────────────────
 # "tripadvisor_id" es opcional — el place_id de TripAdvisor (se saca vía
@@ -61,6 +85,14 @@ CLIENTS = [
         "manager_email": "andreurey7@gmail.com",
     },
 ]
+
+
+# Clientes dados de alta desde el formulario (onboard_clients.py → clients.json). Solo los "active".
+_CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
+if _CLIENTS_FILE.exists():
+    for _c in json.loads(_CLIENTS_FILE.read_text()):
+        if _c.get("status") == "active" and _c.get("data_id"):
+            CLIENTS.append({**_c, "state": Path.home() / 'hospera' / f"seen_{_c['slug']}.json"})
 
 
 def load_seen(path):
@@ -196,8 +228,15 @@ Después de la respuesta, si la reseña NO está ya en el idioma '{notify_lang}'
 ---TRADUCCION_RESPUESTA---
 (traducción de tu respuesta al idioma '{notify_lang}')"""
 
-    prompt = f"""Eres el responsable de {client['name']}, un {client['type']} en Begur, Costa Brava.
-Responde a esta reseña de {PLATFORM_LABEL.get(platform, 'Google')} de forma profesional, cálida y personalizada.
+    extra = ""
+    if client.get('tone'):
+        extra += f"\nTono deseado por el negocio: {client['tone']}."
+    if client.get('always_mention'):
+        extra += f"\nSi encaja de forma natural, menciona: {client['always_mention']}."
+    if client.get('never_say'):
+        extra += f"\nNUNCA digas ni prometas: {client['never_say']}."
+    prompt = f"""Eres el responsable de {client['name']}, un {client['type']} en {client.get('location', 'Begur, Costa Brava')}.
+Responde a esta reseña de {PLATFORM_LABEL.get(platform, 'Google')} de forma profesional, cálida y personalizada.{extra}
 Escribe la respuesta en el mismo idioma que la reseña original (esto no cambia). Máximo 3 frases. No empieces con frases genéricas.
 Firma como: {client['signature']}{translate_instructions}
 
@@ -267,7 +306,17 @@ _Hospera responde por ti — tú solo confirmas._"""
     if len(msg) > 1580:
         msg = msg[:1577] + "..."
 
-    twilio.messages.create(body=msg, from_=TWILIO_FROM, to=client['phone'])
+    lang = "en" if client.get("notify_lang") == "en" else "es"
+    if lang == "en":
+        head = "🚨 Negative review — needs attention" if is_urgent else "✨ New review"
+    else:
+        head = "🚨 Reseña negativa, requiere atención" if is_urgent else "✨ Nueva reseña"
+    flag = "🇺🇸" if lang == "en" else "🇪🇸"
+    rev_var = text_short + (f" · {flag} {review_translated[:300]}" if review_translated else "")
+    rep_var = response_short + (f" · {flag} {reply_translated[:300]}" if reply_translated else "")
+    send_wa(client['phone'], msg, f"hosperai_review_alert_{lang}", {
+        "1": head, "2": client['name'], "3": platform_label, "4": stars, "5": author,
+        "6": _wa_var(rev_var, 330), "7": _wa_var(rep_var, 480), "8": reply_url})
     print(f"  ✅ WhatsApp enviado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
 
 def send_onboarding_summary(client, platform, total, backlog, negative_backlog):
@@ -282,7 +331,13 @@ He revisado el histórico de reseñas recientes:
 ────────────────
 No te voy a avisar una por una de este histórico para no saturarte. A partir de ahora, te aviso solo de las reseñas nuevas que vayan llegando."""
 
-    twilio.messages.create(body=msg, from_=TWILIO_FROM, to=client['phone'])
+    lang = "en" if client.get("notify_lang") == "en" else "es"
+    if lang == "en":
+        neg = f"{negative_backlog} of them are negative." if negative_backlog else "No negative reviews pending."
+    else:
+        neg = f"{negative_backlog} de ellas son negativas." if negative_backlog else "Ninguna negativa pendiente."
+    send_wa(client['phone'], msg, f"hosperai_activated_{lang}",
+            {"1": client['name'], "2": platform_label, "3": total, "4": backlog, "5": neg})
     print(f"  ✅ Resumen de bienvenida ({platform_label}) enviado a {client['phone']}")
 
 def run_platform(client, platform, reviews, seen, onboarded, test_mode=False, max_new=None):

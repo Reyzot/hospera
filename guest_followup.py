@@ -30,6 +30,9 @@ load_dotenv(dotenv_path=os.path.expanduser('~/hospera/.env'))
 TWILIO_SID         = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_TOKEN       = os.getenv('TWILIO_AUTH_TOKEN')
 TWILIO_SMS_FROM    = os.getenv('TWILIO_SMS_FROM')  # número propio de SMS — pendiente de Twilio
+TWILIO_WA_FROM     = os.getenv('TWILIO_GUEST_WHATSAPP_FROM')  # WhatsApp Business de Hosperai
+WA_TEMPLATES = json.loads((Path.home() / 'hospera' / 'whatsapp_templates.json').read_text()) if (Path.home() / 'hospera' / 'whatsapp_templates.json').exists() else {}
+WA_TEMPLATE_BY_KIND = {"departure": "hosperai_thanks", "midstay": "hosperai_midstay"}
 EMAIL_ADDRESS      = os.getenv('EMAIL_ADDRESS')
 EMAIL_APP_PASSWORD = os.getenv('EMAIL_APP_PASSWORD')
 
@@ -150,6 +153,25 @@ def send_sms(to_phone, body, test_mode=False):
     print(f"    ✅ SMS enviado a {to_phone}")
 
 
+def send_whatsapp(to_phone, kind, lang, variables, test_mode=False):
+    """Plantilla aprobada por Meta. Devuelve False si no se pudo (y entonces se usa SMS)."""
+    sid = WA_TEMPLATES.get(f"{WA_TEMPLATE_BY_KIND[kind]}_{lang}")
+    if not (TWILIO_WA_FROM and sid):
+        return False
+    if test_mode:
+        print(f"    [TEST] WhatsApp a {to_phone}: {WA_TEMPLATE_BY_KIND[kind]}_{lang} {variables}")
+        return True
+    try:
+        Client(TWILIO_SID, TWILIO_TOKEN).messages.create(
+            from_=TWILIO_WA_FROM, to=f"whatsapp:{to_phone}", content_sid=sid,
+            content_variables=json.dumps(variables))
+        print(f"    ✅ WhatsApp enviado a {to_phone}")
+        return True
+    except Exception as e:
+        print(f"    ⚠️  WhatsApp falló ({e}), pruebo SMS")
+        return False
+
+
 def send_email(to_addr, subject, body, test_mode=False):
     if test_mode or not (EMAIL_ADDRESS and EMAIL_APP_PASSWORD):
         reason = "[TEST]" if test_mode else "[SIN CREDENCIALES DE EMAIL CONFIGURADAS]"
@@ -166,12 +188,14 @@ def send_email(to_addr, subject, body, test_mode=False):
     print(f"    ✅ Email enviado a {to_addr}")
 
 
-def notify_guest(guest, kind, body, lang, business_name, test_mode=False):
+def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link=""):
     """Manda por SMS si hay teléfono; si no, por email si lo hay. Si no hay
     ninguno de los dos, no se manda nada (no debería pasar, fetch_checkins
     ya exige al menos uno)."""
     if guest['phone']:
-        send_sms(guest['phone'], body, test_mode)
+        wa_vars = {"1": guest['name'], "2": business_name, "3": link}
+        if not send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode):
+            send_sms(guest['phone'], body, test_mode)
     elif guest['email']:
         subject = EMAIL_SUBJECTS[kind][lang].format(business=business_name)
         send_email(guest['email'], subject, body, test_mode)
@@ -199,7 +223,7 @@ def run_client(client, test_mode=False):
 
         if guest['checkout'] == today and not record.get('departure_sent'):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
-            notify_guest(guest, 'departure', body, lang, client['name'], test_mode)
+            notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link)
             record['departure_sent'] = True
             sent += 1
 
@@ -209,7 +233,7 @@ def run_client(client, test_mode=False):
             if midpoint == today and not record.get('midstay_sent'):
                 contact_link = f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link
                 body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
-                notify_guest(guest, 'midstay', body, lang, client['name'], test_mode)
+                notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)
                 record['midstay_sent'] = True
                 sent += 1
 

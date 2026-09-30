@@ -24,3 +24,8 @@ guestfollowup_out.log
 guestfollowup_err.log
 healthcheck_out.log
 healthcheck_err.log
+
+# Local Netlify folder
+.netlify
+clients.json
+onboarding_site/.netlify
