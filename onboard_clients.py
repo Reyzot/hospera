@@ -53,7 +53,13 @@ def email_me(c):
     user, pwd = os.getenv("EMAIL_ADDRESS"), os.getenv("EMAIL_APP_PASSWORD")
     if not (user and pwd):
         return
-    lines = [f"{k}: {v if not isinstance(v, list) else ', '.join(v)}" for k, v in c.items() if k not in ("submission_id",)]
+    def fmt(v):
+        if isinstance(v, dict):
+            return "".join(f"\n    - {k}: {x}" for k, x in v.items() if x) or "—"
+        if isinstance(v, list):
+            return "".join(f"\n    - {x['review']} → {x['reply']}" if isinstance(x, dict) else f"\n    - {x}" for x in v) or "—"
+        return v if v not in (None, "") else "—"
+    lines = [f"{k}: {fmt(v)}" for k, v in c.items() if k != "submission_id"]
     body = "Nuevo cliente desde el formulario de alta:\n\n" + "\n".join(lines) + \
            f"\n\nPara activarlo:\n  cd ~/hospera && python3 onboard_clients.py --approve {c['slug']}"
     msg = MIMEText(body)
