@@ -258,6 +258,40 @@
     .ptable tfoot .btn-primary, .ptable tfoot .btn-secondary { font-size:12px; padding:9px 4px; }
   }
 
+
+  /* ── PHONE DEMO ── */
+  .pd-tabs { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:34px 0 14px; }
+  .pd-tab { padding:10px 16px; border-radius:999px; border:1px solid var(--gray-200); background:var(--white); color:var(--gray-600); font:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+  .pd-tab.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .pd-sub { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; min-height:34px; }
+  .pd-sub .demo-tab { padding:7px 12px; font-size:12.5px; }
+  .pd-caption { text-align:center; color:var(--gray-500); font-size:14px; margin:-6px auto 18px; max-width:460px; }
+  .pd-phone { width:330px; max-width:100%; margin:0 auto; border-radius:44px; padding:11px; background:#0b0d12; box-shadow:0 30px 80px rgba(0,0,0,.35), inset 0 0 0 2px #2a2d38; }
+  .pd-screen { border-radius:34px; overflow:hidden; background:#efeae2; height:600px; display:flex; flex-direction:column; position:relative; }
+  .pd-island { position:absolute; top:9px; left:50%; transform:translateX(-50%); width:96px; height:26px; background:#0b0d12; border-radius:20px; z-index:3; }
+  .pd-status { height:40px; background:#f0f2f5; display:flex; align-items:flex-end; justify-content:space-between; padding:0 24px 4px; font-size:12px; font-weight:700; color:#111; }
+  .pd-head { background:#f0f2f5; display:flex; align-items:center; gap:10px; padding:8px 14px 10px; border-bottom:1px solid #e1e3e6; }
+  .pd-head img { width:34px; height:34px; border-radius:50%; background:#fff; object-fit:contain; padding:3px; }
+  .pd-head b { display:block; font-size:14.5px; color:#111; }
+  .pd-head span { font-size:11.5px; color:#667781; }
+  .pd-chat { flex:1; overflow-y:auto; padding:14px 10px; display:flex; flex-direction:column; gap:8px;
+    background-image:radial-gradient(rgba(0,0,0,.035) 1px, transparent 1px); background-size:16px 16px; }
+  .pd-day { align-self:center; background:#fff; color:#54656f; font-size:11px; padding:4px 10px; border-radius:8px; box-shadow:0 1px .5px rgba(0,0,0,.13); }
+  .pd-b { align-self:flex-start; max-width:88%; background:#fff; color:#111b21; font-size:13.5px; line-height:1.45; padding:8px 10px 18px; border-radius:0 10px 10px 10px; position:relative; box-shadow:0 1px .5px rgba(0,0,0,.13); white-space:pre-line; word-break:break-word; animation:pdIn .35s ease both; }
+  .pd-b.me { align-self:flex-end; background:#d9fdd3; border-radius:10px 0 10px 10px; }
+  .pd-b .t { position:absolute; right:8px; bottom:3px; font-size:10.5px; color:#667781; }
+  .pd-b a { color:#027eb5; text-decoration:none; }
+  .pd-b i { color:#3b4a54; }
+  .pd-btn { display:block; margin-top:8px; text-align:center; background:#f0f2f5; border-radius:8px; padding:8px; color:#027eb5; font-weight:700; font-size:13px; }
+  .pd-typing { align-self:flex-start; background:#fff; border-radius:0 10px 10px 10px; padding:10px 12px; display:flex; gap:4px; box-shadow:0 1px .5px rgba(0,0,0,.13); }
+  .pd-typing span { width:6px; height:6px; border-radius:50%; background:#8696a0; animation:typingBounce 1.2s infinite ease-in-out; }
+  .pd-typing span:nth-child(2) { animation-delay:.15s; } .pd-typing span:nth-child(3) { animation-delay:.3s; }
+  .pd-input { background:#f0f2f5; padding:8px 10px 14px; display:flex; gap:8px; align-items:center; }
+  .pd-input div { flex:1; background:#fff; border-radius:20px; padding:9px 14px; font-size:13px; color:#8696a0; }
+  .pd-input span { width:36px; height:36px; border-radius:50%; background:#00a884; }
+  @keyframes pdIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  @media(max-width:420px) { .pd-screen { height:560px; } }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -785,26 +819,21 @@
 <!-- LIVE DEMO -->
 <section class="calculator" id="calculator">
   <div class="container">
-    <div class="fade-in" style="max-width:600px;">
+    <div class="fade-in" style="text-align:center">
       <div class="eyebrow">See it in action</div>
-      <h2 class="section-title">Watch the <span style="color:var(--blue)">reply write itself.</span></h2>
-      <p class="section-sub">Pick a real review. Watch Hospera answer it — in the guest's own language.</p>
+      <h2 class="section-title">What everyone <span style="color:var(--blue)">gets.</span></h2>
+      <p class="section-sub" style="margin:0 auto">Real messages, exactly as they arrive on WhatsApp.</p>
     </div>
-    <div class="demo-box fade-in">
-      <div class="demo-tabs">
-        <button class="demo-tab active" data-demo="0" type="button">★★☆☆☆ Negative</button>
-        <button class="demo-tab" data-demo="1" type="button">★★★★★ Positive</button>
-        <button class="demo-tab" data-demo="2" type="button">★★★☆☆ In French</button>
-      </div>
-      <div class="mock-window" style="margin:0;">
-        <div class="mock-bar">
-          <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-          <div class="mock-title">WhatsApp · Hosperai</div>
-        </div>
-        <div class="wa-bubble" id="demoReview"></div>
-        <div class="demo-typing" id="demoTyping"><span></span><span></span><span></span></div>
-        <div class="wa-reply" id="demoReply" style="display:none;"></div>
-      </div>
+    <div class="fade-in">
+      <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">1 · What your customer gets</button><button class="pd-tab" data-view="owner" type="button">2 · What you get</button></div>
+      <div class="pd-sub" id="pdSub" style="visibility:hidden"><button class="demo-tab active" data-sub="0" type="button">★★☆☆☆ Negative</button><button class="demo-tab" data-sub="1" type="button">★★★★★ Positive</button><button class="demo-tab" data-sub="2" type="button">★★★☆☆ In French</button></div>
+      <p class="pd-caption" id="pdCaption"></p>
+      <div class="pd-phone"><div class="pd-screen"><div class="pd-island"></div>
+        <div class="pd-status"><span>9:41</span><span>5G ▮▮</span></div>
+        <div class="pd-head"><img src="assets/logo-icon-clean.png" alt=""><div><b>Hosperai</b><span id="pdHeadSub"></span></div></div>
+        <div class="pd-chat" id="pdChat"></div>
+        <div class="pd-input"><div>Message</div><span></span></div>
+      </div></div>
     </div>
   </div>
 </section>
@@ -1115,35 +1144,40 @@
   document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
   (function() {
-    const tabs = document.querySelectorAll('.demo-tab');
-    const reviewEl = document.getElementById('demoReview');
-    const typingEl = document.getElementById('demoTyping');
-    const replyEl = document.getElementById('demoReply');
-    if (!tabs.length || !reviewEl) return;
-
-    const demos = [
-      { stars: '★★☆☆☆', author: 'James R.', review: "Room was smaller than expected and the AC was broken all night. Not worth the price.", reply: "Hi James, we're really sorry about the AC and the room size — that's not the stay we want for our guests. We've flagged this with maintenance right away. Thank you for telling us, and we hope you'll give us another chance." },
-      { stars: '★★★★★', author: 'Sophie L.', review: "Amazing location, super friendly staff, and the breakfast was incredible!", reply: "Thank you so much, Sophie! We're thrilled you loved the location, the team and breakfast — that means a lot to us. Hope to welcome you back soon!" },
-      { stars: '★★★☆☆', author: 'Claire M.', review: "Chambre propre mais très bruyante la nuit à cause de la rue. Personnel adorable.", reply: "Bonjour Claire, merci pour votre retour. Ravis que notre équipe vous ait plu — et désolés pour le bruit, nous allons voir comment mieux isoler les chambres côté rue. Au plaisir de vous accueillir à nouveau !" },
-    ];
-
-    let timer;
-    function show(i) {
-      clearTimeout(timer);
-      tabs.forEach(t => t.classList.remove('active'));
-      tabs[i].classList.add('active');
-      const d = demos[i];
-      reviewEl.innerHTML = `<div class="wa-label">NEW REVIEW — Google ${d.stars}</div><strong>${d.author}:</strong> "${d.review}"`;
-      replyEl.style.display = 'none';
-      typingEl.style.display = 'flex';
-      timer = setTimeout(() => {
-        typingEl.style.display = 'none';
-        replyEl.style.display = 'block';
-        replyEl.innerHTML = `<strong style="font-size:10px;color:var(--gray-500);display:block;margin-bottom:4px;">GENERATED REPLY</strong>${d.reply}`;
-      }, 1100);
+    const T = {"cap1": "After the visit or stay, your customer gets a thank-you with one-tap links to review you.", "cap2": "Every new review reaches your WhatsApp with the reply already written. Copy, paste, done.", "biz": "The Harbor Hotel", "today": "TODAY", "thanks": "Hi Maria! 👋 Thank you so much for choosing The Harbor Hotel. We hope you had a wonderful experience with us.\n\nIf you have a minute, sharing how it went would mean a lot to our team:\n\n⭐ Google: <a>app.hosperai.es/g/harbor-hotel</a>\n\n🦉 Tripadvisor: <a>app.hosperai.es/t/harbor-hotel</a>\n\nThank you, and we hope to see you again soon! 🙏", "guestreply": "Of course! Loved it 😍", "newrev": "New review", "negrev": "Negative review — needs attention", "sugg": "Suggested reply:", "copy": "Copy the reply and paste it here to post it:", "open": "Open Google to reply ↗", "foot": "Hosperai drafts it, you just confirm.", "posted": "Posted ✅"}, DEMOS = [["★★☆☆☆", 1, "James R.", "Room was smaller than expected and the AC was broken all night. Not worth the price.", "Hi James, we're really sorry about the AC and the room size — that's not the stay we want for our guests. We've flagged it with maintenance right away. Thank you for telling us, and we hope you'll give us another chance.", ""], ["★★★★★", 0, "Sophie L.", "Amazing location, super friendly staff, and the breakfast was incredible!", "Thank you so much, Sophie! We're thrilled you loved the location, the team and the breakfast. Hope to welcome you back soon!", ""], ["★★★☆☆", 0, "Claire M.", "Chambre propre mais très bruyante la nuit à cause de la rue. Personnel adorable.", "Bonjour Claire, merci pour votre retour. Ravis que notre équipe vous ait plu — et désolés pour le bruit, nous allons voir comment mieux isoler les chambres côté rue. Au plaisir de vous accueillir à nouveau !", "🇺🇸 Hi Claire, thanks for your feedback. Glad you liked our team — and sorry about the noise, we'll look at better soundproofing for street-side rooms."]];
+    const chat = document.getElementById('pdChat'); if (!chat) return;
+    const sub = document.getElementById('pdSub'), cap = document.getElementById('pdCaption'), headSub = document.getElementById('pdHeadSub');
+    let timers = [];
+    const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+    const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const add = (html, cls) => { const d = document.createElement('div'); d.className = 'pd-b' + (cls ? ' ' + cls : ''); d.innerHTML = html; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; };
+    const typing = () => { const d = document.createElement('div'); d.className = 'pd-typing'; d.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; };
+    function reset() { timers.forEach(clearTimeout); timers = []; chat.innerHTML = '<div class="pd-day">' + T.today + '</div>'; }
+    function guest() {
+      reset(); sub.style.visibility = 'hidden'; cap.textContent = T.cap1; headSub.textContent = 'business account';
+      const tp = typing();
+      later(900, () => { tp.remove(); add(T.thanks + '<span class="t">11:02</span>'); });
+      later(2600, () => add(esc(T.guestreply) + '<span class="t">11:04 ✓✓</span>', 'me'));
     }
-    tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
-    show(0);
+    function owner(i) {
+      reset(); sub.style.visibility = 'visible'; cap.textContent = T.cap2; headSub.textContent = 'online';
+      sub.querySelectorAll('.demo-tab').forEach((b, j) => b.classList.toggle('active', j === i));
+      const [stars, neg, author, review, reply, tr] = DEMOS[i];
+      add('<b>Hosperai</b> · ' + (neg ? '🚨 ' + T.negrev : '✨ ' + T.newrev) + ' — <b>' + T.biz + '</b> (Google)\n\n' + stars + ' <b>' + esc(author) + '</b>\n<i>' + esc(review) + '</i><span class="t">10:06</span>');
+      const tp = typing();
+      later(1100, () => {
+        tp.remove();
+        const b = add('💬 <b>' + T.sugg + '</b>\n<span class="rep"></span>' + (tr ? '\n\n<i>' + esc(tr) + '</i>' : '') + '\n\n👉 ' + T.copy + '\n<a>g.page/r/hotel/review</a><span class="pd-btn">' + T.open + '</span>\n<i style="font-size:12px">' + T.foot + '</i><span class="t">10:06</span>');
+        const rep = b.querySelector('.rep'); let k = 0;
+        (function type() { rep.textContent = reply.slice(0, k); chat.scrollTop = chat.scrollHeight; if (k++ < reply.length) timers.push(setTimeout(type, 14)); else later(700, () => add(esc(T.posted) + '<span class="t">10:07 ✓✓</span>', 'me')); })();
+      });
+    }
+    document.querySelectorAll('.pd-tab').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('.pd-tab').forEach(x => x.classList.toggle('active', x === b));
+      b.dataset.view === 'guest' ? guest() : owner(0);
+    }));
+    sub.querySelectorAll('.demo-tab').forEach((b, i) => b.addEventListener('click', () => owner(i)));
+    new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { guest(); o.disconnect(); } }, { threshold: .3 }).observe(chat);
   })();
 
   document.getElementById('theme-toggle').addEventListener('click', () => {
