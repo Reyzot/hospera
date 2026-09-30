@@ -202,6 +202,31 @@
   .demo-video-wrap { max-width:900px; margin:36px auto 0; border-radius:18px; overflow:hidden; box-shadow:0 24px 60px rgba(15,23,42,.18); background:#0b1020; line-height:0; }
   .demo-video-wrap video { width:100%; height:auto; display:block; }
 
+
+  /* nav-mobile-fix */
+  @media(max-width:480px) {
+    .logo-sub { display:none; }
+    .nav-cta { display:none !important; }
+    .lang-globe { display:none; }
+  }
+
+  /* ── PLANS ── */
+  .plans-sec { background:var(--gray-50); }
+  .plans-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:860px; margin:44px auto 0; }
+  @media(max-width:760px) { .plans-grid { grid-template-columns:1fr; max-width:440px; } }
+  .plan-card { position:relative; background:var(--white); border:1px solid var(--gray-200); border-radius:20px; padding:28px 26px 24px; display:flex; flex-direction:column; }
+  .plan-card.pro { border-color:var(--blue); box-shadow:0 18px 50px rgba(37,99,235,.18); }
+  .plan-badge { position:absolute; top:-12px; left:26px; background:var(--blue); color:#fff; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; padding:5px 11px; border-radius:20px; }
+  .plan-name { font-size:20px; font-weight:800; color:var(--gray-900); }
+  .plan-price { font-size:40px; font-weight:900; letter-spacing:-1px; color:var(--gray-900); margin:8px 0 16px; }
+  .plan-price small { font-size:15px; font-weight:600; color:var(--gray-500); letter-spacing:0; }
+  .plan-card ul { list-style:none; padding:0; margin:0 0 22px; flex:1; }
+  .plan-card li { position:relative; padding:7px 0 7px 26px; font-size:14.5px; line-height:1.5; color:var(--gray-700); border-top:1px solid var(--gray-100); }
+  .plan-card li:first-child { border-top:0; }
+  .plan-card li::before { content:"✓"; position:absolute; left:2px; top:7px; color:var(--blue); font-weight:800; }
+  .plan-card .btn-primary, .plan-card .btn-secondary { text-align:center; justify-content:center; }
+  .plans-note { text-align:center; font-size:13px; color:var(--gray-500); margin-top:18px; }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -587,8 +612,8 @@
       </div>
     </div>
     <ul class="nav-links">
-      <li><a href="#packs">Services</a></li>
-      <li><a href="#como-funciona">How it works</a></li>
+      <li><a href="#planes">Plans</a></li>
+      <li><a href="#video">How it works</a></li>
       <li><a href="#calculator">Demo</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#nosotros">About</a></li>
@@ -621,7 +646,7 @@
   </div>
   <div class="hero-btns">
     <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary">Book a call →</a>
-    <a href="#packs" class="btn-secondary">See services</a>
+    <a href="#planes" class="btn-secondary">See plans</a>
   </div>
   <div class="hero-stats fade-in">
     <div class="stat-card">
@@ -705,219 +730,30 @@
   </div>
 </section>
 
-<!-- SERVICES -->
-<section class="packs" id="packs">
+<!-- PLANS -->
+<section class="plans-sec" id="planes">
   <div class="container">
-    <div class="fade-in">
-      <div class="eyebrow">Services</div>
-      <h2 class="section-title">Our <span style="color:var(--blue)">services.</span></h2>
-      <p class="section-sub">No lock-in. Get what you need, nothing more — each one works alone or combined with the rest.</p>
+    <div class="fade-in" style="text-align:center">
+      <div class="eyebrow">Plans</div>
+      <h2 class="section-title">Simple <span style="color:var(--blue)">pricing.</span></h2>
+      <p class="section-sub" style="margin:0 auto">No lock-in, no setup fee. Live in 48 hours.</p>
     </div>
-    <div class="packs-grid fade-in">
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Answer reviews</div>
-        <p class="pack-desc">Every review answered while you sleep.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Get more reviews</div>
-        <p class="pack-desc">Guests leave reviews without a second ask.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Progress reports</div>
-        <p class="pack-desc">Your reputation, tracked without lifting a finger.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span></div>
-        <div class="pack-name">Competitive Intel</div>
-        <p class="pack-desc">Know what they charge before you set your price.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Custom websites</div>
-        <p class="pack-desc">A website that's actually yours.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Google Profile tune-up</div>
-        <p class="pack-desc">Your Google listing, fully optimized.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Staff training app</div>
-        <p class="pack-desc">Training your team actually opens.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
-        <div class="pack-name">Recipe book & food costing</div>
-        <p class="pack-desc">Every dish costed down to the cent.</p>
-      </a>
-
+    <div class="plans-grid fade-in">
+      <div class="plan-card">
+        <div class="plan-name">Basic</div>
+        <div class="plan-price">$99<small>/month</small></div>
+        <ul><li>AI replies to every Google review, sent to your WhatsApp</li><li>Thank-you message after checkout with direct Google &amp; Tripadvisor review links</li><li>Reception check-in link + guest list</li></ul>
+        <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary">Book a call →</a>
+      </div>
+      <div class="plan-card pro">
+        <div class="plan-badge">Recommended</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$149<small>/month</small></div>
+        <ul><li><b>Everything in Basic</b></li><li>Mid-stay check-in: catch problems before they become bad reviews</li><li>VIP / member messages</li><li>Messages from your own WhatsApp number, name &amp; logo</li><li>Monthly report with your Google Maps ranking</li></ul>
+        <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary">Book a call →</a>
+      </div>
     </div>
-  </div>
-</section>
-
-<!-- ROADMAP / HOW IT WORKS -->
-<section class="roadmap" id="como-funciona">
-  <div class="container">
-    <div class="fade-in" style="max-width:600px;">
-      <div class="eyebrow">How it works</div>
-      <h2 class="section-title">Get more reviews.<br><span style="color:var(--blue)">Answer every one.</span></h2>
-      <p class="section-sub">Four steps, all automatic. Nothing to install, nothing to learn.</p>
-    </div>
-
-    <div class="roadmap-list">
-
-      <!-- Step 0: Audit -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">0</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Before anything else</span>
-          <h3>We analyze your reputation, free</h3>
-          <p>A free, no-strings audit of your Google reputation.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Free audit · your-hotel.com</div>
-            </div>
-            <div class="mini-stats">
-              <div class="mini-stat"><div class="mini-stat-num">142</div><div class="mini-stat-label">Reviews</div></div>
-              <div class="mini-stat"><div class="mini-stat-num">4.3⭐</div><div class="mini-stat-label">Rating</div></div>
-              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">35%</div><div class="mini-stat-label">Unanswered</div></div>
-              <div class="mini-stat"><div class="mini-stat-num" style="color:#dc2626;">8/12</div><div class="mini-stat-label">Negative, unanswered</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 1: Get more reviews -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">1</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 1 · Growth</span>
-          <h3>We get you more reviews</h3>
-          <p>One tap, and reviews write themselves.</p>
-          <div class="roadmap-visual" style="max-width:680px;display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;">
-          <div class="mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Table / counter card</div>
-            </div>
-            <div style="flex:1;overflow:hidden;">
-              <img src="assets/nfc-card-photo.png" alt="Hospera NFC/QR review card" style="display:block;width:100%;height:100%;object-fit:cover;">
-            </div>
-          </div>
-
-          <div class="channel-explain mock-window" style="flex:1;min-width:240px;margin:0;display:flex;flex-direction:column;">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">Departure day</div>
-            </div>
-            <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:center;">
-              <p style="font-size:13px;color:#4b5563;margin-bottom:14px;">We send this automatically, by whichever channel we have:</p>
-              <div class="channel-row" style="border-top:none;padding-top:0;margin-top:0;">
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#25D366"/><path d="M20 10.5c-5.2 0-9.5 4.3-9.5 9.5 0 1.7.4 3.3 1.3 4.7L10.5 30l5.5-1.4c1.3.7 2.8 1.1 4.4 1.1h0c5.2 0 9.5-4.3 9.5-9.5S25.2 10.5 20 10.5z" fill="#fff"/><path d="M20 12.3c-4.2 0-7.7 3.4-7.7 7.7 0 1.5.4 2.9 1.2 4.1l-.8 2.9 3-.8c1.2.7 2.5 1 3.9 1h0c4.2 0 7.7-3.4 7.7-7.7s-3.6-7.2-7.7-7.2z" fill="#25D366"/><path d="M17.1 16c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3 4.7 4.1 2.3.9 2.8.7 3.3.7.5 0 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3l-1.8-.9c-.3-.1-.5-.2-.7.1-.2.3-.8 1-1 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.2-1.4-.8-.8-1.4-1.6-1.5-1.9-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.2-.5.1-.2 0-.4-.1-.5l-.6-1.6z" fill="#fff"/></svg><span>WhatsApp</span></div>
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#30D158"/><rect x="9" y="10" width="22" height="15" rx="5" fill="#fff"/><path d="M13 25 L13 30 L18 25 Z" fill="#fff"/></svg><span>SMS</span></div>
-              <div class="channel-item"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;display:block;"><rect width="40" height="40" rx="10" fill="#3B82F6"/><rect x="8" y="12" width="24" height="16" rx="2" fill="#fff"/><path d="M9 13.5 L20 22 L31 13.5" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></div>
-              </div>
-              <div class="wa-bubble" style="margin:14px 0 0;font-size:12.5px;">Hi Sophie! Thanks for staying at Hotel Aurora. If you have a minute, we'd love to hear your feedback: hosperai.es/r/sophie-8823</div>
-              <p style="font-size:13px;color:#4b5563;margin:14px 0 0;">Longer stays also get a quick mid-stay check-in, so we catch problems before checkout.</p>
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 2: Respond -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">2</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 2 · Response</span>
-          <h3>We answer every one for you</h3>
-          <p>A reply ready before you've even seen the review.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">WhatsApp · Hosperai</div>
-            </div>
-            <div class="wa-bubble">
-              <div class="wa-label">✨ Hospera · new review at Hotel Aurora (Google)</div>
-              ★★★★ <strong>María G.</strong><br>
-              <em>"Great location, very friendly staff..."</em><br><br>
-              💬 <strong>Suggested reply:</strong><br>
-              <em>Hi María, thank you for staying with us. We're so glad you felt well taken care of.</em>
-            </div>
-            <div style="padding:0 12px 14px;font-size:11.5px;color:#4b5563;">👉 Copy &amp; paste this to publish it:<br><strong style="color:var(--blue);">hosperai.es/r/maria-g-4531</strong></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Track -->
-      <div class="roadmap-item fade-in">
-        <div class="roadmap-num">3</div>
-        <div class="roadmap-content">
-          <span class="roadmap-tag">Step 3 · Tracking</span>
-          <h3>You see it improve, week by week</h3>
-          <p>Your progress, delivered every week without asking.</p>
-          <div class="roadmap-visual mock-window">
-            <div class="mock-bar">
-              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
-              <div class="mock-title">WhatsApp · Weekly report</div>
-            </div>
-            <div class="wa-bubble">
-              <div class="wa-label">THIS WEEK'S SUMMARY</div>
-              📋 12 reviews processed<br>
-              ⭐ 4.6 average (+0.2 vs last week)<br>
-              ⏱️ ~96 min saved<br><br>
-              <strong style="color:var(--blue);">→ View full report (PDF)</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <p class="plans-note">Change or cancel anytime.</p>
   </div>
 </section>
 
@@ -1076,6 +912,70 @@
           <button type="submit" class="form-submit">Send request →</button>
         </form>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="packs" id="packs">
+  <div class="container">
+    <div class="fade-in">
+      <div class="eyebrow">Additional services</div>
+      <h2 class="section-title">Need <span style="color:var(--blue)">more?</span></h2>
+      <p class="section-sub">One-off projects and extras, available on their own or on top of any plan.</p>
+    </div>
+    <div class="packs-grid fade-in">
+
+      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span></div>
+        <div class="pack-name">Competitive Intel</div>
+        <p class="pack-desc">Know what they charge before you set your price.</p>
+      </a>
+
+      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Custom websites</div>
+        <p class="pack-desc">A website that's actually yours.</p>
+      </a>
+
+      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Google Profile tune-up</div>
+        <p class="pack-desc">Your Google listing, fully optimized.</p>
+      </a>
+
+      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Staff training app</div>
+        <p class="pack-desc">Training your team actually opens.</p>
+      </a>
+
+      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
+        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
+        <div class="pack-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="pack-tags"><span class="pack-tag">Restaurant</span></div>
+        <div class="pack-name">Recipe book & food costing</div>
+        <p class="pack-desc">Every dish costed down to the cent.</p>
+      </a>
+
     </div>
   </div>
 </section>
