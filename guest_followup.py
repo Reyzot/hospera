@@ -121,12 +121,24 @@ def fetch_checkins(slug):
             "lang": normalize_lang(g.get("lang")),
             "checkin": parse_date(g.get("checkin")),
             "checkout": checkout,
+            "id": g.get("id"),
+            "departure_sent": g.get("departure_sent"),
+            "midstay_sent": g.get("midstay_sent"),
         })
     return guests
 
 
+def mark_sent(slug, guest_id, field, via):
+    """Lo marca como enviado en la lista que ve recepción (pestaña Guests → Sent)."""
+    try:
+        requests.post(CHECKIN_API, json={"action": "mark", "key": CHECKIN_SECRET, "h": slug, "id": guest_id,
+                                         "field": field, "via": via}, timeout=20).raise_for_status()
+    except Exception as e:
+        print(f"    ⚠️  No pude marcarlo como enviado en la web: {e}")
+
+
 def guest_key(guest):
-    return f"{guest['phone']}_{guest['email']}_{guest['checkin']}_{guest['checkout']}"
+    return guest.get('id') or f"{guest['phone']}_{guest['email']}_{guest['checkin']}_{guest['checkout']}"
 
 
 def load_state(path):
@@ -190,11 +202,14 @@ def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="
     ya exige al menos uno)."""
     if guest['phone']:
         wa_vars = {"1": guest['name'], "2": business_name, "3": link}
-        if not send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode):
-            send_sms(guest['phone'], body, test_mode)
+        if send_whatsapp(guest['phone'], kind, lang, wa_vars, test_mode):
+            return "WhatsApp"
+        send_sms(guest['phone'], body, test_mode)
+        return "SMS"
     elif guest['email']:
         subject = EMAIL_SUBJECTS[kind][lang].format(business=business_name)
         send_email(guest['email'], subject, body, test_mode)
+        return "Email"
     else:
         print(f"    ⚠️  {guest['name']}: sin teléfono ni email, no se puede avisar")
 
@@ -218,20 +233,26 @@ def run_client(client, test_mode=False):
         lang = guest['lang'] if guest['lang'] in ("es", "en") else "en"
 
         due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
-        if due and (today - guest['checkout']).days <= 2 and not record.get('departure_sent'):
+        if due and (today - guest['checkout']).days <= 2 and not (record.get('departure_sent') or guest.get('departure_sent')):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
-            notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link)
-            record['departure_sent'] = True
+            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link)
+            if via and not test_mode:
+                record['departure_sent'] = True
+                if guest.get('id'):
+                    mark_sent(client['slug'], guest['id'], 'departure_sent', via)
             sent += 1
 
         nights = (guest['checkout'] - guest['checkin']).days if guest['checkin'] else 0
         if nights > 1:
             midpoint = guest['checkin'] + timedelta(days=nights // 2)
-            if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not record.get('midstay_sent'):
+            if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not (record.get('midstay_sent') or guest.get('midstay_sent')):
                 contact_link = f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link
                 body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
-                notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)
-                record['midstay_sent'] = True
+                via = notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)
+                if via and not test_mode:
+                    record['midstay_sent'] = True
+                    if guest.get('id'):
+                        mark_sent(client['slug'], guest['id'], 'midstay_sent', via)
                 sent += 1
 
     save_state(client['state'], state)
