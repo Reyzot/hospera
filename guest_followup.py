@@ -70,9 +70,10 @@ REVIEW_LINK_BASE = "https://hosperai.es/r"
 
 LANG_ALIASES = {
     "español": "es", "espanol": "es", "castellano": "es", "català": "es", "catala": "es",
-    "english": "en",
-    "català": "ca", "catala": "ca",
+    "english": "en", "français": "fr", "francais": "fr", "deutsch": "de",
+    "italiano": "it", "português": "pt", "portugues": "pt",
 }
+WA_LANGS = ("es", "en", "fr", "de", "it", "pt")   # idiomas con plantilla de WhatsApp; email/SMS solo es/en
 
 MESSAGES = {
     "departure": {
@@ -93,7 +94,7 @@ EMAIL_SUBJECTS = {
 
 def normalize_lang(raw):
     key = (raw or "").strip().lower()
-    return LANG_ALIASES.get(key, key if key in ("es", "en", "ca") else "en")
+    return LANG_ALIASES.get(key, key if key in WA_LANGS else "en")
 
 
 def parse_date(raw):
@@ -195,6 +196,10 @@ NO_WHATSAPP_ERRORS = {63003, 63024}  # el número no tiene WhatsApp
 def send_whatsapp(to_phone, kind, lang, variables, test_mode=False, template=None):
     """Devuelve "sent", "no_whatsapp" (probar email) o "retry" (plantilla sin aprobar / fallo temporal: no marcar, reintentar)."""
     template = template or f"{WA_TEMPLATE_BY_KIND[kind]}_{lang}"
+    if not test_mode and not template_approved(WA_TEMPLATES.get(template, "")):
+        alt = re.sub(r"_(es|fr|de|it|pt)$", "_en", template)   # sin plantilla aprobada en su idioma → inglés
+        if alt != template and template_approved(WA_TEMPLATES.get(alt, "")):
+            template = alt
     sid = WA_TEMPLATES.get(template)
     if not (TWILIO_WA_FROM and sid):
         return "retry"
@@ -251,7 +256,7 @@ def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="
     if kind == "departure" and links.get("google"):
         link = links["google"]
         extra = f"\nTripadvisor: {links['tripadvisor']}" if links.get("tripadvisor") else ""
-        body = MESSAGES['departure'][lang].format(name=guest['name'], business=business_name, link=f"\nGoogle: {link}{extra}")
+        body = MESSAGES['departure'][lang if lang in ("es", "en") else "en"].format(name=guest['name'], business=business_name, link=f"\nGoogle: {link}{extra}")
     if vip:
         body = body + f"\n\n{vip_message}"
     if guest['phone']:
@@ -274,7 +279,7 @@ def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="
             send_sms(guest['phone'], body, test_mode)
             return "SMS"
     if guest['email']:
-        subject = EMAIL_SUBJECTS[kind][lang].format(business=business_name)
+        subject = EMAIL_SUBJECTS[kind][lang if lang in ("es", "en") else "en"].format(business=business_name)
         send_email(guest['email'], subject, body, test_mode)
         return "Email"
     print(f"    ⚠️  {guest['name']}: no se ha podido avisar (sin WhatsApp y sin email)")
@@ -297,11 +302,12 @@ def run_client(client, test_mode=False):
     for guest in guests:
         key = guest_key(guest)
         record = state.setdefault(key, {})
-        lang = guest['lang'] if guest['lang'] in ("es", "en") else "en"
+        lang = guest['lang'] if guest['lang'] in WA_LANGS else "en"
+        ml = lang if lang in ("es", "en") else "en"   # textos de email/SMS
 
         due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
         if due and (today - guest['checkout']).days <= 2 and not (record.get('departure_sent') or guest.get('departure_sent')):
-            body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
+            body = MESSAGES['departure'][ml].format(name=guest['name'], business=client['name'], link=review_link)
             via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''), client.get('review_links'))
             if via and not test_mode:
                 if via == "WhatsApp":
@@ -317,7 +323,7 @@ def run_client(client, test_mode=False):
             if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not (record.get('midstay_sent') or guest.get('midstay_sent')):
                 gc = re.sub(r"[^0-9]", "", client.get('guest_contact', '').split("@")[0]) if client.get('guest_contact') else ""
                 contact_link = f"https://wa.me/{gc}" if len(gc) >= 8 else (f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link)
-                body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
+                body = MESSAGES['midstay'][ml].format(name=guest['name'], business=client['name'], link=contact_link)
                 via = notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)
                 if via and not test_mode:
                     record['midstay_sent'] = True
