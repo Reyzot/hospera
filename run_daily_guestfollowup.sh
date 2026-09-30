@@ -1,18 +1,9 @@
 #!/bin/bash
-# Igual que run_daily_reviewmonitor.sh: se lanza cada 30 min via launchd,
-# pero solo ejecuta guest_followup.py una vez al día, a partir de las 9:00.
-MARKER=~/hospera/.last_guestfollowup_run
-TODAY=$(date +%F)
+# launchd lo lanza cada 30 min. Solo corre de 9:00 a 20:59 (hora del Mac).
+# No duplica mensajes: guest_state/<cliente>.json guarda qué se ha mandado ya.
 HOUR=$(date +%H)
-
-if [ "$HOUR" -lt 9 ]; then
+if [ "$HOUR" -lt 9 ] || [ "$HOUR" -ge 21 ]; then
   exit 0
 fi
-
-if [ -f "$MARKER" ] && [ "$(cat "$MARKER")" = "$TODAY" ]; then
-  exit 0
-fi
-
 cd ~/hospera
 /usr/bin/python3 guest_followup.py
-echo "$TODAY" > "$MARKER"

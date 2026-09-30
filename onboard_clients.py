@@ -6,12 +6,36 @@ Alta de clientes desde el formulario https://hosperai-onboarding.netlify.app
   python3 onboard_clients.py --approve slug  # activa un cliente (empieza a monitorizar y le llega el WhatsApp de bienvenida)
   python3 onboard_clients.py --pause slug    # lo desactiva
 """
-import json, re, subprocess, argparse, requests, warnings
+import json, re, subprocess, argparse, requests, warnings, hmac, hashlib, os, urllib.parse
 from pathlib import Path
 warnings.filterwarnings("ignore")
 from review_monitor import SERPAPI_KEY
 
 FORM_ID = "6abd2e3ba00054000889f57c"
+SITE = "https://hosperai-onboarding.netlify.app"
+from dotenv import load_dotenv
+load_dotenv(Path.home() / "hospera" / ".env")
+CHECKIN_SECRET = os.getenv("CHECKIN_SECRET", "")
+
+
+def checkin_link(c):
+    t = hmac.new(CHECKIN_SECRET.encode(), c["slug"].encode(), hashlib.sha256).hexdigest()[:16]
+    return f"{SITE}/checkin/?h={c['slug']}&t={t}&n={urllib.parse.quote(c['name'])}"
+
+
+def publish_review_page(c):
+    """Página hosperai.es/r/<slug>.html (elige Google/TripAdvisor) → se publica con git push."""
+    if not c.get("place_id"):
+        print("  ⚠️  Sin place_id: no puedo crear el enlace de reseña de Google")
+        return
+    google = f"https://search.google.com/local/writereview?placeid={c['place_id']}"
+    lang = "es" if c["notify_lang"] == "es" else "en"
+    home = Path.home() / "hospera"
+    subprocess.run(["python3", "generate_choice_page.py", c["name"], google, "--lang", lang, "--slug", c["slug"]], cwd=home, check=True)
+    subprocess.run(["git", "add", f"r/{c['slug']}.html"], cwd=home, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", f"Página de reseña para {c['name']}"], cwd=home)
+    subprocess.run(["git", "push", "-q", "origin", "HEAD"], cwd=home, capture_output=True)
+    print(f"  🔗 Página de reseña: https://hosperai.es/r/{c['slug']}.html")
 FILE = Path.home() / "hospera" / "clients.json"
 LANG = {"English": "en", "Español": "es", "Català": "es"}
 
@@ -25,21 +49,20 @@ def slugify(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")[:40]
 
 
-def find_data_id(d):
-    """Primero intenta sacar el data_id del enlace de Maps; si no, 1 búsqueda de SerpAPI."""
-    url = d.get("google_url") or ""
+def find_place(d):
+    """data_id (para leer reseñas) y place_id (para el enlace 'escribir reseña'), con 1 búsqueda de SerpAPI."""
+    url_id = None
     try:
-        url = requests.get(url, timeout=15, allow_redirects=True).url if url else ""
+        url = requests.get(d.get("google_url") or "", timeout=15, allow_redirects=True).url
+        m = re.search(r"(0x[0-9a-f]+:0x[0-9a-f]+)", url)
+        url_id = m.group(1) if m else None
     except requests.RequestException:
         pass
-    m = re.search(r"(0x[0-9a-f]+:0x[0-9a-f]+)", url)
-    if m:
-        return m.group(1)
     q = f"{d.get('business_name', '')} {d.get('address', '')}".strip()
     r = requests.get("https://serpapi.com/search", params={"engine": "google_maps", "type": "search", "q": q,
                      "api_key": SERPAPI_KEY}, timeout=30).json()
     place = r.get("place_results") or (r.get("local_results") or [{}])[0]
-    return place.get("data_id")
+    return url_id or place.get("data_id"), place.get("place_id")
 
 
 def to_client(sub):
@@ -51,7 +74,7 @@ def to_client(sub):
         phone = "+1" + phone if len(phone) == 10 else "+" + phone
     return {
         "submission_id": sub["id"], "status": "pending", "slug": slugify(name),
-        "name": name, "data_id": find_data_id(d), "tripadvisor_id": None,
+        "name": name, "tripadvisor_id": None,
         "type": (d.get("business_type") or "negocio").lower(), "location": d.get("address", ""),
         "signature": d.get("signature") or (f"The team at {name}" if lang == "en" else f"El equipo de {name}"),
         "phone": f"whatsapp:{phone}", "notify_lang": lang,
@@ -59,7 +82,8 @@ def to_client(sub):
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),
         "services": d.get("services") or [], "pms": d.get("pms", ""), "notes": d.get("notes", ""),
         "google_url": d.get("google_url", ""), "created": sub.get("created_at", ""),
-    }
+        "data_id": None, "place_id": None,
+    } | dict(zip(("data_id", "place_id"), find_place(d)))
 
 
 def main():
@@ -84,11 +108,16 @@ def main():
                 raise SystemExit(f"'{slug}' no tiene data_id de Google Maps — añádelo a mano en clients.json")
             c["status"] = status
             print(f"{'✅ Activado' if status == 'active' else '⏸️  Pausado'}: {c['name']}")
+            if status == "active":
+                publish_review_page(c)
+                print(f"  🛎️  Enlace de check-in para recepción:\n     {checkin_link(c)}")
 
     FILE.write_text(json.dumps(clients, indent=2, ensure_ascii=False))
     print(f"\n{len(clients)} clientes del formulario:")
     for c in clients:
         print(f"  [{c['status']:7}] {c['slug']:30} {c['phone']:22} {c['notify_lang']}  {', '.join(c['services'])}")
+        if c["status"] == "active":
+            print(f"            check-in: {checkin_link(c)}")
 
 
 if __name__ == "__main__":

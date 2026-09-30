@@ -16,7 +16,7 @@ Uso:
 import sys
 sys.path.insert(0, '/Users/andreurey/Library/Python/3.9/lib/python/site-packages')
 
-import os, csv, io, json, argparse, smtplib
+import os, csv, io, json, re, argparse, smtplib
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from email.mime.text import MIMEText
@@ -55,12 +55,21 @@ STATE_DIR.mkdir(exist_ok=True)
 #         "state":             STATE_DIR / "uma-house.json",
 #     },
 # ]
-CHECKIN_CLIENTS = []
+CHECKIN_API = "https://hosperai-onboarding.netlify.app/api/checkin"
+CHECKIN_SECRET = os.getenv('CHECKIN_SECRET', '')
+_CLIENTS_FILE = Path.home() / 'hospera' / 'clients.json'
+CHECKIN_CLIENTS = [
+    {"name": c["name"], "slug": c["slug"], "hotel_whatsapp": c["phone"].replace("whatsapp:+", ""),
+     "state": STATE_DIR / f"{c['slug']}.json"}
+    for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
+    if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
+]
+SEND_AFTER_HOUR = 11  # el mensaje de salida no se manda antes de las 11:00 (hora del Mac)
 
 REVIEW_LINK_BASE = "https://hosperai.es/r"
 
 LANG_ALIASES = {
-    "español": "es", "espanol": "es", "castellano": "es",
+    "español": "es", "espanol": "es", "castellano": "es", "català": "es", "catala": "es",
     "english": "en",
     "català": "ca", "catala": "ca",
 }
@@ -97,33 +106,20 @@ def parse_date(raw):
     return None
 
 
-def fetch_checkins(sheet_url):
-    r = requests.get(sheet_url, timeout=15)
+def fetch_checkins(slug):
+    r = requests.get(CHECKIN_API, params={"h": slug, "key": CHECKIN_SECRET}, timeout=20)
     r.raise_for_status()
-    reader = csv.DictReader(io.StringIO(r.text))
     guests = []
-    for row in reader:
-        def get_field(*needles):
-            for key, val in row.items():
-                if key and any(n in key.lower() for n in needles):
-                    return val
-            return ""
-
-        name = get_field("nombre")
-        phone = get_field("teléfono", "telefono", "phone")
-        email = get_field("email", "correo", "e-mail")
-        lang = normalize_lang(get_field("idioma", "language"))
-        checkin = parse_date(get_field("entrada", "check-in", "checkin"))
-        checkout = parse_date(get_field("salida", "check-out", "checkout"))
-
-        if not (name and checkout and (phone or email)):
+    for g in r.json():
+        checkout = parse_date(g.get("checkout"))
+        if not (g.get("name") and checkout and (g.get("phone") or g.get("email"))):
             continue
         guests.append({
-            "name": name.strip(),
-            "phone": phone.strip(),
-            "email": email.strip(),
-            "lang": lang,
-            "checkin": checkin,
+            "name": g["name"].strip().split(" ")[0],
+            "phone": re.sub(r"[^\d+]", "", g.get("phone") or ""),
+            "email": (g.get("email") or "").strip(),
+            "lang": normalize_lang(g.get("lang")),
+            "checkin": parse_date(g.get("checkin")),
             "checkout": checkout,
         })
     return guests
@@ -206,7 +202,7 @@ def notify_guest(guest, kind, body, lang, business_name, test_mode=False, link="
 def run_client(client, test_mode=False):
     print(f"\n  📍 {client['name']}")
     try:
-        guests = fetch_checkins(client['checkin_sheet_url'])
+        guests = fetch_checkins(client['slug'])
     except Exception as e:
         print(f"  ⚠️  Error leyendo la hoja de check-ins: {e}")
         return
@@ -221,7 +217,8 @@ def run_client(client, test_mode=False):
         record = state.setdefault(key, {})
         lang = guest['lang'] if guest['lang'] in ("es", "en") else "en"
 
-        if guest['checkout'] == today and not record.get('departure_sent'):
+        due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
+        if due and (today - guest['checkout']).days <= 2 and not record.get('departure_sent'):
             body = MESSAGES['departure'][lang].format(name=guest['name'], business=client['name'], link=review_link)
             notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link)
             record['departure_sent'] = True
@@ -230,7 +227,7 @@ def run_client(client, test_mode=False):
         nights = (guest['checkout'] - guest['checkin']).days if guest['checkin'] else 0
         if nights > 1:
             midpoint = guest['checkin'] + timedelta(days=nights // 2)
-            if midpoint == today and not record.get('midstay_sent'):
+            if midpoint == today and datetime.now().hour >= SEND_AFTER_HOUR and not record.get('midstay_sent'):
                 contact_link = f"https://wa.me/{client['hotel_whatsapp']}" if client.get('hotel_whatsapp') else review_link
                 body = MESSAGES['midstay'][lang].format(name=guest['name'], business=client['name'], link=contact_link)
                 notify_guest(guest, 'midstay', body, lang, client['name'], test_mode, contact_link)

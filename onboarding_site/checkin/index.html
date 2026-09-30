@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Guest check-in · Hosperai</title>
+<link rel="icon" href="/assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --blue:#2563eb; --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --line:#e5e7eb; --ok:#059669; --err:#dc2626; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0d0f14; --card:#14161d; --text:#f3f4f6; --muted:#9ca3af; --line:#2a2d38; } }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Inter,-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:24px 16px; }
+  .wrap { max-width:560px; margin:0 auto; }
+  header { display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+  header img { width:34px; height:34px; }
+  header .t { font-weight:700; font-size:15px; }
+  header .s { color:var(--muted); font-size:13px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px 22px; }
+  h1 { font-size:24px; letter-spacing:-.02em; margin-bottom:6px; }
+  .lead { color:var(--muted); font-size:15px; margin-bottom:22px; line-height:1.5; }
+  label { display:block; font-size:13px; font-weight:600; margin:14px 0 6px; }
+  input, select { width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:11px; font:inherit; font-size:16px; background:var(--bg); color:var(--text); }
+  input:focus, select:focus { outline:2px solid var(--blue); border-color:transparent; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .hint { color:var(--muted); font-size:12px; margin-top:6px; }
+  button { width:100%; margin-top:22px; padding:15px; border:0; border-radius:12px; background:var(--blue); color:#fff; font:inherit; font-weight:700; font-size:16px; cursor:pointer; }
+  button:disabled { opacity:.6; }
+  .msg { margin-top:16px; padding:13px 14px; border-radius:11px; font-size:14px; display:none; }
+  .msg.ok { display:block; background:rgba(5,150,105,.12); color:var(--ok); }
+  .msg.err { display:block; background:rgba(220,38,38,.12); color:var(--err); }
+  .bad { text-align:center; padding:40px 10px; color:var(--muted); }
+  @media (max-width:420px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="/assets/logo-icon.png" alt=""><div><div class="t">Hosperai</div><div class="s" id="hotelName">Guest check-in</div></div></header>
+  <div class="card" id="card">
+    <h1>New guest</h1>
+    <p class="lead">Takes 10 seconds. On checkout day the guest gets a personal thank-you with a link to leave a review.</p>
+    <form id="f" autocomplete="off">
+      <label>Guest name</label>
+      <input name="name" required placeholder="Maria Thompson">
+      <label>Mobile (with country code)</label>
+      <input name="phone" type="tel" placeholder="+1 305 555 1234">
+      <label>Email</label>
+      <input name="email" type="email" placeholder="maria@email.com">
+      <div class="hint">Phone or email — at least one. Phone is better (WhatsApp).</div>
+      <label>Guest language</label>
+      <select name="lang">
+        <option value="English">English</option>
+        <option value="Español">Español</option>
+        <option value="Français">Français</option>
+        <option value="Deutsch">Deutsch</option>
+        <option value="Italiano">Italiano</option>
+        <option value="Português">Português</option>
+        <option value="Català">Català</option>
+      </select>
+      <div class="row">
+        <div><label>Check-in</label><input name="checkin" type="date"></div>
+        <div><label>Check-out</label><input name="checkout" type="date" required></div>
+      </div>
+      <button type="submit" id="btn">Save guest</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const h = p.get('h'), t = p.get('t'), n = p.get('n');
+  if (n) { document.getElementById('hotelName').textContent = n + ' · Guest check-in'; document.title = n + ' · Guest check-in'; }
+  if (!h || !t) document.getElementById('card').innerHTML = '<div class="bad">This link is incomplete. Please use the check-in link Hosperai sent you.</div>';
+  const f = document.getElementById('f'), msg = document.getElementById('msg'), btn = document.getElementById('btn');
+  const today = new Date(); const iso = d => new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  if (f) f.checkin.value = iso(today);
+  f && f.addEventListener('submit', async e => {
+    e.preventDefault();
+    msg.className = 'msg';
+    const d = Object.fromEntries(new FormData(f));
+    if (!d.phone && !d.email) { msg.textContent = 'Add a phone number or an email.'; msg.className = 'msg err'; return; }
+    if (d.phone && !d.phone.trim().startsWith('+')) { msg.textContent = 'Add the country code to the phone, e.g. +1 or +34.'; msg.className = 'msg err'; return; }
+    if (d.checkin && d.checkout < d.checkin) { msg.textContent = 'Check-out is before check-in.'; msg.className = 'msg err'; return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const r = await fetch('/api/checkin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...d, h, t }) });
+      if (!r.ok) throw new Error(await r.text());
+      msg.textContent = '✅ ' + d.name + ' saved. They\'ll get the message on ' + d.checkout + '.';
+      msg.className = 'msg ok';
+      const keepIn = f.checkin.value; f.reset(); f.checkin.value = keepIn; f.name.focus();
+    } catch (err) {
+      msg.textContent = 'Could not save (' + err.message + '). Please try again.'; msg.className = 'msg err';
+    }
+    btn.disabled = false; btn.textContent = 'Save guest';
+  });
+</script>
+</body>
+</html>
