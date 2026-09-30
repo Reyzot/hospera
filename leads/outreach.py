@@ -74,7 +74,7 @@ def send(to, subject, body, reply_to_id=None):
     msg["Message-ID"] = mid
     if reply_to_id:
         msg["In-Reply-To"] = msg["References"] = reply_to_id
-    with smtplib.SMTP_SSL("smtp.zoho.com", 465, timeout=60) as s:
+    with smtplib.SMTP_SSL("smtppro.zoho.com", 465, timeout=60) as s:
         s.login(USER, PWD)
         s.send_message(msg)
     return mid
@@ -83,7 +83,7 @@ def send(to, subject, body, reply_to_id=None):
 def notify(subject, body):
     msg = MIMEText(body, "plain", "utf-8")
     msg["Subject"], msg["From"], msg["To"] = subject, formataddr(("Hosperai Envíos", USER)), NOTIFY_TO
-    with smtplib.SMTP_SSL("smtp.zoho.com", 465, timeout=60) as s:
+    with smtplib.SMTP_SSL("smtppro.zoho.com", 465, timeout=60) as s:
         s.login(USER, PWD)
         s.send_message(msg)
 
@@ -103,7 +103,7 @@ def check_inbox(state, meta):
     by_domain = {r["email"].split("@")[1].lower(): r for r in state
                  if r["email"].split("@")[1].lower() not in ("gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com", "msn.com", "icloud.com", "bellsouth.net", "comcast.net")}
     try:
-        im = imaplib.IMAP4_SSL("imap.zoho.com", 993, timeout=60)
+        im = imaplib.IMAP4_SSL("imappro.zoho.com", 993, timeout=60)
         im.login(USER, PWD)
     except Exception as e:
         print("⚠️ IMAP no disponible:", e)
