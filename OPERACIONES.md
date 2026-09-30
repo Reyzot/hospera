@@ -120,3 +120,11 @@ Antes: mini-auditoría del hotel (sus números vs competencia) + pestañas abier
 3. Demo en directo (5'): pedir su WhatsApp → en el enlace demo poner SU hotel + su nombre + su móvil → Save guest → le vibra el móvil en la llamada. Enseñar pestaña Guests.
 4. Aviso al dueño (1'): vídeo de 38 s desde el segundo 25 (respuesta ya escrita, copiar y pegar).
 5. Cierre (3'): 79 $/mes fundadores (99 $ precio normal), sin permanencia, 48 h. Si sí: pegar app.hosperai.es en el chat y rellenarlo juntos en la llamada.
+
+## 12. Campaña de emails a hoteles (captación)
+
+- Buzón: andreu@gethosperai.com (Zoho Mail Lite, cuenta hosperai.app@gmail.com; dominio secundario para no quemar hosperai.es). DNS en Cloudflare: MX Zoho, SPF, DKIM (zmail._domainkey), DMARC p=none.
+- `leads/outreach.py` (launchd `com.hospera.outreach`, cada 10 min): lun–vie 9:00–16:00, 1 email cada 20–40 min, máximo diario 10 → 15 → 25 → 35 por semana. Seguimientos: email 2 a los 3 días laborables, email 3 a los 7. Quien responde sale de la secuencia y se avisa a andreurey7@gmail.com. Sin IMAP no envía (no sabría quién respondió).
+- Fuente de verdad: `leads/outreach_state.json` (499 hoteles en orden). Excel para Andreu: `~/Desktop/Hosperai_Envios.xlsx` (se regenera solo).
+- Pausar / reanudar / ver: `python3 leads/outreach.py --pause | --resume | --status`.
+- Credenciales en .env: ZOHO_EMAIL, ZOHO_APP_PASSWORD (contraseña de aplicación de Zoho).

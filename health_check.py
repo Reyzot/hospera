@@ -24,7 +24,7 @@ EMAIL_APP_PASSWORD = os.getenv('EMAIL_APP_PASSWORD')
 ALERT_TO      = os.getenv('EMAIL_ADDRESS')  # se manda a sí mismo (Andreu)
 
 HOSPERA_DIR   = Path.home() / 'hospera'
-LOG_FILES     = ['launchd_err.log', 'guestfollowup_err.log']
+LOG_FILES     = ['launchd_err.log', 'guestfollowup_err.log', 'outreach_err.log']
 
 SERPAPI_LOW_THRESHOLD = 30  # avisar si quedan menos de estas búsquedas
 
