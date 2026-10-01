@@ -369,6 +369,38 @@ _Hosperai responde por ti — tú solo confirmas._"""
         print(f"  ✅ WhatsApp entregado a {client['phone']}{' [URGENTE]' if is_urgent else ''}")
     return ok
 
+def send_email_alert(client, author, rating, text, response_text, review_translated=None, reply_translated=None, review_link=None, platform="google"):
+    """Respaldo si el WhatsApp no se puede entregar: el mismo aviso por email al manager del negocio."""
+    import smtplib
+    from email.mime.text import MIMEText
+    to = client.get("manager_email")
+    user, pwd = os.getenv("EMAIL_ADDRESS"), os.getenv("EMAIL_APP_PASSWORD")
+    if not (to and user and pwd):
+        return False
+    en = client.get("notify_lang") == "en"
+    stars = "★" * int(rating or 0)
+    lines = [f"{'New review' if en else 'Nueva reseña'} · {client['name']} ({PLATFORM_LABEL.get(platform, 'Google')})", "",
+             f"{stars}  {author}", text]
+    if review_translated:
+        lines.append(f"🌐 {review_translated}")
+    lines += ["", "💬 " + ("Suggested reply:" if en else "Respuesta sugerida:"), response_text]
+    if reply_translated:
+        lines.append(f"🌐 {reply_translated}")
+    lines += ["", ("👉 Copy the reply and paste it here to post it:" if en else "👉 Copia la respuesta y pégala aquí para publicarla:"),
+              review_link or MAPS_URL, "", "— Hosperai"]
+    msg = MIMEText("\n".join(lines), "plain", "utf-8")
+    msg["Subject"] = f"{'⭐ New review' if en else '⭐ Nueva reseña'} {stars} · {client['name']}"
+    msg["From"], msg["To"] = f"Hosperai <{user}>", to
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as srv:
+            srv.starttls(); srv.login(user, pwd); srv.send_message(msg)
+        print(f"  📧 Aviso enviado por email a {to}")
+        return True
+    except Exception as e:
+        print(f"  ⚠️  Email de aviso falló: {e}")
+        return False
+
+
 def send_onboarding_summary(client, platform, total, backlog, negative_backlog):
     twilio = Client(TWILIO_SID, TWILIO_TOKEN)
     platform_label = PLATFORM_LABEL.get(platform, "Google")
@@ -443,7 +475,9 @@ def run_platform(client, platform, reviews, seen, onboarded, test_mode=False, ma
 
         if not test_mode:
             if not send_whatsapp(client, author, rating, text, response_text, review_tr, reply_tr, review["link"], platform):
-                continue  # no se marca como vista: se vuelve a intentar en la próxima vuelta
+                # WhatsApp no entregado (p. ej. plantilla aún sin aprobar) → mismo aviso por email para no perderlo
+                if not send_email_alert(client, author, rating, text, response_text, review_tr, reply_tr, review["link"], platform):
+                    continue  # ni WhatsApp ni email: se reintenta en la próxima vuelta
         else:
             print(f"  [TEST] WhatsApp no enviado")
 

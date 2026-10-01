@@ -70,6 +70,7 @@ Admin del check-in (desde scripts): `GET /api/checkin?h=SLUG&key=CHECKIN_SECRET`
 
 - El primer mensaje a alguien SIEMPRE tiene que ser una plantilla aprobada por Meta. Texto libre solo llega si esa persona nos escribió en las últimas 24 h.
 - Los scripts no envían con plantillas sin aprobar y solo marcan "enviado" si WhatsApp confirma la entrega.
+- Avisos de reseña: si el WhatsApp no se entrega, se manda el mismo aviso por email a `manager_email` (Gmail SMTP de hosperai.app) para no perder ninguno.
 - Errores típicos: 63016 = plantilla sin aprobar / fuera de ventana 24 h · 63024 / 63003 = el número no tiene WhatsApp (→ se usa el email del huésped).
 - Mensaje de salida (actual): `hosperai_review_{g,gt}_{es,en}` y VIP `hosperai_review_vip_{g,gt}_{es,en}` — g = solo Google, gt = Google + Tripadvisor. Enlaces directos al formulario de reseña vía `app.hosperai.es/g/<slug>` y `/t/<slug>` (KV `r:<slug>`, clics por mes en `n:<slug>:<google|tripadvisor>:<YYYY-MM>`). Si la nueva no está aprobada se usa la antigua `hosperai_thanks_{es,en}`.
 - Demo de reuniones: cuando Meta apruebe `hosperai_review_gt_{es,en}`, poner sus SID como secrets `TPL_GT_ES` / `TPL_GT_EN` en Cloudflare Pages (y redeploy) → el WhatsApp de demo lleva Google Maps + Tripadvisor del hotel del cliente.
