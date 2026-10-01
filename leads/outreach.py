@@ -38,6 +38,8 @@ DAILY_CAP = [10, 20, 30, 40]          # total diario (hoteles + clínicas altern
 HOURS = (9, 16)                        # ventana de envío (hora local del Mac)
 GAP_MIN = (20, 40)                     # minutos entre envíos
 FOLLOWUP_DAYS = {2: 3, 3: 7}           # email 2 a los 3 días laborables del 1; email 3 a los 7
+# Nunca escribir a estos (relación laboral / decisión de Andreu)
+BLOCKLIST = re.compile(r"lennox|aqua hotel|aqua beach|jordan|uma house|uma suites|yurbban|crest hotel|crest suites|casa boutique|casa hotel|colectia|the spot|cando", re.I)
 STOP_WORDS = re.compile(r"\b(no|not interested|unsubscribe|remove|stop|not now|no thanks|no gracias)\b", re.I)
 
 
@@ -135,6 +137,13 @@ def check_inbox(states, meta):
         r = by_email.get(sender) or by_domain.get(sender.split("@")[-1])
         if not r or r["status"] in ("Respondió", "No interesado"):
             continue
+        auto = (m.get("Auto-Submitted", "no").lower() != "no" or m.get("X-Autoreply") or m.get("X-Autorespond")
+                or m.get("Precedence", "").lower() in ("auto_reply", "bulk", "junk")
+                or re.search(r"automatic reply|auto.?reply|out of (the )?office|autoresponder|away from|on vacation|thank you for (your email|contacting)|we have received your", subj + " " + body[:300], re.I))
+        if auto:
+            r["notes"] = (r["notes"] + " · " if r["notes"] else "") + "respuesta automática recibida"
+            print(f"🤖 Respuesta automática de {r['name']} (sigue en la secuencia)")
+            continue
         first_line = body.strip().split("\n")[0][:200]
         r["replied"] = date.today().isoformat()
         r["next_due"] = ""
@@ -170,7 +179,7 @@ def _next_in(state):
         if r["status"] in ("Email 1 enviado", "Email 2 enviado") and r["next_due"] and r["next_due"] <= today:
             return r, 2 if r["status"] == "Email 1 enviado" else 3
     for r in state:
-        if r["status"] == "Pendiente":
+        if r["status"] == "Pendiente" and not BLOCKLIST.search(r["name"] + " " + r["email"] + " " + r.get("website", "")):
             return r, 1
     return None, None
 

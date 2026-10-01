@@ -290,7 +290,9 @@ Firma como: {client['signature']}{translate_instructions}
 
 Autor: {author}
 Valoración: {int(rating) if rating else 5}/5
-Reseña: {text}"""
+Reseña: {text}
+
+IMPORTANTE: la respuesta va en el MISMO IDIOMA en que está escrita la reseña de arriba (reseña en inglés → respuesta en inglés; en alemán → en alemán), aunque estas instrucciones estén en español."""
 
     response = ai.messages.create(
         model="claude-haiku-4-5",
