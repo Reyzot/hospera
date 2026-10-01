@@ -125,9 +125,9 @@ def find_place(d):
 
 PLAN_SERVICES = {
     "Basic": ["Answer reviews", "Get more reviews"],
-    "Pro": ["Answer reviews", "Get more reviews", "Mid-stay check-in", "VIP", "Progress reports", "Own WhatsApp number"],
+    "Pro": ["Answer reviews", "Get more reviews", "Mid-stay check-in", "VIP", "Progress reports", "Own WhatsApp number", "NFC cards"],
     "Business": ["Answer reviews", "Get more reviews", "Mid-stay check-in", "VIP", "Progress reports", "Own WhatsApp number",
-                 "NFC cards", "PMS/POS integration", "Multiple locations"],
+                 "NFC cards", "PMS/POS integration"],
 }
 
 SCENARIOS = {
