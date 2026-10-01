@@ -328,6 +328,12 @@
   .ptable.three .col { width:17%; }
   @media(max-width:600px) { .ptable.three .col { width:58px; } .ptable.three .pprice { font-size:16px; } .ptable.three .pname { font-size:11.5px; letter-spacing:-.2px; } .ptable.three .col { padding-left:3px; padding-right:3px; } .ptable.three td:first-child { font-size:12.5px; } }
 
+
+  .ptable tr.sec td { padding:18px 18px 6px; font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--blue); border-top:1px solid var(--gray-200); }
+  .ptable tr.sec td.pro { background:rgba(37,99,235,.06); }
+  .ptable .pbest { display:block; font-size:11.5px; font-weight:500; color:var(--gray-500); margin-top:6px; line-height:1.35; text-transform:none; letter-spacing:0; }
+  @media(max-width:600px) { .ptable tr.sec td { padding:14px 10px 4px; font-size:10px; } .ptable .pbest { display:none; } }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -861,13 +867,13 @@ Si tienes un minuto, contarnos qué tal fue nos ayudaría muchísimo:
     </div>
     <div class="ptable-wrap fade-in"><table class="ptable three">
       <thead><tr><th></th>
-        <th class="col"><span class="pname">Basic</span><span class="pprice">$99<small>/mes</small></span></th>
-        <th class="col pro"><span class="pbadge"><span class="cta-l">Recomendado</span><span class="cta-s">★ Top</span></span><span class="pname">Pro</span><span class="pprice">$149<small>/mes</small></span></th>
-        <th class="col"><span class="pname">Business</span><span class="pprice">$199<small>/mes</small></span></th></tr></thead>
-      <tbody><tr><td>Agradecimiento + enlaces directos de reseña</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Recordatorio por email 2 días después si no hay reseña</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Respuestas IA a todas las reseñas, por WhatsApp</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>WhatsApp, SMS y email</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Enlace para que recepción añada clientes</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Lista de mensajes programados y enviados</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Respuestas a reseñas en cualquier idioma</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Respuesta automática si el cliente contesta</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Listo en 48 h · sin alta · sin permanencia</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Seguimiento en estancias largas</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Mensajes VIP / miembros</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Tu propio número de WhatsApp y logo</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Informe mensual: tendencias, quejas y ranking en Maps</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Tarjetas NFC de reseñas para tu equipo</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Integración con PMS / TPV (clientes añadidos solos)</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Gestor de cuenta dedicado</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr></tbody>
+        <th class="col"><span class="pname">Basic</span><span class="pprice">$99<small>/mes</small></span><span class="pbest">Para empezar</span></th>
+        <th class="col pro"><span class="pbadge"><span class="cta-l">El más elegido</span><span class="cta-s">★ Top</span></span><span class="pname">Pro</span><span class="pprice">$149<small>/mes</small></span><span class="pbest">Hoteles y clínicas que quieren crecer</span></th>
+        <th class="col"><span class="pname">Business</span><span class="pprice">$199<small>/mes</small></span><span class="pbest">Todo automático, para negocios con mucho movimiento</span></th></tr></thead>
+      <tbody><tr class="sec"><td colspan="4">Consigue más reseñas</td></tr><tr><td>Agradecimiento después de cada visita o estancia, con enlaces directos a Google y Tripadvisor</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Recordatorio por email a los 2 días si no han dejado reseña</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Enviado por WhatsApp, SMS o email</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Tarjetas NFC con QR para recepción</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Seguimiento en estancias largas: arregla problemas antes de que sean malas reseñas</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Mensajes VIP / miembros</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Clientes añadidos solos desde tu PMS / TPV</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr><tr class="sec"><td colspan="4">Responde a todas las reseñas</td></tr><tr><td>Cada reseña nueva en tu WhatsApp, con la respuesta ya escrita</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>En tu tono y en el idioma de quien escribe</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Aviso urgente de reseñas negativas</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Mensajes desde tu propio número de WhatsApp y logo</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr class="sec"><td colspan="4">Sabe qué piensan tus clientes</td></tr><tr><td>Enlace para recepción + lista de mensajes programados y enviados</td><td class="col"><span class=yes>✓</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Informe mensual: lo que más gusta, de qué se quejan y ranking en Maps</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=yes>✓</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Seguimiento de la competencia: tus 5 rivales más cercanos, cada mes</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr><tr class="sec"><td colspan="4">Puesta en marcha y soporte</td></tr><tr><td>Puesta a punto de tu ficha de Google</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr><tr><td>Gestor de cuenta dedicado</td><td class="col"><span class=no>—</span></td><td class="col pro"><span class=no>—</span></td><td class="col"><span class=yes>✓</span></td></tr></tbody>
       <tfoot><tr><td></td><td class="col"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary"><span class="cta-l">Reservar llamada →</span><span class="cta-s">Reservar</span></a></td><td class="col pro"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary"><span class="cta-l">Reservar llamada →</span><span class="cta-s">Reservar</span></a></td><td class="col"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary"><span class="cta-l">Reservar llamada →</span><span class="cta-s">Reservar</span></a></td></tr></tfoot>
     </table></div>
-    <p class="plans-note">Cambia o cancela cuando quieras.</p>
+    <p class="plans-note">Sin permanencia · sin coste de alta · funcionando en 48 horas</p>
   </div>
 </section>
 
@@ -1038,16 +1044,6 @@ Si tienes un minuto, contarnos qué tal fue nos ayudaría muchísimo:
       <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
         <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
         <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Hotel</span></div>
-        <div class="pack-name">Competitive Intel</div>
-        <p class="pack-desc">Sabe lo que cobra la competencia antes que tú.</p>
-      </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
         <div class="pack-tags"><span class="pack-tag">Hotel</span><span class="pack-tag">Restaurante</span></div>
@@ -1074,19 +1070,6 @@ Si tienes un minuto, contarnos qué tal fue nos ayudaría muchísimo:
         <div class="pack-name">App de formación del personal</div>
         <p class="pack-desc">La formación que tu equipo sí abre.</p>
       </a>
-
-      <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="pack-card">
-        <div class="pack-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></div>
-        <div class="pack-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div class="pack-tags"><span class="pack-tag">Restaurante</span></div>
-        <div class="pack-name">Recetario y escandallos</div>
-        <p class="pack-desc">Cada plato, calculado al céntimo.</p>
-      </a>
-
-    </div>
-  </div>
 </section>
 
 <!-- FOOTER -->

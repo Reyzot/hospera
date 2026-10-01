@@ -91,7 +91,7 @@
   .plan .price { font-size:20px; font-weight:800; color:var(--blue); }
   .plan .price small { font-size:12px; color:var(--gray-500); font-weight:600; }
   .plan ul { margin:0; padding-left:18px; font-size:13px; line-height:1.55; color:var(--gray-700); }
-  .plan.pro .plan-top b::after { content:"Recommended"; margin-left:8px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; background:var(--blue); color:#fff; padding:3px 7px; border-radius:20px; vertical-align:middle; }
+  .plan.pro .plan-top b::after { content:"Most popular"; margin-left:8px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; background:var(--blue); color:#fff; padding:3px 7px; border-radius:20px; vertical-align:middle; }
   .pills { display:flex; flex-wrap:wrap; gap:8px; }
   .pill { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--gray-200); border-radius:10px; cursor:pointer; font-size:14px; }
   .pill:has(input:checked) { border-color:var(--blue); background:var(--blue-50); }
@@ -259,20 +259,19 @@
       <div class="plans three">
         <label class="plan"><input type="radio" name="plan" value="Basic" checked>
           <div class="plan-top"><b>Basic</b><span class="price">$99<small>/month</small></span></div>
-          <ul><li>Thank-you message after every visit or stay, with direct Google &amp; Tripadvisor review links</li><li>Reminder email 2 days later if no review</li><li>AI replies to every Google review, sent to your WhatsApp</li><li>Simple link for your front desk to add customers + message list</li></ul></label>
+          <ul><li>Thank-you message + direct review links after every visit or stay</li><li>Reminder email 2 days later</li><li>Every review on your WhatsApp with the reply written</li><li>Front-desk link + message list</li></ul></label>
         <label class="plan pro"><input type="radio" name="plan" value="Pro">
           <div class="plan-top"><b>Pro</b><span class="price">$149<small>/month</small></span></div>
-          <ul><li><b>Everything in Basic</b></li><li>Follow-up during longer stays: catch problems before they become bad reviews</li><li>VIP / member messages</li><li>Messages sent from your own WhatsApp number, name &amp; logo</li><li>NFC review cards for your team</li><li>Monthly report with your Google Maps ranking</li></ul></label>
+          <ul><li><b>Everything in Basic</b></li><li>NFC review cards with QR</li><li>Follow-up during longer stays</li><li>VIP / member messages</li><li>Your own WhatsApp number &amp; logo</li><li>Monthly report with trends</li></ul></label>
         <label class="plan"><input type="radio" name="plan" value="Business">
           <div class="plan-top"><b>Business</b><span class="price">$199<small>/month</small></span></div>
-          <ul><li><b>Everything in Pro</b></li><li>PMS / POS integration</li><li>Dedicated account manager</li></ul></label>
+          <ul><li><b>Everything in Pro</b></li><li>Guests added automatically from your PMS / POS</li><li>Competitor tracking</li><li>Google profile tune-up</li><li>Dedicated account manager</li></ul></label>
       </div>
       <div style="font-size:12px;color:var(--gray-500);margin-top:8px">No lock-in. Change or cancel your plan anytime.</div>
       <label style="display:block;font-size:13.5px;font-weight:700;margin:22px 0 8px">Extras (optional)</label>
       <div class="check-grid">
         <label class="check-item"><input type="checkbox" name="services" value="Google Profile tune-up"> Google Profile tune-up</label>
         <label class="check-item"><input type="checkbox" name="services" value="Custom website"> Custom website</label>
-        <label class="check-item"><input type="checkbox" name="services" value="Competitive Intel"> Competitor tracking</label>
       </div>
     </fieldset>
 
