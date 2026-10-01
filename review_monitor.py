@@ -87,6 +87,7 @@ def send_wa(to, body, template=None, variables=None):
 CLIENTS = [
     {
         "name":      "Arreu Begur",
+        "check_every_days": 2,
         "data_id":   "0x12ba5310555fc1dd:0x8ce823369100106f",
         "tripadvisor_id": None,
         "type":      "restaurante",
@@ -99,6 +100,7 @@ CLIENTS = [
     },
     {
         "name":      "Racó'ns Chiringuito",
+        "check_every_days": 2,
         "data_id":   "0x12ba515784b6cf7d:0x1327c62177a28f30",
         "tripadvisor_id": None,
         "type":      "chiringuito",
@@ -512,9 +514,23 @@ def run_client(client, test_mode=False, max_new=None):
         print(f"  Sin reseñas nuevas.")
     return total_found
 
+_LAST_CHECK = Path.home() / 'hospera' / 'monitor_last_check.json'
+
+
 def run(test_mode=False):
+    """Cada cliente se revisa cada `check_every_days` días (por defecto 1). Ahorra búsquedas de SerpAPI."""
     print(f"[{datetime.now().strftime('%H:%M')}] Revisando {len(CLIENTS)} negocios...")
+    last = json.loads(_LAST_CHECK.read_text()) if _LAST_CHECK.exists() else {}
+    today = datetime.now().date()
     for client in CLIENTS:
+        every = client.get("check_every_days", 1)
+        prev = last.get(client['name'])
+        if not test_mode and prev and (today - datetime.fromisoformat(prev).date()).days < every:
+            print(f"  ⏭️  {client['name']}: se revisa cada {every} días (último {prev})")
+            continue
+        if not test_mode:
+            last[client['name']] = today.isoformat()
+            _LAST_CHECK.write_text(json.dumps(last, indent=1))
         try:
             run_client(client, test_mode, max_new=3)
         except Exception as e:
