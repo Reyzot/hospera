@@ -15,7 +15,7 @@
   (function(){
     try {
       var saved = localStorage.getItem('hospera-theme');
-      var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+      var theme = saved || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
     } catch(e) {}
   })();
