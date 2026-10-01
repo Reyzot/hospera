@@ -105,9 +105,9 @@ def build(name, h, pool):
     cmp = "".join(f'<tr class="{"me" if p is h else ""}"><td>{E(nm(p["name"]))}</td><td>{float(p["rating"]):.1f}★</td>'
                   f'<td><span class="bar b" style="width:{int(float(p["reviews"])) / mx * 90:.0f}px"></span>{int(float(p["reviews"])):,}</td></tr>'
                   for p in sorted(rows, key=lambda p: -int(float(p["reviews"]))))
-    dist = "".join(f'<tr><td>{"★" * s}</td><td><span class="bar {"g" if s >= 4 else "r" if s <= 2 else "b"}" style="width:{stars.get(s, 0) / max(n_rec, 1) * 220:.0f}px"></span>{round(stars.get(s, 0) / max(n_rec, 1) * 100)}%</td></tr>' for s in (5, 4, 3, 2, 1))
-    pr = "".join(f'<tr><td>{E(t)}</td><td><span class="bar g" style="width:{p * 1.6:.0f}px"></span>{p}%</td></tr>' for t, c, p in th["praise"]) or '<tr><td colspan=2 style="color:#9ca3af">Not enough data</td></tr>'
-    co = "".join(f'<tr><td>{E(t)}</td><td><span class="bar r" style="width:{p * 1.6:.0f}px"></span>{p}%</td></tr>' for t, c, p in th["complaints"]) or '<tr><td colspan=2 style="color:#9ca3af">No repeated complaints</td></tr>'
+    dist = "".join(f'<tr><td>{"★" * s}</td><td><span class="bar {"g" if s >= 4 else "r" if s <= 2 else "b"}" style="width:{stars.get(s, 0) / max(n_rec, 1) * 220:.0f}px"></span>{stars.get(s, 0)} {"review" if stars.get(s, 0) == 1 else "reviews"}</td></tr>' for s in (5, 4, 3, 2, 1))
+    pr = "".join(f'<tr><td><span style="color:#16a34a;font-weight:800">{i}.</span> {E(t)}</td></tr>' for i, (t, c, p) in enumerate(sorted(th["praise"], key=lambda x: -x[1]), 1)) or '<tr><td style="color:#9ca3af">Not enough data</td></tr>'
+    co = "".join(f'<tr><td><span style="color:#dc2626;font-weight:800">{i}.</span> {E(t)}</td></tr>' for i, (t, c, p) in enumerate(sorted(th["complaints"], key=lambda x: -x[1]), 1)) or '<tr><td style="color:#9ca3af">No repeated complaints</td></tr>'
     rank_txt = (f"#{pos} of {checked}" if pos else f"Not in the top {checked}")
     client = {"name": name, "type": "hotel", "location": "Miami Beach, FL", "signature": (short(name) if short(name).startswith("The ") else "The " + short(name)) + " Team", "notify_lang": "en"}
     top_html = "".join(f"<li>{E(t['title'])} · {t['rating']}★ · {t['reviews']:,} reviews</li>" for t in top) if top else ""
@@ -146,10 +146,10 @@ def build(name, h, pool):
 <div class="kpis"><div class="kpi"><b>{rat:.1f}★</b><small>Google rating</small></div><div class="kpi"><b>{rev:,}</b><small>total reviews</small></div>
 <div class="kpi {"red" if reply_rate < 80 else ""}"><b>{reply_rate}%</b><small>recent reviews answered</small></div>
 <div class="kpi {"red" if not pos or pos > 5 else ""}"><b>{("#" + str(pos)) if pos else "60+"}</b><small>Maps: "{E(kw)}"</small></div></div>
-<div class="cols"><div><h2>What guests love</h2><table>{pr}</table></div><div><h2>What they complain about</h2><table>{co}</table></div></div>
+<div class="cols"><div><h2>What guests love most</h2><table>{pr}</table></div><div><h2>What they complain about most</h2><table>{co}</table></div></div>
 <div class="cols"><div><h2>Recent ratings</h2><table>{dist}</table></div><div><h2>You vs. similar hotels nearby</h2><table><tr><th>Hotel</th><th>★</th><th>Reviews</th></tr>{cmp}</table></div></div>
 <h2>An unanswered review, and the reply we'd draft</h2>{exhtml or '<p>All your recent reviews have a reply. Well done!</p>'}
-<p class="note">Public Google Maps data, October 2026. % = share of recent reviews mentioning each theme.</p></div>"""
+<p class="note">Public Google Maps data, October 2026. Themes ordered by how often they appear in your recent reviews.</p></div>"""
 
     page3 = f"""
 <div class="pb"></div>
