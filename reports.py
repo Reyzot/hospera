@@ -162,15 +162,17 @@ def monthly_comparison(client, cache):
         reviews, covered, _place_info = fetch_reviews_covering_months(client['data_id'], n_months=2)
         by_month = defaultdict(list)
         negative_texts_by_month = defaultdict(list)
+        positive_texts_by_month = defaultdict(list)
         for r in reviews:
             iso = r.get('iso_date', '')
             rating = r.get('rating')
             if iso and rating:
                 by_month[iso[:7]].append(float(rating))
-                if float(rating) <= LOW_RATING_THRESHOLD:
-                    text = (r.get('snippet') or r.get('extracted_snippet', {}).get('original', '') or '').strip()
-                    if text:
-                        negative_texts_by_month[iso[:7]].append(text)
+                text = (r.get('snippet') or r.get('extracted_snippet', {}).get('original', '') or '').strip()
+                if text and float(rating) <= LOW_RATING_THRESHOLD:
+                    negative_texts_by_month[iso[:7]].append(text)
+                elif text and float(rating) >= 4:
+                    positive_texts_by_month[iso[:7]].append(text)
         entry = {
             month: {"count": len(ratings), "avg_rating": round(sum(ratings) / len(ratings), 2)}
             for month, ratings in by_month.items()
@@ -179,6 +181,9 @@ def monthly_comparison(client, cache):
         if current_month_key in entry:
             entry[current_month_key]['complaints_summary'] = summarize_complaints(
                 negative_texts_by_month.get(current_month_key, [])
+            )
+            entry[current_month_key]['praises_summary'] = summarize_praises(
+                positive_texts_by_month.get(current_month_key, [])
             )
         entry['_fetched_at'] = now.isoformat()
         entry['_covered']    = covered
@@ -218,6 +223,29 @@ Reseñas:
         messages=[{"role": "user", "content": prompt}]
     )
     raw = response.content[0].text.strip()
+    if raw.upper().startswith("NINGUNA"):
+        return []
+    return [line.strip("- ").strip() for line in raw.split("\n") if line.strip()]
+
+
+def summarize_praises(positive_texts, max_texts=60):
+    """Lo que más se repite en las reseñas buenas (≥4⭐) del mes: qué valoran los clientes."""
+    if len(positive_texts) < 3:
+        return []
+    ai = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
+    joined = "\n---\n".join(positive_texts[:max_texts])
+    prompt = f"""Estas son reseñas positivas (4-5⭐) de un negocio este mes. Identifica como mucho 4 cosas
+que los clientes ELOGIAN en varias reseñas distintas (no cuentes las que solo salen una vez).
+Para cada una, un resumen muy corto en español (máx 6 palabras) y cuántas veces aparece.
+Si nada se repite en al menos 2 reseñas, responde solo: NINGUNA
+
+Formato (una línea por elogio, sin explicaciones):
+<resumen corto> — <n> veces
+
+Reseñas:
+{joined}"""
+    raw = ai.messages.create(model="claude-haiku-4-5", max_tokens=200,
+                             messages=[{"role": "user", "content": prompt}]).content[0].text.strip()
     if raw.upper().startswith("NINGUNA"):
         return []
     return [line.strip("- ").strip() for line in raw.split("\n") if line.strip()]

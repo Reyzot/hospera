@@ -126,9 +126,19 @@ def render_monthly_html(client, current, previous, covered, date_str, rank_now=N
 <div class="note">Solo se listan quejas que aparecen en más de una reseña — no reseñas puntuales aisladas.</div>
 """
 
+    praises = current.get('praises_summary') or []
+    if praises:
+        items = "".join(f"<li>{c}</li>" for c in praises)
+        complaints_html = f"""
+<div class="section-title">Lo que más valoran tus clientes este mes</div>
+<ul class="praises-list">{items}</ul>
+""" + complaints_html
+
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>{BASE_CSS}
+  .praises-list {{ list-style:none; }}
+  .praises-list li {{ background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; font-size:13.5px; font-weight:600; padding:10px 14px; border-radius:8px; margin-bottom:8px; }}
   .complaints-list {{ list-style:none; }}
   .complaints-list li {{ background:#fef2f2; border:1px solid #fecaca; color:#991b1b; font-size:13.5px; font-weight:600; padding:10px 14px; border-radius:8px; margin-bottom:8px; }}
 </style></head><body>
