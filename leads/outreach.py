@@ -191,6 +191,27 @@ def check_inbox(states, meta):
                    f"Contéstale desde andreu@gethosperai.com (o dile a Claude que te prepare la respuesta).")
         except Exception as e:
             print("⚠️ No pude avisarte por email:", e)
+    # Emails 1 enviados a mano desde Zoho (carpeta Sent) → marcarlos como enviados para no repetirlos
+    try:
+        pending = {r["email"].lower(): r for r in state if r["status"] == "Pendiente"}
+        if pending:
+            im.select("Sent", readonly=True)
+            since = (date.today() - timedelta(days=7)).strftime("%d-%b-%Y")
+            _, data = im.search(None, f'(SINCE "{since}")')
+            for num in (data[0].split() if data and data[0] else []):
+                _, md = im.fetch(num, "(BODY.PEEK[HEADER.FIELDS (TO DATE MESSAGE-ID)])")
+                h = email.message_from_bytes(md[0][1])
+                to = parseaddr(h.get("To", ""))[1].lower()
+                r = pending.get(to)
+                if r:
+                    d = email.utils.parsedate_to_datetime(h.get("Date")).date() if h.get("Date") else date.today()
+                    r["status"], r["sent_1"], r["message_id"] = "Email 1 enviado", d.isoformat(), h.get("Message-ID", "")
+                    r["next_due"] = add_business_days(d, FOLLOWUP_DAYS[2]).isoformat()
+                    r["notes"] = (r["notes"] + " · " if r["notes"] else "") + "enviado a mano"
+                    print(f"✋ Enviado a mano detectado: {r['name']}")
+                    pending.pop(to)
+    except Exception as e:
+        print("⚠️ No pude revisar la carpeta Sent:", e)
     im.logout()
     return True
 
