@@ -292,6 +292,38 @@
   @keyframes pdIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
   @media(max-width:420px) { .pd-screen { height:560px; } }
 
+
+  /* ── HERO v2 ── */
+  .hero2 { display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center; max-width:1120px; margin:0 auto; text-align:left; }
+  .hero2 h1 { font-size:clamp(30px,4vw,48px) !important; letter-spacing:-1.4px !important; margin-bottom:18px !important; max-width:none !important; }
+  .hero2 .hero-sub { font-size:17px; color:var(--gray-500); line-height:1.7; margin-bottom:28px; max-width:520px; }
+  .hero2 .hero-btns { justify-content:flex-start; }
+  .hero2 .stars { color:#f59e0b; letter-spacing:3px; font-size:18px; margin-bottom:10px; }
+  .hero2 .hero-tag { margin-left:0; }
+  .hv { position:relative; height:540px; }
+  .hv .pd-phone { position:absolute; right:40px; top:0; width:290px; }
+  .hv .pd-screen { height:510px; }
+  .hv .pd-b { animation-duration:.5s; text-align:left; }
+  .hv .pd-head, .hv .pd-head b { text-align:left; }
+  .hv-card { position:absolute; left:0; bottom:-20px; width:270px; background:var(--white); border:1px solid var(--gray-200); border-radius:16px; padding:14px 16px; box-shadow:0 24px 60px rgba(15,23,42,.22); z-index:2; animation:hvFloat 5s ease-in-out infinite; }
+  .hv-card .g { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--gray-500); margin-bottom:6px; }
+  .hv-card .g b { color:var(--gray-900); font-size:13.5px; }
+  .hv-card .st { color:#f59e0b; letter-spacing:2px; font-size:14px; }
+  .hero .hv-card p { font-size:13px; line-height:1.5; color:var(--gray-700); margin:6px 0 10px; max-width:none; text-align:left; }
+  .hv-card { text-align:left; }
+  .hv-card .rep { background:var(--blue-50); border-radius:10px; padding:8px 10px; font-size:12px; color:var(--gray-700); }
+  .hv-card .rep b { display:block; color:var(--blue); font-size:11px; margin-bottom:2px; }
+  @keyframes hvFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+  @media(max-width:900px) {
+    .hero2 { grid-template-columns:1fr; text-align:center; gap:24px; }
+    .hero2 .hero-btns { justify-content:center; } .hero2 .hero-sub { margin-left:auto; margin-right:auto; }
+    .hv { height:500px; max-width:380px; margin:0 auto; width:100%; }
+    .hv .pd-phone { right:0; width:260px; } .hv .pd-screen { height:470px; }
+    .hv-card { width:210px; bottom:-10px; padding:11px 13px; }
+    .hero .hv-card p { font-size:12px; }
+    .hv .pd-phone { right:-6px; }
+  }
+
   /* ── HERO ── */
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
@@ -703,15 +735,35 @@
   <canvas class="network-canvas" id="networkCanvas"></canvas>
   <div class="hero-glow hero-glow-1"></div>
   <div class="hero-glow hero-glow-2"></div>
-  <div class="hero-tag"><span class="hero-dot"></span>Gestión con IA</div>
-  <h1>Tu reputación online.<br><span class="blue">Resuelta del todo.</span></h1>
-  <div class="platform-badges fade-in">
-    <span class="platform-badge"><svg viewBox="0 0 24 24" fill="#4285F4" xmlns="http://www.w3.org/2000/svg"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>Google</span>
-    <span class="platform-badge"><svg viewBox="0 0 24 24" fill="#34E0A1" xmlns="http://www.w3.org/2000/svg"><path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 0 0 4.04 10.43 5.976 5.976 0 0 0 4.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 0 0 4.072 1.598 6 6 0 0 0 6-5.998 5.982 5.982 0 0 0-1.957-4.432L24 6.648h-4.35a13.573 13.573 0 0 0-7.644-2.353zM12 6.255c1.531 0 3.063.303 4.504.903C13.943 8.138 12 10.43 12 13.1c0-2.671-1.942-4.962-4.504-5.942A11.72 11.72 0 0 1 12 6.256zM6.002 9.157a4.059 4.059 0 1 1 0 8.118 4.059 4.059 0 0 1 0-8.118zm11.992.002a4.057 4.057 0 1 1 .003 8.115 4.057 4.057 0 0 1-.003-8.115zm-11.992 1.93a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256zm11.992 0a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256z"/></svg>TripAdvisor</span>
-  </div>
-  <div class="hero-btns">
-    <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary">Agendar una llamada →</a>
-    <a href="#planes" class="btn-secondary">Ver planes</a>
+  <div class="hero2">
+    <div>
+      <div class="hero-tag"><span class="hero-dot"></span>Reseñas en Google en piloto automático</div>
+      <h1>Más reseñas de 5★.<br><span class="blue">Cada respuesta, ya escrita.</span></h1>
+      <p class="hero-sub">Después de cada visita o estancia, tus clientes reciben un agradecimiento por WhatsApp con enlaces directos para dejar reseña. Cada reseña nueva te llega con la respuesta lista.</p>
+      <div class="hero-btns">
+        <a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary">Agendar llamada →</a>
+        <a href="#planes" class="btn-secondary">Ver planes</a>
+      </div>
+    </div>
+    <div class="hv">
+      <div class="pd-phone"><div class="pd-screen"><div class="pd-island"></div>
+        <div class="pd-status"><span>9:41</span><span style="display:flex;align-items:center;gap:5px"><svg width="15" height="10" viewBox="0 0 17 11" fill="#111"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><span style="font-size:11px">5G</span><svg width="22" height="11" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#111" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.8" fill="#111"/></svg></span></div>
+        <div class="pd-head"><img src="assets/logo-icon-clean.png" alt=""><div><b>Hosperai</b><span>business account</span></div></div>
+        <div class="pd-chat" style="overflow:hidden"><div class="pd-day">HOY</div><div class="pd-b" style="font-size:12.5px">¡Hola María! 👋 Muchas gracias por elegir <b>Hotel Aurora</b>. Esperamos que hayas disfrutado mucho.
+
+Si tienes un minuto, contarnos qué tal fue nos ayudaría muchísimo:
+
+⭐ Google: <a>app.hosperai.es/g/aurora</a>
+
+🦉 Tripadvisor: <a>app.hosperai.es/t/aurora</a><span class="t">11:02</span></div></div>
+      </div></div>
+      <div class="hv-card">
+        <div class="g"><svg width="16" height="16" viewBox="0 0 24 24" fill="#4285F4"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg><b>María T.</b> · ahora mismo</div>
+        <div class="st">★★★★★</div>
+        <p>¡Estancia preciosa! El equipo encantador y la habitación impecable. ¡Volveremos!</p>
+        <div class="rep"><b>✍️ Respuesta sugerida</b>¡Gracias, María! Ha sido un placer tenerte, ¡hasta pronto!</div>
+      </div>
+    </div>
   </div>
   <div class="hero-stats fade-in">
     <div class="stat-card">
