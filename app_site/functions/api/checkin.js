@@ -93,7 +93,7 @@ export async function onRequest({ request, env }) {
   } else if (action === "delete") {
     list.splice(list.indexOf(rec), 1);
   } else if (action === "mark" && admin) {
-    if (!["departure_sent", "midstay_sent"].includes(b.field)) return text("bad field", 400);
+    if (!["departure_sent", "midstay_sent", "reminder_sent"].includes(b.field)) return text("bad field", 400);
     rec[b.field] = new Date().toISOString();
     rec[`${b.field}_via`] = clean(b.via, 20);
   } else if (action === "reset" && admin) {

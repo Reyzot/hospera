@@ -197,6 +197,8 @@
     lines.push(g.departure_sent
       ? `<span class="done">✓ Thank-you + review link sent</span> · ${prettyTs(g.departure_sent)}${g.departure_sent_via ? ' · ' + esc(g.departure_sent_via) : ''}`
       : `<span class="pend">⏳ Thank-you + review link</span> · ${pretty(g.checkout)} after ${SEND_HOUR}:00`);
+    if (g.clicked_google || g.clicked_tripadvisor) lines.push('<span class="done">⭐ Opened the review link</span>');
+    else if (g.reminder_sent) lines.push(`<span class="done">✓ Reminder email sent</span> · ${prettyTs(g.reminder_sent)}`);
     return lines.join('<br>');
   }
 

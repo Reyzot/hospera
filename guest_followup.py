@@ -64,7 +64,8 @@ CHECKIN_CLIENTS = [
     for c in (json.loads(_CLIENTS_FILE.read_text()) if _CLIENTS_FILE.exists() else [])
     if c.get("status") == "active" and "Get more reviews" in (c.get("services") or [])
 ]
-SEND_AFTER_HOUR = 11  # el mensaje de salida no se manda antes de las 11:00 (hora del Mac)
+SEND_AFTER_HOUR = 11
+REMINDER_AFTER_DAYS = 2   # recordatorio por email si no ha pulsado el enlace  # el mensaje de salida no se manda antes de las 11:00 (hora del Mac)
 
 REVIEW_LINK_BASE = "https://hosperai.es/r"
 
@@ -126,6 +127,8 @@ def fetch_checkins(slug):
             "vip": bool(g.get("vip")),
             "departure_sent": g.get("departure_sent"),
             "midstay_sent": g.get("midstay_sent"),
+            "reminder_sent": g.get("reminder_sent"),
+            "clicked": bool(g.get("clicked_google") or g.get("clicked_tripadvisor")),
         })
     return guests
 
@@ -231,6 +234,21 @@ def send_whatsapp(to_phone, kind, lang, variables, test_mode=False, template=Non
 SMS_ENABLED = os.getenv('SMS_ENABLED') == '1'  # activar cuando Twilio apruebe el registro A2P (SMS en EE. UU.)
 
 
+def reminder_email(name, business, links, lang):
+    g = links.get("google", ""); t = links.get("tripadvisor")
+    if lang == "es":
+        subj = f"¿Nos regalas un minuto, {name}?"
+        body = (f"Hola {name},\n\nGracias otra vez por elegir {business}. Si aún no has tenido un momento, "
+                f"tu opinión nos ayuda muchísimo y solo lleva un minuto:\n\n⭐ Google: {g}\n" + (f"🦉 Tripadvisor: {t}\n" if t else "") +
+                f"\n¡Muchas gracias y esperamos verte pronto!\n{business}")
+    else:
+        subj = f"A quick favour, {name}?"
+        body = (f"Hi {name},\n\nThanks again for choosing {business}. If you haven't had a moment yet, "
+                f"your review really helps us and only takes a minute:\n\n⭐ Google: {g}\n" + (f"🦉 Tripadvisor: {t}\n" if t else "") +
+                f"\nThank you, and we hope to see you again soon!\n{business}")
+    return subj, body
+
+
 def send_email(to_addr, subject, body, test_mode=False):
     if test_mode or not (EMAIL_ADDRESS and EMAIL_APP_PASSWORD):
         reason = "[TEST]" if test_mode else "[SIN CREDENCIALES DE EMAIL CONFIGURADAS]"
@@ -308,13 +326,27 @@ def run_client(client, test_mode=False):
         due = guest['checkout'] < today or (guest['checkout'] == today and datetime.now().hour >= SEND_AFTER_HOUR)
         if due and (today - guest['checkout']).days <= 2 and not (record.get('departure_sent') or guest.get('departure_sent')):
             body = MESSAGES['departure'][ml].format(name=guest['name'], business=client['name'], link=review_link)
-            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''), client.get('review_links'))
+            glinks = {k: f"{v}?u={guest['id']}" for k, v in (client.get('review_links') or {}).items()} if guest.get('id') else client.get('review_links')
+            via = notify_guest(guest, 'departure', body, lang, client['name'], test_mode, review_link, client.get('vip_message', ''), glinks)
             if via and not test_mode:
                 if via == "WhatsApp":
                     remember_guest_phone(guest['phone'], client['name'], client.get('guest_contact', ''), lang)
                 record['departure_sent'] = True
                 if guest.get('id'):
                     mark_sent(client['slug'], guest['id'], 'departure_sent', via)
+            sent += 1
+
+        # Recordatorio por email 2 días después de la salida, solo si no ha abierto el enlace de reseña
+        if (guest.get('departure_sent') and guest['email'] and not guest.get('clicked') and not guest.get('reminder_sent')
+                and not record.get('reminder_sent') and guest.get('id') and client.get('review_links')
+                and (today - guest['checkout']).days >= REMINDER_AFTER_DAYS and (today - guest['checkout']).days <= REMINDER_AFTER_DAYS + 3
+                and datetime.now().hour >= SEND_AFTER_HOUR):
+            links = {k: f"{v}?u={guest['id']}" for k, v in client['review_links'].items()}
+            subj, body_r = reminder_email(guest['name'], client['name'], links, ml)
+            send_email(guest['email'], subj, body_r, test_mode)
+            if not test_mode:
+                record['reminder_sent'] = True
+                mark_sent(client['slug'], guest['id'], 'reminder_sent', 'Email')
             sent += 1
 
         nights = (guest['checkout'] - guest['checkin']).days if guest['checkin'] else 0
