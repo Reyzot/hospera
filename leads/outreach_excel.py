@@ -20,7 +20,7 @@ COLORS = {  # estado → (relleno, texto)
     "No interesado":    ("FEE2E2", "B91C1C"),
     "Rebotó":           ("FEE2E2", "B91C1C"),
 }
-COLS = [("#", 5), ("Estado", 16), ("Negocio", 34), ("Ciudad", 16), ("Email", 32), ("Tipo / nota", 14), ("Reseñas", 8),
+COLS = [("#", 5), ("Estado", 16), ("Negocio", 34), ("Ciudad", 16), ("Email", 32), ("Contacto", 16), ("Tipo / nota", 14), ("Reseñas", 8),
         ("Email 1", 11), ("Email 2", 11), ("Email 3", 11), ("Próximo envío", 13), ("Respondió", 11),
         ("Notas", 30), ("Teléfono", 16), ("Web", 30)]
 
@@ -56,7 +56,7 @@ def build():
             h = ws.cell(1, i); h.font = Font(bold=True, color="FFFFFF"); h.fill = PatternFill("solid", fgColor="2563EB")
         for r in rows:
             nota = r["rating"] or r.get("segment", "")
-            ws.append([r["n"], r["status"], r["name"], r["city"], r["email"], nota, int(r["reviews"] or 0) if str(r["reviews"]).isdigit() else "",
+            ws.append([r["n"], r["status"], r["name"], r["city"], r["email"], r.get("email_role", ""), nota, int(r["reviews"] or 0) if str(r["reviews"]).isdigit() else "",
                        r["sent_1"], r["sent_2"], r["sent_3"], r["next_due"], r["replied"], r["notes"], r["phone"], r["website"]])
             fill, fg = COLORS.get(r["status"], COLORS["Pendiente"])
             for c in ws[ws.max_row][:3]:

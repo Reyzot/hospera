@@ -130,7 +130,14 @@ def check_inbox(states, meta):
             for addr in re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", body):
                 r = by_email.get(addr.lower())
                 if r and r["status"] not in ("Respondió", "No interesado"):
-                    r["status"], r["notes"], r["next_due"] = "Rebotó", "Email no existe", ""
+                    if r.get("email_generic") and r["email_generic"] != r["email"]:
+                        # el email directo no existe → volver a empezar con el genérico
+                        r["notes"] = f"Rebotó {r['email']}, reintento con el genérico"
+                        r["email"], r["email_role"] = r["email_generic"], "Genérico"
+                        r["status"], r["next_due"], r["sent_1"], r["message_id"] = "Pendiente", "", "", ""
+                        by_email[r["email"].lower()] = r
+                    else:
+                        r["status"], r["notes"], r["next_due"] = "Rebotó", "Email no existe", ""
                     print("↩️  Rebote:", r["name"])
                     break
             continue
