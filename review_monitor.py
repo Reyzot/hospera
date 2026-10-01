@@ -88,6 +88,7 @@ CLIENTS = [
     {
         "name":      "Arreu Begur",
         "check_every_days": 2,
+        "active":    False,  # pausado por Andreu (1 oct 2026)
         "data_id":   "0x12ba5310555fc1dd:0x8ce823369100106f",
         "tripadvisor_id": None,
         "type":      "restaurante",
@@ -101,6 +102,7 @@ CLIENTS = [
     {
         "name":      "Racó'ns Chiringuito",
         "check_every_days": 2,
+        "active":    False,  # pausado por Andreu (1 oct 2026)
         "data_id":   "0x12ba515784b6cf7d:0x1327c62177a28f30",
         "tripadvisor_id": None,
         "type":      "chiringuito",
@@ -525,6 +527,8 @@ def run(test_mode=False):
     last = json.loads(_LAST_CHECK.read_text()) if _LAST_CHECK.exists() else {}
     today = datetime.now().date()
     for client in CLIENTS:
+        if client.get("active") is False:
+            continue
         every = client.get("check_every_days", 1)
         prev = last.get(client['name'])
         if not test_mode and prev and (today - datetime.fromisoformat(prev).date()).days < every:
