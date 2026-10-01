@@ -80,6 +80,8 @@
   }
   .hero-block > * { position:relative; z-index:1; }
   .plans { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .plans.three { grid-template-columns:repeat(3,1fr); }
+  @media(max-width:760px) { .plans.three { grid-template-columns:1fr; } }
   @media(max-width:600px) { .plans { grid-template-columns:1fr; } }
   .plan { position:relative; display:block; border:1px solid var(--gray-200); border-radius:14px; padding:16px 16px 12px; cursor:pointer; }
   .plan:has(input:checked) { border-color:var(--blue); background:var(--blue-50); box-shadow:0 0 0 1px var(--blue); }
@@ -254,13 +256,16 @@
 
     <fieldset>
       <legend>Your plan</legend>
-      <div class="plans">
+      <div class="plans three">
         <label class="plan"><input type="radio" name="plan" value="Basic" checked>
           <div class="plan-top"><b>Basic</b><span class="price">$99<small>/month</small></span></div>
-          <ul><li>Thank-you message after every visit or stay, with direct Google &amp; Tripadvisor review links</li><li>AI replies to every Google review, sent to your WhatsApp</li><li>Simple link for your front desk to add customers + message list</li></ul></label>
+          <ul><li>Thank-you message after every visit or stay, with direct Google &amp; Tripadvisor review links</li><li>Reminder email 2 days later if no review</li><li>AI replies to every Google review, sent to your WhatsApp</li><li>Simple link for your front desk to add customers + message list</li></ul></label>
         <label class="plan pro"><input type="radio" name="plan" value="Pro">
           <div class="plan-top"><b>Pro</b><span class="price">$149<small>/month</small></span></div>
           <ul><li><b>Everything in Basic</b></li><li>Follow-up during longer stays: catch problems before they become bad reviews</li><li>VIP / member messages</li><li>Messages sent from your own WhatsApp number, name &amp; logo</li><li>Monthly report with your Google Maps ranking</li></ul></label>
+        <label class="plan"><input type="radio" name="plan" value="Business">
+          <div class="plan-top"><b>Business</b><span class="price">$249<small>/month</small></span></div>
+          <ul><li><b>Everything in Pro</b></li><li>NFC review cards for your team</li><li>PMS / POS integration</li><li>Multiple locations</li><li>Dedicated account manager</li></ul></label>
       </div>
       <div style="font-size:12px;color:var(--gray-500);margin-top:8px">No lock-in. Change or cancel your plan anytime.</div>
       <label style="display:block;font-size:13.5px;font-weight:700;margin:22px 0 8px">Extras (optional)</label>
