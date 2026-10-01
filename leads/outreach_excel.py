@@ -64,6 +64,27 @@ def build():
             ws.cell(ws.max_row, 2).font = Font(color=fg, bold=True)
         ws.freeze_panes = "C2"; ws.auto_filter.ref = ws.dimensions
 
+    # Próximos envíos: el orden real (seguimientos que tocan + nuevos alternando hoteles/clínicas)
+    ws = wb.create_sheet("Próximos envíos", 1)
+    ws.append(["Orden", "Campaña", "Qué se envía", "Negocio", "Ciudad", "Email", "Cuándo"])
+    for c in ws[1]: c.font = Font(bold=True, color="FFFFFF"); c.fill = PatternFill("solid", fgColor="2563EB")
+    queue = []
+    for name, rows in camps.items():
+        for r in rows:
+            if r["status"] in ("Email 1 enviado", "Email 2 enviado") and r["next_due"]:
+                queue.append((r["next_due"], 0, name, "Email 2 (vídeo)" if r["status"] == "Email 1 enviado" else "Email 3 (cierre)", r))
+    pend = {n: [r for r in rows if r["status"] == "Pendiente"] for n, rows in camps.items()}
+    i = 0
+    while any(pend.values()) and i < 200:
+        for n in camps:
+            if pend[n]:
+                queue.append(("9999", i, n, "Email 1", pend[n].pop(0))); i += 1
+    queue.sort(key=lambda q: (q[0], q[1]))
+    for k, (due, _, name, what, r) in enumerate(queue[:120], 1):
+        ws.append([k, name, what, r["name"], r["city"], r["email"], due if due != "9999" else "siguiente día laborable libre"])
+    for col, w in zip("ABCDEFG", (7, 10, 16, 34, 16, 32, 26)): ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+
     ws = wb.create_sheet("Textos")
     ws.append(["Campaña", "#", "Negocio", "Asunto", "Email 1", "Email 2", "Email 3"])
     for c in ws[1]: c.font = Font(bold=True)
