@@ -720,8 +720,8 @@
     </div>
     <ul class="nav-links">
       <li><a href="#video">How it works</a></li>
-      <li><a href="#planes">Pricing</a></li>
       <li><a href="#calculator">Demo</a></li>
+      <li><a href="#planes">Pricing</a></li>
       <li><a href="#nosotros">About</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -849,6 +849,29 @@ If you have a minute, sharing how it went would mean a lot:
   </div>
 </section>
 
+<!-- LIVE DEMO -->
+<section class="calculator" id="calculator">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="eyebrow">Live demo</div>
+      <h2 class="section-title">See it <span style="color:var(--blue)">on WhatsApp.</span></h2>
+      <p class="section-sub" style="margin:0 auto">What your customers get, and what you get. Exactly as it arrives.</p>
+    </div>
+    <div class="fade-in">
+      <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">Customer</button><button class="pd-tab" data-view="owner" type="button">Business</button></div>
+      <div class="pd-sub" id="pdSubG"><button class="demo-tab active" data-g="0" type="button">Thank-you message</button><button class="demo-tab" data-g="1" type="button">Mid-stay check-in</button></div>
+      <div class="pd-sub" id="pdSub" style="display:none"><button class="demo-tab active" data-sub="0" type="button">★★☆☆☆ Negative</button><button class="demo-tab" data-sub="1" type="button">★★★★★ Positive</button><button class="demo-tab" data-sub="2" type="button">★★★☆☆ In French</button></div>
+      <p class="pd-caption" id="pdCaption"></p>
+      <div class="pd-phone"><div class="pd-screen"><div class="pd-island"></div>
+        <div class="pd-status"><span>9:41</span><span style="display:flex;align-items:center;gap:5px"><svg width="17" height="11" viewBox="0 0 17 11" fill="#111"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><span style="font-size:12px">5G</span><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#111" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.8" fill="#111"/><rect x="22.5" y="4" width="1.8" height="4" rx="1" fill="#111" opacity=".45"/></svg></span></div>
+        <div class="pd-head"><img src="assets/logo-icon-clean.png" alt=""><div><b>Hosperai</b><span id="pdHeadSub"></span></div></div>
+        <div class="pd-chat" id="pdChat"></div>
+        <div class="pd-input"><div>Message</div><span></span></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
 <!-- PLANS -->
 <section class="plans-sec" id="planes">
   <div class="container">
@@ -866,28 +889,6 @@ If you have a minute, sharing how it went would mean a lot:
       <tfoot><tr><td></td><td class="col"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary"><span class="cta-l">Book a call →</span><span class="cta-s">Book</span></a></td><td class="col pro"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-primary"><span class="cta-l">Book a call →</span><span class="cta-s">Book</span></a></td><td class="col"><a href="" onclick="gtag('event','book_call_click');Calendly.initPopupWidget({url:'https://calendly.com/hosperai-app'});return false;" class="btn-secondary"><span class="cta-l">Book a call →</span><span class="cta-s">Book</span></a></td></tr></tfoot>
     </table></div>
     <p class="plans-note">No lock-in · no setup fee · live in 48 hours</p>
-  </div>
-</section>
-
-<!-- LIVE DEMO -->
-<section class="calculator" id="calculator">
-  <div class="container">
-    <div class="fade-in" style="text-align:center">
-      <div class="eyebrow">Live demo</div>
-      <h2 class="section-title">See it <span style="color:var(--blue)">on WhatsApp.</span></h2>
-      <p class="section-sub" style="margin:0 auto">What your customers get, and what you get. Exactly as it arrives.</p>
-    </div>
-    <div class="fade-in">
-      <div class="pd-tabs"><button class="pd-tab active" data-view="guest" type="button">Customer</button><button class="pd-tab" data-view="owner" type="button">Business</button></div>
-      <div class="pd-sub" id="pdSub" style="visibility:hidden"><button class="demo-tab active" data-sub="0" type="button">★★☆☆☆ Negative</button><button class="demo-tab" data-sub="1" type="button">★★★★★ Positive</button><button class="demo-tab" data-sub="2" type="button">★★★☆☆ In French</button></div>
-      <p class="pd-caption" id="pdCaption"></p>
-      <div class="pd-phone"><div class="pd-screen"><div class="pd-island"></div>
-        <div class="pd-status"><span>9:41</span><span style="display:flex;align-items:center;gap:5px"><svg width="17" height="11" viewBox="0 0 17 11" fill="#111"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><span style="font-size:12px">5G</span><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#111" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.8" fill="#111"/><rect x="22.5" y="4" width="1.8" height="4" rx="1" fill="#111" opacity=".45"/></svg></span></div>
-        <div class="pd-head"><img src="assets/logo-icon-clean.png" alt=""><div><b>Hosperai</b><span id="pdHeadSub"></span></div></div>
-        <div class="pd-chat" id="pdChat"></div>
-        <div class="pd-input"><div>Message</div><span></span></div>
-      </div></div>
-    </div>
   </div>
 </section>
 
@@ -1177,14 +1178,24 @@ If you have a minute, sharing how it went would mean a lot:
     const add = (html, cls) => { const d = document.createElement('div'); d.className = 'pd-b' + (cls ? ' ' + cls : ''); d.innerHTML = html; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; };
     const typing = () => { const d = document.createElement('div'); d.className = 'pd-typing'; d.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; };
     function reset() { timers.forEach(clearTimeout); timers = []; chat.innerHTML = '<div class="pd-day">' + T.today + '</div>'; }
-    function guest() {
-      reset(); sub.style.visibility = 'hidden'; cap.textContent = T.cap1; headSub.textContent = 'business account';
+    const subG = document.getElementById('pdSubG');
+    function guest(i = 0) {
+      reset(); sub.style.display = 'none'; subG.style.display = ''; headSub.textContent = 'business account';
+      subG.querySelectorAll('.demo-tab').forEach((x, j) => x.classList.toggle('active', j === i));
       const tp = typing();
-      later(900, () => { tp.remove(); add(T.thanks + '<span class="t">11:02</span>'); });
-      later(2600, () => add(esc(T.guestreply) + '<span class="t">11:04 ✓✓</span>', 'me'));
+      if (i === 0) {
+        cap.textContent = T.cap1;
+        later(900, () => { tp.remove(); add(T.thanks + '<span class="t">11:02</span>'); });
+        later(2600, () => add(esc(T.guestreply) + '<span class="t">11:04 ✓✓</span>', 'me'));
+      } else {
+        cap.textContent = "During longer stays, a quick check-in. If something's wrong, the guest writes straight to your front desk, and you fix it before it becomes a bad review.";
+        later(900, () => { tp.remove(); add("Hi Maria, we hope your stay at The Harbor Hotel is going great so far. If anything isn't quite right, let us know here and we'll fix it right away:\n\n💬 <a>wa.me/13055550100</a>\n\nEnjoy your stay! ☀️" + '<span class="t">18:30</span>'); });
+        later(2600, () => add(esc("The AC in room 204 is a bit noisy 😕") + '<span class="t">18:34 ✓✓</span>', 'me'));
+        later(4200, () => add('<i>' + esc("Front desk: So sorry, Maria! Maintenance is on the way, and we've left you a bottle of wine 🍷") + '</i><span class="t">18:36</span>'));
+      }
     }
     function owner(i) {
-      reset(); sub.style.visibility = 'visible'; cap.textContent = T.cap2; headSub.textContent = 'online';
+      reset(); sub.style.display = ''; subG.style.display = 'none'; cap.textContent = T.cap2; headSub.textContent = 'online';
       sub.querySelectorAll('.demo-tab').forEach((b, j) => b.classList.toggle('active', j === i));
       const [stars, neg, author, review, reply, tr, rtr] = DEMOS[i];
       add('<b>Hosperai</b> · ' + (neg ? '🚨 ' + T.negrev : '✨ ' + T.newrev) + ' — <b>' + T.biz + '</b> (Google)\n\n' + stars + ' <b>' + esc(author) + '</b>\n' + esc(review) + (rtr ? '\n🌐 <i>' + esc(rtr) + '</i>' : '') + '<span class="t">10:06</span>');
@@ -1203,6 +1214,7 @@ If you have a minute, sharing how it went would mean a lot:
       b.dataset.view === 'guest' ? guest() : owner(0);
     }));
     sub.querySelectorAll('.demo-tab').forEach((b, i) => b.addEventListener('click', () => owner(i)));
+    subG.querySelectorAll('.demo-tab').forEach((b, i) => b.addEventListener('click', () => guest(i)));
     new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { guest(); o.disconnect(); } }, { threshold: .3 }).observe(chat);
   })();
 
