@@ -32,7 +32,8 @@ CAMPAIGNS = {"Hoteles": D / "outreach_state.json", "Clínicas": D / "outreach_cl
 META = D / "outreach_meta.json"
 USER, PWD = os.getenv("ZOHO_EMAIL"), os.getenv("ZOHO_APP_PASSWORD")
 NOTIFY_TO = "andreurey7@gmail.com"
-FOOTER = "\n\n—\nNot the right person, or not interested? Just reply \"no\" and I won't email again."
+FOOTER = ("\n\n—\nHosperai · 1935 Park Ave #1, Miami Beach, FL 33139\n"
+          "Not the right person, or not interested? Just reply \"no\" and I won't email again.")
 DAILY_CAP = [10, 20, 30, 40]          # total diario (hoteles + clínicas alternando), por semana desde el primer envío
 HOURS = (9, 16)                        # ventana de envío (hora local del Mac)
 GAP_MIN = (20, 40)                     # minutos entre envíos
