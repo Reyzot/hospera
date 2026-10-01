@@ -72,8 +72,33 @@ def cap_today(meta):
     return DAILY_CAP[min(weeks, len(DAILY_CAP) - 1)]
 
 
-def send(to, subject, body, reply_to_id=None):
-    msg = MIMEText(body + FOOTER, "plain", "utf-8")
+LOGO_URL = "https://hosperai.es/assets/logo-icon-clean.png"
+
+
+def to_html(body):
+    """Texto → HTML sencillo (enlaces clicables) + firma con logo. Solo para emails 2 y 3."""
+    import html as H
+    text, sig = (body.rsplit("\n\nAndreu Rey", 1) + [""])[:2] if "\n\nAndreu Rey" in body else (body, None)
+    esc = H.escape(text)
+    esc = re.sub(r"(https?://[^\s<]+)", r'<a href="\1" style="color:#2563eb">\1</a>', esc).replace("\n", "<br>")
+    foot = H.escape(FOOTER.strip("\n")).replace("\n", "<br>")
+    signature = ('<table cellpadding="0" cellspacing="0" style="margin-top:18px"><tr>'
+                 f'<td style="padding-right:12px;vertical-align:middle"><img src="{LOGO_URL}" width="40" height="38" alt="Hosperai" style="display:block"></td>'
+                 '<td style="vertical-align:middle;font-family:Arial,sans-serif;font-size:14px;line-height:1.35;color:#111827">'
+                 '<b>Andreu Rey</b><br><span style="color:#6b7280">Founder, Hosperai</span><br>'
+                 '<a href="https://hosperai.es" style="color:#2563eb;text-decoration:none">hosperai.es</a></td></tr></table>') if sig is not None else ""
+    return (f'<div style="font-family:Arial,sans-serif;font-size:14.5px;line-height:1.55;color:#111827">{esc}{signature}'
+            f'<p style="margin-top:22px;font-size:11.5px;color:#9ca3af">{foot}</p></div>')
+
+
+def send(to, subject, body, reply_to_id=None, step=1):
+    if step >= 2:   # con logo en la firma (texto + HTML)
+        from email.mime.multipart import MIMEMultipart
+        msg = MIMEMultipart("alternative")
+        msg.attach(MIMEText(body + FOOTER, "plain", "utf-8"))
+        msg.attach(MIMEText(to_html(body), "html", "utf-8"))
+    else:            # primer email: solo texto, sin imágenes ni enlaces
+        msg = MIMEText(body + FOOTER, "plain", "utf-8")
     msg["Subject"], msg["From"], msg["To"] = subject, formataddr(("Andreu Rey", USER)), to
     mid = make_msgid(domain="gethosperai.com")
     msg["Message-ID"] = mid
@@ -215,7 +240,7 @@ def run():
         save(states, meta); print("🎉 No queda nadie por contactar"); return
     subject = r["subject"] if step == 1 else f"Re: {r['subject']}"
     try:
-        mid = send(r["email"], subject, r[f"email_{step}"], r.get("message_id") if step > 1 else None)
+        mid = send(r["email"], subject, r[f"email_{step}"], r.get("message_id") if step > 1 else None, step)
     except smtplib.SMTPRecipientsRefused:
         r["status"], r["notes"] = "Rebotó", "Dirección rechazada"
         save(states, meta); return
