@@ -165,11 +165,14 @@ def to_client(sub):
                                              "reply_preferences")},
         "vip_message": d.get("vip_message", ""),
         "guest_contact": d.get("guest_contact", ""),
+        "midstay_nights": int(d.get("midstay_nights") or 3),
+        "setup": {k: d.get(k, "") for k in ("nfc_qty", "nfc_address", "own_whatsapp", "pms", "competitors", "call_time")},
         "voice_examples": [{"review": SCENARIOS[n][0], "reply": SCENARIOS[n][1][d[f"scenario_{n}"]]}
                            for n in SCENARIOS if d.get(f"scenario_{n}") in SCENARIOS[n][1]],
         "manager_email": d.get("contact_email", ""), "contact_name": d.get("contact_name", ""),
         "plan": d.get("plan") or "Basic",
-        "services": PLAN_SERVICES.get(d.get("plan") or "Basic", PLAN_SERVICES["Basic"]) + (d.get("services") or []), "pms": d.get("pms", ""), "notes": d.get("notes", ""),
+        "services": [x for x in PLAN_SERVICES.get(d.get("plan") or "Basic", PLAN_SERVICES["Basic"])
+                     if not (x == "Mid-stay check-in" and str(d.get("midstay_nights")) == "0")] + (d.get("services") or []), "pms": d.get("pms", ""), "notes": d.get("notes", ""),
         "google_url": d.get("google_url", ""), "created": sub.get("created_at", ""),
         "data_id": None, "place_id": None,
     } | dict(zip(("data_id", "place_id"), find_place(d)))

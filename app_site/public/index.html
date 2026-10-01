@@ -270,8 +270,54 @@
       <div style="font-size:12px;color:var(--gray-500);margin-top:8px">No lock-in. Change or cancel your plan anytime.</div>
       <label style="display:block;font-size:13.5px;font-weight:700;margin:22px 0 8px">Extras (optional)</label>
       <div class="check-grid">
-        <label class="check-item"><input type="checkbox" name="services" value="Google Profile tune-up"> Google Profile tune-up</label>
+        <label class="check-item plan-only" data-plans="Basic Pro"><input type="checkbox" name="services" value="Google Profile tune-up"> Google Profile tune-up</label>
         <label class="check-item"><input type="checkbox" name="services" value="Custom website"> Custom website</label>
+      </div>
+    </fieldset>
+
+        <fieldset class="plan-only" data-plans="Pro Business">
+      <legend>Your Pro setup</legend>
+      <div class="field">
+        <label>Mid-stay check-in: send it for stays of</label>
+        <select name="midstay_nights"><option value="3">3 nights or more</option><option value="4">4 nights or more</option><option value="5">5 nights or more</option><option value="0">Don't send it</option></select>
+        <div class="hint">A short "is everything OK?" message halfway through the stay, with a link to your front desk WhatsApp.</div>
+      </div>
+      <div class="field">
+        <label>Special message for VIP / member customers (optional)</label>
+        <textarea name="vip_message" placeholder="e.g. As one of our members, enjoy 10% off your next stay with code VIP10."></textarea>
+        <div class="hint">Reception marks a customer as VIP when adding them; VIP customers get this line in their thank-you message.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>NFC review cards</label>
+          <select name="nfc_qty"><option value="2">2 cards</option><option value="3">3 cards</option><option value="5">5 cards</option><option value="0">I don't need them</option></select>
+        </div>
+        <div class="field">
+          <label>Where should we send them?</label>
+          <input type="text" name="nfc_address" placeholder="Business address">
+        </div>
+      </div>
+      <div class="field">
+        <label>Send messages from your own WhatsApp number? (optional)</label>
+        <input type="tel" name="own_whatsapp" placeholder="Your business WhatsApp number, or leave empty to use Hosperai's">
+        <div class="hint">We set it up together on a 10-minute call. Your customers will see your name and logo.</div>
+      </div>
+    </fieldset>
+
+    <fieldset class="plan-only" data-plans="Business">
+      <legend>Your Business setup</legend>
+      <div class="field">
+        <label>Which PMS / booking or POS system do you use?</label>
+        <select name="pms"><option value="">Choose one</option><option>Cloudbeds</option><option>Mews</option><option>Little Hotelier / SiteMinder</option><option>Opera</option><option>RMS / innRoad / WebRezPro</option><option>Square / Toast / Lightspeed (POS)</option><option>Dental / clinic software</option><option>Other / spreadsheet</option></select>
+        <div class="hint">We connect it so customers are added automatically, with no front-desk typing.</div>
+      </div>
+      <div class="field">
+        <label>Your 5 closest competitors (optional)</label>
+        <textarea name="competitors" placeholder="Names of the businesses you compete with. If empty, we pick the 5 most similar nearby."></textarea>
+      </div>
+      <div class="field">
+        <label>Best day and time for your monthly call with your account manager</label>
+        <input type="text" name="call_time" placeholder="e.g. Tuesdays after 3 pm">
       </div>
     </fieldset>
 
@@ -323,14 +369,9 @@
         <textarea name="not_offered" placeholder="e.g. no pool, no restaurant, breakfast not included, no pets"></textarea>
       </div>
       <div class="field">
-        <label>How should guests contact you?</label>
+        <label>How should your customers contact you?</label>
         <input type="text" name="guest_contact" placeholder="e.g. WhatsApp +1 305 555 1234 · frontdesk@yourhotel.com">
-        <div class="hint">If a guest replies to our WhatsApp, we automatically point them here. Use your front desk, not a personal number.</div>
-      </div>
-      <div class="field">
-        <label>Special message for VIP / member guests (optional)</label>
-        <textarea name="vip_message" placeholder="e.g. As one of our members, enjoy 10% off your next stay with code VIP10."></textarea>
-        <div class="hint">Pro plan. Reception can mark a guest as VIP at check-in; VIP guests get this line added to their thank-you message.</div>
+        <div class="hint">If a customer replies to our WhatsApp, we automatically point them here. Use your front desk, not a personal number.</div>
       </div>
       <div class="field">
         <label>Anything replies should always mention? (optional)</label>
@@ -390,6 +431,18 @@
     ].join('\n');
   }
 
+
+  // Mostrar solo las preguntas del plan elegido
+  function syncPlan() {
+    const plan = (form.querySelector('input[name=plan]:checked') || {}).value || 'Basic';
+    form.querySelectorAll('.plan-only').forEach(el => {
+      const on = el.dataset.plans.split(' ').includes(plan);
+      el.style.display = on ? '' : 'none';
+      el.querySelectorAll('input,select,textarea').forEach(i => i.disabled = !on);
+    });
+  }
+  form.querySelectorAll('input[name=plan]').forEach(r => r.addEventListener('change', syncPlan));
+  syncPlan();
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     const btn = form.querySelector('button[type=submit]');
