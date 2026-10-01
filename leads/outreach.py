@@ -28,11 +28,12 @@ load_dotenv(D.parent / ".env")
 sys.path.insert(0, str(D))
 import outreach_excel
 
-STATE, META = D / "outreach_state.json", D / "outreach_meta.json"
+CAMPAIGNS = {"Hoteles": D / "outreach_state.json", "Clínicas": D / "outreach_clinics_state.json"}
+META = D / "outreach_meta.json"
 USER, PWD = os.getenv("ZOHO_EMAIL"), os.getenv("ZOHO_APP_PASSWORD")
 NOTIFY_TO = "andreurey7@gmail.com"
 FOOTER = "\n\n—\nNot the right person, or not interested? Just reply \"no\" and I won't email again."
-DAILY_CAP = [10, 15, 25, 35]          # por semana desde el primer envío
+DAILY_CAP = [10, 20, 30, 40]          # total diario (hoteles + clínicas alternando), por semana desde el primer envío
 HOURS = (9, 16)                        # ventana de envío (hora local del Mac)
 GAP_MIN = (20, 40)                     # minutos entre envíos
 FOLLOWUP_DAYS = {2: 3, 3: 7}           # email 2 a los 3 días laborables del 1; email 3 a los 7
@@ -43,8 +44,9 @@ def load(p, default):
     return json.loads(p.read_text()) if p.exists() else default
 
 
-def save(state, meta):
-    STATE.write_text(json.dumps(state, indent=1, ensure_ascii=False))
+def save(states, meta):
+    for name, rows in states.items():
+        CAMPAIGNS[name].write_text(json.dumps(rows, indent=1, ensure_ascii=False))
     META.write_text(json.dumps(meta, indent=1))
     try:
         outreach_excel.build()
@@ -97,8 +99,9 @@ def text_of(m):
     return m.get_payload(decode=True).decode(m.get_content_charset() or "utf-8", "ignore")
 
 
-def check_inbox(state, meta):
+def check_inbox(states, meta):
     """Respuestas y rebotes. Solo mira correos nuevos desde el último UID revisado."""
+    state = [r for rows in states.values() for r in rows]
     by_email = {r["email"].lower(): r for r in state}
     by_domain = {r["email"].split("@")[1].lower(): r for r in state
                  if r["email"].split("@")[1].lower() not in ("gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com", "msn.com", "icloud.com", "bellsouth.net", "comcast.net")}
@@ -150,7 +153,17 @@ def check_inbox(state, meta):
     return True
 
 
-def next_job(state):
+def next_job(states, meta):
+    """Alterna campañas: la que menos envíos lleva hoy va primero."""
+    order = sorted(states, key=lambda n: meta.get("sent_by", {}).get(n, 0))
+    for name in order:
+        r, step = _next_in(states[name])
+        if r:
+            return name, r, step
+    return None, None, None
+
+
+def _next_in(state):
     today = date.today().isoformat()
     for r in state:  # seguimientos que ya tocan
         if r["status"] in ("Email 1 enviado", "Email 2 enviado") and r["next_due"] and r["next_due"] <= today:
@@ -162,33 +175,33 @@ def next_job(state):
 
 
 def run():
-    state, meta = load(STATE, []), load(META, {})
+    states, meta = {n: load(p, []) for n, p in CAMPAIGNS.items()}, load(META, {})
     if meta.get("paused"):
         print("⏸️  Envíos en pausa"); return
-    inbox_ok = check_inbox(state, meta)
+    inbox_ok = check_inbox(states, meta)
     now = datetime.now()
     today = date.today().isoformat()
     if meta.get("day") != today:
-        meta.update(day=today, sent_today=0, gap=random.randint(*GAP_MIN))
+        meta.update(day=today, sent_today=0, sent_by={}, gap=random.randint(*GAP_MIN))
     if now.weekday() >= 5 or not (HOURS[0] <= now.hour < HOURS[1]):
-        save(state, meta); print("🕘 Fuera de horario"); return
+        save(states, meta); print("🕘 Fuera de horario"); return
     if not inbox_ok:
-        save(state, meta); print("⏳ Sin IMAP no envío (no sabría quién ha respondido)"); return
+        save(states, meta); print("⏳ Sin IMAP no envío (no sabría quién ha respondido)"); return
     if meta["sent_today"] >= cap_today(meta):
-        save(state, meta); print(f"✅ Máximo de hoy alcanzado ({meta['sent_today']})"); return
+        save(states, meta); print(f"✅ Máximo de hoy alcanzado ({meta['sent_today']})"); return
     last = meta.get("last_send")
     if last and (now - datetime.fromisoformat(last)).total_seconds() < meta["gap"] * 60:
-        save(state, meta); print("⏳ Esperando hueco entre envíos"); return
+        save(states, meta); print("⏳ Esperando hueco entre envíos"); return
 
-    r, step = next_job(state)
+    camp, r, step = next_job(states, meta)
     if not r:
-        save(state, meta); print("🎉 No queda nadie por contactar"); return
+        save(states, meta); print("🎉 No queda nadie por contactar"); return
     subject = r["subject"] if step == 1 else f"Re: {r['subject']}"
     try:
         mid = send(r["email"], subject, r[f"email_{step}"], r.get("message_id") if step > 1 else None)
     except smtplib.SMTPRecipientsRefused:
         r["status"], r["notes"] = "Rebotó", "Dirección rechazada"
-        save(state, meta); return
+        save(states, meta); return
     if step == 1:
         r["message_id"] = mid
     r[f"sent_{step}"] = today
@@ -196,16 +209,18 @@ def run():
     r["next_due"] = add_business_days(date.today(), FOLLOWUP_DAYS[step + 1] - (FOLLOWUP_DAYS[step] if step > 1 else 0)).isoformat() if step < 3 else ""
     meta["first_send"] = meta.get("first_send") or today
     meta["sent_today"] += 1
+    meta.setdefault("sent_by", {})[camp] = meta.setdefault("sent_by", {}).get(camp, 0) + 1
     meta["last_send"] = now.isoformat(timespec="seconds")
     meta["gap"] = random.randint(*GAP_MIN)
-    save(state, meta)
-    print(f"📤 Email {step} → #{r['n']} {r['name']} ({r['email']}) · hoy {meta['sent_today']}/{cap_today(meta)}")
+    save(states, meta)
+    print(f"📤 [{camp}] Email {step} → #{r['n']} {r['name']} ({r['email']}) · hoy {meta['sent_today']}/{cap_today(meta)}")
 
 
 def status():
-    state, meta = load(STATE, []), load(META, {})
+    meta = load(META, {})
     from collections import Counter
-    print(Counter(r["status"] for r in state))
+    for n, p in CAMPAIGNS.items():
+        print(n, dict(Counter(r["status"] for r in load(p, []))))
     print("Hoy:", meta.get("sent_today", 0), "/", cap_today(meta), "· pausa:", bool(meta.get("paused")), "· primer envío:", meta.get("first_send"))
 
 

@@ -125,7 +125,8 @@ Antes: mini-auditoría del hotel (sus números vs competencia) + pestañas abier
 ## 12. Campaña de emails a hoteles (captación)
 
 - Buzón: andreu@gethosperai.com (Zoho Mail Lite, cuenta hosperai.app@gmail.com; dominio secundario para no quemar hosperai.es). DNS en Cloudflare: MX Zoho, SPF, DKIM (zmail._domainkey), DMARC p=none.
-- `leads/outreach.py` (launchd `com.hospera.outreach`, cada 10 min): lun–vie 9:00–16:00, 1 email cada 20–40 min, máximo diario 10 → 15 → 25 → 35 por semana. Seguimientos: email 2 a los 3 días laborables, email 3 a los 7. Quien responde sale de la secuencia y se avisa a andreurey7@gmail.com. Sin IMAP no envía (no sabría quién respondió).
-- Fuente de verdad: `leads/outreach_state.json` (499 hoteles en orden). Excel para Andreu: `~/Desktop/Hosperai_Envios.xlsx` (se regenera solo).
+- `leads/outreach.py` (launchd `com.hospera.outreach`, cada 10 min): lun–vie 9:00–16:00, 1 email cada 20–40 min, máximo diario TOTAL 10 → 20 → 30 → 40 por semana, alternando campañas Hoteles (499, `outreach_state.json`) y Clínicas (225 de OpenStreetMap, `outreach_clinics_state.json`, vídeo hosperai.es/demo-clinic). Seguimientos: email 2 a los 3 días laborables, email 3 a los 7. Quien responde sale de la secuencia y se avisa a andreurey7@gmail.com. Sin IMAP no envía (no sabría quién respondió).
+- Excel para Andreu: `~/Desktop/Hosperai_Envios.xlsx` (Resumen con % de respuesta por nicho + pestañas Hoteles / Clínicas / Textos, se regenera solo).
+- SerpAPI gratis: 250/mes, se renueva el 28. NO usarlo para leads (clínicas salieron de OpenStreetMap vía Overpass, espejo maps.mail.ru). Arreu y Racó'ns se revisan cada 2 días (`check_every_days`). Con el primer cliente de pago → plan de pago de SerpAPI.
 - Pausar / reanudar / ver: `python3 leads/outreach.py --pause | --resume | --status`.
 - Credenciales en .env: ZOHO_EMAIL, ZOHO_APP_PASSWORD (contraseña de aplicación de Zoho).
