@@ -32,3 +32,18 @@ onboarding_site/.netlify
 node_modules
 app_site/node_modules
 app_site/.wrangler
+
+# Código, datos y documentos internos: el repo es PÚBLICO y GitHub Pages publica todo lo que hay aquí.
+# Solo la web (html, assets, media) va al repo. El resto vive solo en el Mac / en el servidor.
+*.py
+*.sh
+*.md
+*.json
+*.csv
+*.log
+app_site/
+leads/
+cloud/
+instagram/
+.claude/
+.env.example
