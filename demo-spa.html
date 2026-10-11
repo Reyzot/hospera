@@ -14,10 +14,16 @@ h1{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;margin:0 0 8px}h1 span{c
 p{color:#94a3b8;margin:0 0 24px;font-size:17px}
 video{width:100%;max-width:960px;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
 .btn{display:inline-block;margin-top:28px;background:#2563eb;color:#fff;text-decoration:none;padding:14px 26px;border-radius:12px;font-weight:600}
+.vw{position:relative;width:100%;max-width:900px}
+.vw video{width:100%;display:block}
+.snd{position:absolute;right:10px;top:10px;border:0;border-radius:999px;padding:8px 14px;background:rgba(15,23,42,.82);color:#fff;font:700 14px -apple-system,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.snd:focus-visible{outline:3px solid #60a5fa;outline-offset:3px}
 </style></head><body>
 <h1>More reviews. <span>Less work.</span></h1>
 <p>See how HOSPERAI works for your med spa.</p>
-<video controls playsinline autoplay muted poster="media/hosperai-spa-demo-poster.jpg"><source src="media/hosperai-spa-demo.mp4" type="video/mp4"></video>
+<div class="vw"><video controls playsinline autoplay muted poster="media/hosperai-spa-demo-poster.jpg"><source src="media/hosperai-spa-demo.mp4" type="video/mp4"></video><button class="snd" type="button">🔊 Tap for sound</button></div>
 <a class="btn" href="https://calendly.com/hosperai-app" target="_blank" rel="noopener">Book a call →</a>
 <a href="credits.html" style="position:fixed;right:10px;bottom:6px;font-size:9px;color:#475569;text-decoration:none;opacity:.5">Photo credits</a>
-</body></html>
+<script>(function(){var v=document.querySelector('.vw video'),b=document.querySelector('.snd');if(!v||!b)return;
+function hide(){if(!v.muted)b.hidden=true}
+b.onclick=function(){v.muted=false;v.currentTime=0;v.play();b.hidden=true};v.addEventListener('volumechange',hide)})();</script></body></html>
