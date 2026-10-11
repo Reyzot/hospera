@@ -47,3 +47,4 @@ cloud/
 instagram/
 .claude/
 .env.example
+.dashboard_last_*
